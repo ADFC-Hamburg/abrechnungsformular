@@ -1,0 +1,228 @@
+/*Allgemeine Einstellungen ———————————————————*/
+:root {
+	--adfc-blue:	#24477c;
+	--adfc-orange:	#f47216;
+	--highlight:	#f47216;
+	--radio-color:	hsl(25, 91%, 50%);
+	--fldst-color:	hsl(25, 91%, 95%);
+}
+* {
+	box-sizing:	border-box;
+}
+body {
+	margin: 	0;
+	padding:	0;
+}
+
+/*Überschrift ————————————————————————————————*/
+header {
+	text-align:	center;
+	vertical-align:	bottom;
+	background-color: var(--adfc-blue);
+	color:	white;
+	width:	100%;
+}
+header h1 {
+	font-size:24pt;
+	margin-bottom:0;
+	display:inline;
+}
+header div {
+	margin-left: auto;
+	margin-right:auto;
+	padding:0.1em;
+	max-width:80%
+}
+header p {
+	font-style:italic;
+}
+header img {
+	color:white;
+	font-weight:bold;
+}
+img.logo {
+	height:4rem;
+	margin:0.75rem;
+}
+
+/*Formular Layout ————————————————————————————*/
+form {
+	margin: 0 auto;
+	padding: 0.5em;
+}
+form header {
+	--highlight: #24477c;
+	--radio-color: var(--adfc-blue);
+	--fldst-color: hsl(216, 55%, 95%);
+	text-align:unset;
+	vertical-align:unset;
+	background-color:unset;
+	color:unset;
+	padding-bottom: 1.5em;
+	border-style: none none dotted;
+	border-color: var(--adfc-blue);
+	border-width: 1px;
+}
+form header div {
+	all:unset;
+}
+fieldset {
+	max-width:62em;
+	margin: 1em auto 0;
+	background-color:var(--fldst-color);
+	border-color: var(--highlight);
+}
+fieldset legend {
+	font-weight:bold;
+	color: var(--highlight);
+}
+
+/*Layout in Fieldsets ————————————————————————*/
+fieldset section {
+	padding: 0.625em;
+}
+fieldset section + section {
+	border-top: 2px groove #eee;
+	padding-top: 0.625em;
+}
+fieldset section:last-child {
+	padding-bottom: 0;
+}
+fieldset section::after {
+	content: "";
+	clear: both;
+	display: table;
+}
+.avoidwrap {
+	display:inline-block;
+}
+.select {
+	float:left;
+	clear:left;
+	width:auto;
+}
+.subselect {
+	padding-left: 10%;
+	float:right;
+	text-align:left;
+}
+.subinput {
+	float:right;
+	text-align:right;
+}
+
+/*Aussehen von Input-Feldern —————————————————*/
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
+	border-style: solid;
+	border-color: var(--highlight);
+	outline:0;
+	box-shadow: 0 0 0.5em var(--highlight);
+}
+input[type="checkbox"],
+input[type="radio"] {
+	accent-color: var(--radio-color);
+}
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+.button {
+	background-color:var(--adfc-orange);
+	color: white;
+	padding: 0.25em;
+	font-weight:bold;
+	border: 0.2em outset hsl(25, 91%, 76%);
+	border-radius: 0.25em;
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:small;
+}
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:hover {
+	background-color: hsl(25, 91%, 41%);
+	border-color: hsl(25, 91%, 60%);
+}
+input[type="submit"]:active,
+input[type="reset"]:active,
+input[type="button"]:active,
+.button:active {
+	border-style: inset;
+}
+input + input, input + .button, .button + input {
+	margin-left: 0.25em;
+}
+
+/*Aussehen einzelner Elemente ————————————————*/
+a {
+	color: var(--adfc-blue);
+}
+aside {
+	color: grey;
+	font-size:80%;
+	margin:0.25em;
+}
+input[disabled] + label {
+	color: lightgrey;
+}
+span.money::after {
+	content: "€";
+}
+.negative {
+	color: red;
+}
+.locked {
+	color:lightgrey;
+}
+.iban {
+	font-family: monospace;
+	font-size: 120%;
+}
+
+/*Widescreen Layout: Zwei Spalten ————————————
+@media only screen and (orientation: landscape) and (min-width:768px) {
+	fieldset {
+		float:left;
+		width:49.8%;
+		clear:left;
+	}
+	fieldset.right{
+		float:right;
+		clear:right;
+	}
+} */
+
+/*Logo- und Überschriftposition auf breitem Bildschirm*/
+@media (min-width:48rem) {
+	a.logo {
+		position:absolute;
+		left:1.75rem;
+		top:0.5rem;
+	}
+	header div {
+		max-width:60%;
+		margin-left: max(16rem,20%);
+	}
+}
+
+/*Hoher Kontrastmodus ————————————————————————*/
+@media (prefers-contrast: more) {
+	:root {	--adfc-blue: hsl(216, 55%, 15%); --radio-color: black !important; }
+	fieldset { background-color: white !important; }
+	fieldset, fieldset section + section, field header { border-color: black; }
+	fieldset legend, aside { color: black; }
+	.negative { color: darkred; }
+	input[type="number"]:focus, input[type="text"]:focus, input[type="date"]:focus { border-color: black; }
+	input[type="submit"], input[type="reset"], input[type="button"] {
+		background-color:white;
+		color: black;
+		border-color: dimgrey;
+	}
+	input[type="submit"]:hover, input[type="reset"]:hover, input[type="button"]:hover {
+		background-color: whitesmoke;
+		border-color: black;
+	}
+
+}
