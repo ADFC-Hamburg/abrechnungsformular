@@ -43,7 +43,7 @@ class Position:
         value: Einnahmen oder (wenn negativ) Ausgaben
         """
         self._name = str(name)
-        self._unitcount = int(count)
+        self._unitcount = int(unitcount)
         self._unitprice = float(unitprice)
         self._value = float(value)
     
@@ -86,7 +86,7 @@ class Position:
     
     name = property(_getname,_setname,None,
         "Der Name der Position.")
-    count = property(_getcount,_setcount,None,
+    count = property(_getunitcount,_setunitcount,None,
         "Anzahl der Einheiten in der Position.")
     unitprice = property(_getunitprice,_setunitprice,None,
         "Preis pro Einheit der Position.")
@@ -146,7 +146,9 @@ class Abrechnung:
         Initialisiert ein Objekt der Klasse Abrechnung.
         """
         
-        self._positions = (Position(),)*7
+        self._positions = []
+        for i in range(7):
+            self._positions.append(Position())
         
         self._user = {"name": "", "group": ""}
         self._project = {"name": "", "date": None}
