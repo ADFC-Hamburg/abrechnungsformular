@@ -42,36 +42,38 @@ class Position:
         unitprice: Preis pro Einheit (nur, wenn Anzahl relevant ist)
         value: Einnahmen oder (wenn negativ) Ausgaben
         """
-        self._name = str(name)
-        self._unitcount = int(unitcount)
-        self._unitprice = float(unitprice)
-        self._value = float(value)
+        self._setname(name)
+        self._setunitcount(unitcount)
+        self._setunitprice(unitprice)
+        self._setvalue(value)
     
-    def _setname(self,value:str):
+    def _setname(self,value:str = ""):
         self._name = str(value)
     
     def _getname(self) -> str:
         return self._name
     
-    def _setunitcount(self,value:int):
+    def _setunitcount(self,value:int = 1):
         self._unitcount = int(value)
+        if self._unitcount < 1:
+            self._unitcount = 1
     
     def _getunitcount(self) -> int:
         return self._unitcount
     
-    def _setunitprice(self,value):
+    def _setunitprice(self,value=0.0):
         self._unitprice = float(value)
     
     def _getunitprice(self) -> float:
         return self._unitprice
     
-    def _setvalue(self,value):
+    def _setvalue(self,value=0.0):
         self._value = float(value)
     
     def _getvalue(self) -> float:
         return self._value
     
-    def _setunvalue(self,value):
+    def _setminusvalue(self,value=0.0):
         self._value = float(value)*-1
     
     def _getincome(self) -> float:
@@ -84,17 +86,17 @@ class Position:
             return self._value*-1
         return 0.0
     
-    name = property(_getname,_setname,None,
+    name = property(_getname,_setname,_setname,
         "Der Name der Position.")
-    count = property(_getunitcount,_setunitcount,None,
+    unitcount = property(_getunitcount,_setunitcount,_setunitcount,
         "Anzahl der Einheiten in der Position.")
-    unitprice = property(_getunitprice,_setunitprice,None,
+    unitprice = property(_getunitprice,_setunitprice,_setunitprice,
         "Preis pro Einheit der Position.")
-    value = property(_getvalue,_setvalue,None,
+    value = property(_getvalue,_setvalue,_setvalue,
         "Der Gesamtwert der Position in Euro.")
-    income = property(_getincome,_setvalue,None,
+    income = property(_getincome,_setvalue,_setvalue,
         "Die Einnahmen der Position; gibt bei Ausgaben 0 aus.")
-    cost = property(_getcost,_setunvalue,None,
+    cost = property(_getcost,_setminusvalue,_setminusvalue,
         "Die Kosten der Position; gibt bei Einnahmen 0 aus.")
     
     def htmlcells(self,indent:int = 0) -> str:
@@ -112,9 +114,9 @@ class Position:
             joiner = "\n" + "\t"*indent
         
         out.append( cell( escape(self._name) ) )
-        if not self._unitprice==0.0:
-            out.append( cell(self._unitcount()) )
-            out.append( cell( euro(self._unitprice()) ) )
+        if self._unitprice:
+            out.append( cell(self._getunitcount()) )
+            out.append( cell( euro(self._getunitprice()) ) )
         else:
             out.append( cell() )
             out.append( cell() )
