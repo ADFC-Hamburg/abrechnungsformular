@@ -140,10 +140,13 @@ class Abrechnung:
     # Class constants
     _CHECKBOXES = {False:"&#9744;",True:"&#9746;"}
     _FILE = "aktive_template.html"
+    _IBANSPACES = range(18,0,-4)
+    _MODES = {"iban": (1,2,3), "sepa": (2,3)}
     _PLACEHOLDERS = ("<!--SPLIT-->\n","<!--PLACEHOLDER-->")
     _POSITIONCOUNT = 7
     _SECTIONS = {"user": 1, "positions": 3, "total": 4, "payment": 5}
     
+    # General methods
     def __init__(self):
         """
         Initialisiert ein Objekt der Klasse Abrechnung.
@@ -155,7 +158,8 @@ class Abrechnung:
         
         self._user = {"name": "", "group": ""}
         self._project = {"name": "", "date": None}
-        self._payment = {"mode": None, "sepamode": None,
+        self._donations = 0.0
+        self._payment = {"ibanmode": None, "sepamode": None,
                          "ibanknown": False, "iban": "", "name": ""}
         self._template = self._fetch_html()
     
@@ -177,19 +181,20 @@ class Abrechnung:
                 out.append(tuple(fragments))
         return tuple(out)
     
-    def _setusername(self,value):
+    # Variable getters and setters
+    def _setusername(self,value:str = ""):
         self._user["name"] = str(value)
     
     def _getusername(self) -> str:
         return self._user["name"]
     
-    def _setusergroup(self,value):
+    def _setusergroup(self,value:str = ""):
         self._user["group"] = str(value)
     
     def _getusergroup(self) -> str:
         return self._user["group"]
     
-    def _setprojectname(self,value):
+    def _setprojectname(self,value:str = ""):
         self._project["name"] = str(value)
     
     def _getprojectname(self) -> str:
@@ -205,7 +210,8 @@ class Abrechnung:
         elif type(value) == str:
             try:
                 temp = value.split("-")
-                self._project["date"] = date(int(temp[0]), int(temp[1]), int(temp[2]))
+                self._project["date"] = date(
+                    int(temp[0]), int(temp[1]), int(temp[2]))
             except:
                 self._project["date"] = None
         else:
@@ -214,11 +220,102 @@ class Abrechnung:
     def _getprojectdate(self) -> date|None:
         return self._project["date"]
     
-    username = property(_getusername,_setusername,None,
+    def _setdonations(self,value=0.0):
+        self._donations = float(value)
+        if self._donations < 0:
+            self._donations = 0.0
+    
+    def _getdonations(self) -> float:
+        return self._donations
+    
+    def _getincome(self) -> float:
+        out = 0.0
+        for i in range(self._POSITIONCOUNT):
+            out += self._positions[i].income
+        out += self._getdonations()
+        return out
+
+    def _getcost(self) -> float:
+        out = 0.0
+        for i in range(self._POSITIONCOUNT):
+            out += self._positions[i].cost
+        return out
+    
+    def _gettotal(self) -> float:
+        return self._getincome()-self._getcost()
+    
+    def _setaccountname(self,name:str = ""):
+        self._payment["name"] = str(name)
+    
+    def _getaccountname(self) -> str:
+        return self._payment["name"]
+    
+    def _setaccountiban(self,value=""):
+        value = value.replace(" ","")
+        if len(value) == 20 and value.isdigit():
+            self._payment["iban"] = str(value)
+        else:
+            self._payment["iban"] = ""
+    
+    def _getaccountiban(self,spaces:bool = True) -> str:
+        out = self._payment["iban"]
+        if spaces and len(out) > self._IBANSPACES[0]:
+            # add spaces
+            for i in self._IBANSPACES:
+                out = out[:i] + " " + out[i:]
+        return out
+
+    def _setibanmode(self,mode=None):
+        if mode and int(mode) in self._MODES["iban"]:
+            self._payment["ibanmode"] = int(mode)
+        else:
+            self._payment["ibanmode"] = None
+    
+    def _getibanmode(self) -> int|None:
+        return self._payment["ibanmode"]
+    
+    def _setsepamode(self,mode=None):
+        if mode and int(mode) in self._MODES["sepa"]:
+            self._payment["sepamode"] = int(mode)
+        else:
+            self._payment["sepamode"] = None
+    
+    def _getsepamode(self) -> int|None:
+        return self._payment["sepamode"]
+
+    def _setibanknown(self,mode=False):
+        self._payment["ibanknown"] = bool(mode)
+    
+    def _getibanknown(self) -> bool:
+        return self._payment["ibanknown"]
+
+    # Properties
+    username = property(_getusername,_setusername,_setusername,
                         "Der Name des Aktiven.")
-    usergroup = property(_getusergroup,_setusergroup,None,
+    usergroup = property(_getusergroup,_setusergroup,_setusergroup,
                          "Der Arbeitsbereich des Aktiven.")
-    projectname = property(_getprojectname,_setprojectname,None,
+    projectname = property(_getprojectname,_setprojectname,_setprojectname,
                            "Der Name der Aktion oder des Projekts.")
-    projectdate = property(_getprojectdate,_setprojectdate,None,
+    projectdate = property(_getprojectdate,_setprojectdate,_setprojectdate,
                            "Das Datum der Aktion oder des Projekts.")
+    donations = property(_getdonations,_setdonations,_setdonations,
+                         "Eingenommene Spenden in Euro.")
+    income = property(_getincome,None,None,
+                      "Gesamteinnahmen in Euro.")
+    cost = property(_getcost,None,None,
+                      "Gesamtausgaben in Euro.")
+    total = property(_gettotal,None,None,
+                     "Gesamtwert Einnahmen minus Ausgaben, in Euro.")
+    accountname = property(_getaccountname,_setaccountname,_setaccountname,
+                           "Der Name des Bankkontoimhabers.")
+    iban = property(_getaccountiban,_setaccountiban,_setaccountiban,
+                    "Die IBAN (ohne einleitendes DE) des Bankkontos.")
+    accountiban = iban
+    ibanmode = property(_getibanmode,_setibanmode,_setibanmode,
+                         "Wie die Zahlung abgehandelt wird.\n"
+                        +"Erlaubte Werte: "+str(_MODES["iban"]))
+    sepamode = property(_getsepamode,_setsepamode,_setsepamode,
+                          "Ob ein SEPA-Mandatsformular angefordert wird.\n"
+                        +"Erlaubte Werte: "+str(_MODES["sepa"]))
+    ibanknown = property(_getibanknown,_setibanknown,_setibanknown,
+                         "Ob die IBAN dem ADFC schon vorliegt (True/False).")
