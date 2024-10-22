@@ -31,7 +31,7 @@ class Position:
     Beschreibt eine Position in einer Aktivenabrechnung.
     """
     
-    # General methods
+    # Dunder methods
     def __init__(self,name:str = "",unitcount:int = 1,
                  unitprice=0.0,value=0.0):
         """
@@ -57,6 +57,39 @@ class Position:
                +f"unitprice={self._getunitprice()},"
                +f"value={self._getvalue()})")
     
+    # Methods for output
+    def htmlcells(self,indent:int = 0) -> str:
+        """
+        Gibt fünf Zellen im HTML-Format aus.
+        Jede Zelle hat eine eigene Zeile, außer indent ist negativ.
+        Die Reihenfolge lautet:
+        Name, Anzahl Einheiten, Kosten pro Einheit, Einnahmen, Ausgaben
+        """
+        out = []
+        
+        if indent<0:
+            joiner=""
+        else:
+            joiner = "\n" + "\t"*indent
+        
+        out.append( cell( escape(self._name) ) )
+        if self._unitprice:
+            out.append( cell(self._getunitcount()) )
+            out.append( cell( euro(self._getunitprice()) ) )
+        else:
+            out.append( cell() )
+            out.append( cell() )
+        if self._value > 0:
+            out.append( cell( euro(self._getincome()) ) )
+        else:
+            out.append( cell() )
+        if self._value < 0:
+            out.append( cell( euro(self._getcost()) ) )
+        else:
+            out.append( cell() )
+        
+        return joiner.join(out)
+
     # Variable getters and setters
     def _setname(self,value:str = ""):
         self._name = str(value)
@@ -97,6 +130,7 @@ class Position:
             return self._value*-1
         return 0.0
     
+    # Properties
     name = property(_getname,_setname,_setname,
         "Der Name der Position.")
     unitcount = property(_getunitcount,_setunitcount,_setunitcount,
@@ -109,38 +143,6 @@ class Position:
         "Die Einnahmen der Position; gibt bei Ausgaben 0 aus.")
     cost = property(_getcost,_setminusvalue,_setminusvalue,
         "Die Kosten der Position; gibt bei Einnahmen 0 aus.")
-    
-    def htmlcells(self,indent:int = 0) -> str:
-        """
-        Gibt fünf Zellen im HTML-Format aus.
-        Jede Zelle hat eine eigene Zeile, außer indent ist negativ.
-        Die Reihenfolge lautet:
-        Name, Anzahl Einheiten, Kosten pro Einheit, Einnahmen, Ausgaben
-        """
-        out = []
-        
-        if indent<0:
-            joiner=""
-        else:
-            joiner = "\n" + "\t"*indent
-        
-        out.append( cell( escape(self._name) ) )
-        if self._unitprice:
-            out.append( cell(self._getunitcount()) )
-            out.append( cell( euro(self._getunitprice()) ) )
-        else:
-            out.append( cell() )
-            out.append( cell() )
-        if self._value > 0:
-            out.append( cell( euro(self._getincome()) ) )
-        else:
-            out.append( cell() )
-        if self._value < 0:
-            out.append( cell( euro(self._getcost()) ) )
-        else:
-            out.append( cell() )
-        
-        return joiner.join(out)
 
 
 class Abrechnung:
@@ -157,7 +159,7 @@ class Abrechnung:
     _POSITIONCOUNT = 7
     _SECTIONS = {"user": 1, "positions": 3, "total": 4, "payment": 5}
     
-    # General methods
+    # Dunder methods
     def __init__(self):
         """
         Initialisiert ein Objekt der Klasse Abrechnung.
@@ -192,6 +194,7 @@ class Abrechnung:
         """
         return self._positions[key]
     
+    # Functionality methods
     @classmethod
     def _fetch_html(cls) -> tuple:
         """
