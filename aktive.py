@@ -221,26 +221,3 @@ class Abrechnung:
                            "Der Name der Aktion oder des Projekts.")
     projectdate = property(_getprojectdate,_setprojectdate,None,
                            "Das Datum der Aktion oder des Projekts.")
-
-"""
-print (cell())
-print (cell("TEXT"))
-print (cell(classes="left"))
-print (cell(222,["cool","beans"]))
-
-testpos = Position()
-testpos.name = "<b>Fishies</b>"
-testpos.income = 12
-
-print (testpos.name)
-print (testpos.value)
-print (testpos.income)
-print (testpos.cost)
-print (testpos.htmlcells(indent=2))
-"""
-
-testobj = Abrechnung()
-testobj.username = "Patrick Lübcke"
-print (testobj.username)
-testobj.projectdate = "2015-01-15"
-print (testobj.projectdate)
