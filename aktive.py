@@ -157,7 +157,7 @@ class Abrechnung:
     _MODES = {"iban": (1,2,3), "sepa": (2,3)}
     _PLACEHOLDERS = ("<!--SPLIT-->\n","<!--PLACEHOLDER-->")
     _POSITIONCOUNT = 7
-    _SECTIONS = {"user": 1, "positions": 3, "total": 4, "payment": 5}
+    _SECTIONS = {"USERDATA": 1, "POSITIONS": 3, "TOTAL": 4, "PAYMENT": 5}
     
     # Dunder methods
     def __init__(self):
@@ -194,7 +194,7 @@ class Abrechnung:
         """
         return self._positions[key]
     
-    # Functionality methods
+    # Methods for template handling
     @classmethod
     def _fetch_html(cls) -> tuple:
         """
@@ -206,13 +206,28 @@ class Abrechnung:
         sections = f.read().split(cls._PLACEHOLDERS[0])
         out = []
         for i in sections:
-            fragments = i.split(cls._PLACEHOLDERS[1])
-            if len(fragments) == 1:
-                out.append(fragments[0])
-            else:
-                out.append(tuple(fragments))
+            out.append (i)
         return tuple(out)
     
+    def _fill_user(self,text:str):
+        return text
+    
+    def _fill_positions(self,text:str):
+        return text
+
+    def _fill_total(self,text:str):
+        return text
+    
+    def _fill_payment(self,text:str):
+        return text
+
+    # Methods for output
+    def html_compose(self):
+        out = ""
+        for section in self._template:
+            out += section
+        return out
+
     # Variable getters and setters
     def _setusername(self,value:str = ""):
         self._user["name"] = str(value)
