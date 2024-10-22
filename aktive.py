@@ -157,7 +157,6 @@ class Abrechnung:
     _MODES = {"iban": (1,2,3), "sepa": (2,3)}
     _PLACEHOLDERS = ("<!--SPLIT-->\n","<!--PLACEHOLDER-->")
     _POSITIONCOUNT = 7
-    _SECTIONS = {"USERDATA": 1, "POSITIONS": 3, "TOTAL": 4, "PAYMENT": 5}
     
     # Dunder methods
     def __init__(self):
@@ -222,10 +221,22 @@ class Abrechnung:
         return text
 
     # Methods for output
+    _SECTIONS = {"USERDATA": _fill_user, "POSITIONS": _fill_positions,
+                 "TOTAL": _fill_total, "PAYMENT": _fill_payment}
+
     def html_compose(self):
         out = ""
         for section in self._template:
-            out += section
+            # Does this section start with a keyword?
+            for key in self._SECTIONS.keys():
+                if section.startswith("<!--"+key+"-->\n"):
+                    # Keyword found; use corresponding method
+                    out += self._SECTIONS[key](
+                        self,text=section.removeprefix("<!--"+key+"-->\n"))
+                    break
+            else:
+                # No keyword; use string as is
+                out += section
         return out
 
     # Variable getters and setters
