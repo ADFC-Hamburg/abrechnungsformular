@@ -163,6 +163,24 @@ class Abrechnung:
                          "ibanknown": False, "iban": "", "name": ""}
         self._template = self._fetch_html()
     
+    def __str__(self):
+        """
+        Gibt den Abrechnungsbetrag zurück.
+        """
+        return euro(self._gettotal())
+
+    def __len__(self):
+        """
+        Gibt die Anzahl der Positionen zurück.
+        """
+        return len(self._positions)
+    
+    def __getitem__(self,key:int):
+        """
+        Gibt eine einzelne Position zurück.
+        """
+        return self._positions[key]
+    
     @classmethod
     def _fetch_html(cls) -> tuple:
         """
