@@ -31,6 +31,7 @@ class Position:
     Beschreibt eine Position in einer Aktivenabrechnung.
     """
     
+    # General methods
     def __init__(self,name:str = "",unitcount:int = 1,
                  unitprice=0.0,value=0.0):
         """
@@ -47,6 +48,16 @@ class Position:
         self._setunitprice(unitprice)
         self._setvalue(value)
     
+    def __str__(self):
+        return euro(self._getvalue())
+    
+    def __repr__(self):
+        return (f"Position(name='{self._getname()}',"
+               +f"unitcount={self._getunitcount()},"
+               +f"unitprice={self._getunitprice()},"
+               +f"value={self._getvalue()})")
+    
+    # Variable getters and setters
     def _setname(self,value:str = ""):
         self._name = str(value)
     
