@@ -138,9 +138,10 @@ class Abrechnung:
     """
     
     # Class constants
-    _CHECKBOXES = ("&#9744;","&#9746;")
-    _PLACEHOLDERS = ("<!--SPLIT-->\n","<!--PLACEHOLDER-->")
+    _CHECKBOXES = {False:"&#9744;",True:"&#9746;"}
     _FILE = "aktive_template.html"
+    _PLACEHOLDERS = ("<!--SPLIT-->\n","<!--PLACEHOLDER-->")
+    _POSITIONCOUNT = 7
     _SECTIONS = {"user": 1, "positions": 3, "total": 4, "payment": 5}
     
     def __init__(self):
@@ -149,7 +150,7 @@ class Abrechnung:
         """
         
         self._positions = []
-        for i in range(7):
+        for i in range(self._POSITIONCOUNT):
             self._positions.append(Position())
         
         self._user = {"name": "", "group": ""}
