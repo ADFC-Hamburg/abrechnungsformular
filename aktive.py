@@ -2,28 +2,8 @@ from datetime import date
 from html import escape
 
 from babel.dates import format_date
-from babel.numbers import format_currency
 
-def cell(value = "", classes="") -> str:
-    """
-    Gibt eine Tabellenzelle im HTML-Format zurück.
-    """
-    out = "<td"
-    if type(classes) in (list,tuple):
-        out += " class=\""+" ".join(classes)+"\""
-    elif classes:
-        out += f" class=\"{str(classes)}\""
-    if value:
-        out += f">{str(value)}</td>"
-    else:
-        out += "/>"
-    return out
-
-def euro(value = 0) -> str:
-    """
-    Gibt eine Zahl als Eurobetrag zurück.
-    """
-    return format_currency(value,"EUR",locale="de_DE")
+import tools
 
 
 class Position:
@@ -49,7 +29,7 @@ class Position:
         self._setvalue(value)
     
     def __str__(self):
-        return euro(self._getvalue())
+        return tools.euro(self._getvalue())
     
     def __repr__(self):
         return (f"Position(name='{self._getname()}',"
@@ -72,21 +52,21 @@ class Position:
         else:
             joiner = "\n" + "\t"*indent
         
-        out.append( cell( escape(self._name) ) )
+        out.append( tools.cell( escape(self._name) ) )
         if self._unitprice:
-            out.append( cell(self._getunitcount()) )
-            out.append( cell( euro(self._getunitprice()) ) )
+            out.append( tools.cell(self._getunitcount()) )
+            out.append( tools.cell( tools.euro(self._getunitprice()) ) )
         else:
-            out.append( cell() )
-            out.append( cell() )
+            out.append( tools.cell() )
+            out.append( tools.cell() )
         if self._value > 0:
-            out.append( cell( euro(self._getincome()) ) )
+            out.append( tools.cell( tools.euro(self._getincome()) ) )
         else:
-            out.append( cell() )
+            out.append( tools.cell() )
         if self._value < 0:
-            out.append( cell( euro(self._getcost()) ) )
+            out.append( tools.cell( tools.euro(self._getcost()) ) )
         else:
-            out.append( cell() )
+            out.append( tools.cell() )
         
         return joiner.join(out)
 
@@ -179,7 +159,7 @@ class Abrechnung:
         """
         Gibt den Abrechnungsbetrag zurück.
         """
-        return euro(self._gettotal())
+        return tools.euro(self._gettotal())
 
     def __len__(self):
         """
