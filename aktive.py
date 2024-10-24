@@ -265,15 +265,13 @@ class Abrechnung:
         """
         if type(value) == date:
             self._project["date"] = value
-        elif type(value) == str:
+        else:
             try:
-                temp = value.split("-")
+                temp = str(value).split("-")
                 self._project["date"] = date(
                     int(temp[0]), int(temp[1]), int(temp[2]))
             except:
                 self._project["date"] = None
-        else:
-            self._project["date"] = None
     
     def _getprojectdate(self) -> date|None:
         return self._project["date"]
@@ -300,7 +298,10 @@ class Abrechnung:
         return out
     
     def _gettotal(self) -> float:
-        return self._getincome()-self._getcost()
+        out = 0.0
+        for i in range(self._POSITIONCOUNT):
+            out += self._positions[i].value
+        return out
     
     def _setaccountname(self,name:str = ""):
         self._payment["name"] = str(name)
