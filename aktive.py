@@ -367,11 +367,16 @@ class HTMLPrinter:
             out.append (i)
         return tuple(out)
     
+    _USER_FIELDS = {0: lambda obj: obj.username, 1: lambda obj: obj.usergroup,
+                          2: lambda obj: obj.projectname, 3: lambda obj: obj.projectdate}
+
     # Methods for template sections
     def _fill_user(self,text:str,input:Abrechnung|None = None):
         segments = text.split(self._PLACEHOLDER)
         if type(input) == Abrechnung:
-            pass
+            for index in range(len(segments)):
+                if index in self._USER_FIELDS.keys():
+                    segments[index] += str(self._USER_FIELDS[index](input))
         return "".join(segments)
     
     def _fill_positions(self,text:str,input:Abrechnung|None = None):
