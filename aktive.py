@@ -369,11 +369,17 @@ class Abrechnung:
     iban = property(_getaccountiban,_setaccountiban,_setaccountiban,
                     "Die IBAN (ohne einleitendes DE) des Bankkontos.")
     accountiban = iban
-    ibanmode = property(_getibanmode,_setibanmode,_setibanmode,
-                         "Wie die Zahlung abgehandelt wird.\n"
-                        +"Erlaubte Werte: "+str(_MODES["iban"]))
-    sepamode = property(_getsepamode,_setsepamode,_setsepamode,
-                          "Ob ein SEPA-Mandatsformular angefordert wird.\n"
-                        +"Erlaubte Werte: "+str(_MODES["sepa"]))
+    ibanmode = property(_getibanmode,_setibanmode,_setibanmode,"""
+                        Wie die Zahlung abgehandelt wird:
+                        1 – Ausgaben werden auf Konto überwiesen.
+                        2 – Einnahmen werden von Konto abgebucht.
+                        3 – Einnahmen werden von Benutzer überwiesen.
+                        """)
+    sepamode = property(_getsepamode,_setsepamode,_setsepamode,"""
+                        Ob ein SEPA-Mandatsformular angefordert wird.
+                        1 – Nein, Mandat ist schon erteilt.
+                        2 – Ja, Mandat liegt noch nicht vor.
+                        3 – Ja, Mandat ist veraltet.
+                        """)
     ibanknown = property(_getibanknown,_setibanknown,_setibanknown,
-                         "Ob die IBAN dem ADFC schon vorliegt (True/False).")
+                         "Ob die IBAN dem ADFC schon vorliegt.")
