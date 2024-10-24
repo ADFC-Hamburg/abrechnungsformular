@@ -37,6 +37,11 @@ class Position:
                +f"unitprice={self._getunitprice()},"
                +f"value={self._getvalue()})")
     
+    def __bool__(self):
+        return bool(self._name != ""
+                    or self._unitprice != 0.0
+                    or self._value != 0.0)
+    
     # Methods for output
     def htmlcells(self,indent:int = 0) -> str:
         """
@@ -68,7 +73,7 @@ class Position:
         else:
             out.append( tools.cell() )
         
-        return joiner.join(out)
+        return "\t"*indent+joiner.join(out)
 
     # Variable getters and setters
     def _setname(self,value:str = ""):
