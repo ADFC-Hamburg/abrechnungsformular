@@ -335,6 +335,7 @@ class HTMLPrinter:
     _CHECKBOXES = {False:"&#9744;",True:"&#9746;"}
     _FILE = "aktive_template.html"
     _PLACEHOLDER = "<!--PLACEHOLDER-->"
+    _POSITIONCOUNT = 7
     _SPLIT = "<!--SPLIT-->\n"
     
     # Dunder methods
@@ -369,23 +370,55 @@ class HTMLPrinter:
     # Methods for template sections
     def _fill_user(self,text:str,input:Abrechnung|None = None):
         segments = text.split(self._PLACEHOLDER)
-        if not type(input) == Abrechnung:
-            return "".join(segments)
+        if type(input) == Abrechnung:
+            pass
+        return "".join(segments)
     
     def _fill_positions(self,text:str,input:Abrechnung|None = None):
-        segments = text.split(self._PLACEHOLDER)
-        if not type(input) == Abrechnung:
-            return "".join(segments)
-    
+        """
+        Gibt HTML-Tabellenreihen mit 8 Spalten aus und fügt
+        gegebenenfalls Positionsdaten mit ein.
+        Spalte 1: Index (1 bis 7)
+        Spalten 2-6: Siehe Positions.htmlcells()
+        Spalten 7,8: leer
+        """
+        # text should be empty and will be ignored
+        TAB = "\t"
+        NL = "\n"
+        output = []
+
+        for index in range(self._POSITIONCOUNT):
+            # One table row for each potential position
+            line=""
+            line += TAB*4+"<tr>"+NL
+            line += TAB*5+tools.cell(str(index+1))+NL
+
+            if (type(input) == Abrechnung and index < len(input.positions)):
+
+                # Position exists, use htmlcells
+                line += input.positions[index].htmlcells(indent=5)+NL
+                line += TAB*5+tools.cell()*2+NL
+            
+            else:
+                # No position, empty cells
+                line += TAB*5+tools.cell()*7+NL
+            
+            line += TAB*4+"</tr>"+NL
+            output.append(line)
+        
+        return "".join(output)
+
     def _fill_total(self,text:str,input:Abrechnung|None = None):
         segments = text.split(self._PLACEHOLDER)
-        if not type(input) == Abrechnung:
-            return "".join(segments)
+        if type(input) == Abrechnung:
+            pass
+        return "".join(segments)
     
     def _fill_payment(self,text:str,input:Abrechnung|None = None):
         segments = text.split(self._PLACEHOLDER)
-        if not type(input) == Abrechnung:
-            return "".join(segments)
+        if type(input) == Abrechnung:
+            pass
+        return "".join(segments)
     
     # Section keywords and corresponding methods
     _SECTIONS = {"USERDATA": _fill_user, "POSITIONS": _fill_positions,
