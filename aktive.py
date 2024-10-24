@@ -322,13 +322,13 @@ class HTMLPrinter:
     und dann aus dieser und Objekten der Klasse Abrechnung
     fertig ausgefüllte Abrechnungsformulare im HTML-Format erstellt.
     """
-
+    
     # Class constants
     _CHECKBOXES = {False:"&#9744;",True:"&#9746;"}
     _FILE = "aktive_template.html"
-    _PLACEHOLDERS = "<!--PLACEHOLDER-->"
+    _PLACEHOLDER = "<!--PLACEHOLDER-->"
     _SPLIT = "<!--SPLIT-->\n"
-
+    
     # Dunder methods
     def __init__(self):
         """
@@ -359,34 +359,52 @@ class HTMLPrinter:
         return tuple(out)
     
     # Methods for template sections
-    def _fill_user(self,text:str):
-        return text
+    def _fill_user(self,text:str,input:Abrechnung|None = None):
+        segments = text.split(self._PLACEHOLDER)
+        if not type(input) == Abrechnung:
+            return "".join(segments)
     
-    def _fill_positions(self,text:str):
-        return text
-
-    def _fill_total(self,text:str):
-        return text
+    def _fill_positions(self,text:str,input:Abrechnung|None = None):
+        segments = text.split(self._PLACEHOLDER)
+        if not type(input) == Abrechnung:
+            return "".join(segments)
     
-    def _fill_payment(self,text:str):
-        return text
-
+    def _fill_total(self,text:str,input:Abrechnung|None = None):
+        segments = text.split(self._PLACEHOLDER)
+        if not type(input) == Abrechnung:
+            return "".join(segments)
+    
+    def _fill_payment(self,text:str,input:Abrechnung|None = None):
+        segments = text.split(self._PLACEHOLDER)
+        if not type(input) == Abrechnung:
+            return "".join(segments)
+    
     # Section keywords and corresponding methods
     _SECTIONS = {"USERDATA": _fill_user, "POSITIONS": _fill_positions,
                  "TOTAL": _fill_total, "PAYMENT": _fill_payment}
-
+    
     # Callable methods
-    def html_compose(self):
+    def html_compose(self,input:Abrechnung|None = None):
+        """
+        Füllt die HTML-Vorlage mit Angaben aus einer Abrechnung aus.
+        
+        Argumente:
+        input: Ein Objekt der Klasse Abrechnung (optional)
+        """
+        
         out = ""
+        
         for section in self._template:
             # Does this section start with a keyword?
             for key in self._SECTIONS.keys():
                 if section.startswith("<!--"+key+"-->\n"):
                     # Keyword found; use corresponding method
-                    out += self._SECTIONS[key](
-                        self,text=section.removeprefix("<!--"+key+"-->\n"))
+                    out += self._SECTIONS[key](self,
+                        text=section.removeprefix("<!--"+key+"-->\n"),
+                        input=input)
                     break
             else:
                 # No keyword; use string as is
                 out += section
+        
         return out
