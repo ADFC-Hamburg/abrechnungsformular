@@ -128,6 +128,7 @@ class Position:
 class Abrechnung:
     """
     Beschreibt eine Aktivenabrechnung für den ADFC Hamburg.
+    Beinhaltet 7 Objekte der Klasse Position im Tupel positions.
     """
     
     # Class constants
@@ -141,9 +142,7 @@ class Abrechnung:
         Initialisiert ein Objekt der Klasse Abrechnung.
         """
         
-        self._positions = []
-        for i in range(self._POSITIONCOUNT):
-            self._positions.append(Position())
+        self.positions = self._create_positions(self._POSITIONCOUNT)
         
         self._user = {"name": "", "group": ""}
         self._project = {"name": "", "date": None}
@@ -161,14 +160,18 @@ class Abrechnung:
         """
         Gibt die Anzahl der Positionen zurück.
         """
-        return len(self._positions)
+        return len(self.positions)
     
-    def __getitem__(self,key:int):
+    # Part of initialization
+    def _create_positions(self,amount:int):
         """
-        Gibt eine einzelne Position zurück.
+        Gibt einen Tupel aus neuen Positionen zurück.
         """
-        return self._positions[key]
-    
+        out = []
+        for i in range(amount):
+            out.append(Position())
+        return tuple(out)
+
     # Variable getters and setters
     def _setusername(self,value:str = ""):
         self._user["name"] = str(value)
@@ -217,20 +220,20 @@ class Abrechnung:
     def _getincome(self) -> float:
         out = 0.0
         for i in range(self._POSITIONCOUNT):
-            out += self._positions[i].income
+            out += self.positions[i].income
         out += self._getdonations()
         return out
 
     def _getcost(self) -> float:
         out = 0.0
         for i in range(self._POSITIONCOUNT):
-            out += self._positions[i].cost
+            out += self.positions[i].cost
         return out
     
     def _gettotal(self) -> float:
         out = 0.0
         for i in range(self._POSITIONCOUNT):
-            out += self._positions[i].value
+            out += self.positions[i].value
         return out
     
     def _setaccountname(self,name:str = ""):
