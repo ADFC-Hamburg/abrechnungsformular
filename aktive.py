@@ -131,11 +131,8 @@ class Abrechnung:
     """
     
     # Class constants
-    _CHECKBOXES = {False:"&#9744;",True:"&#9746;"}
-    _FILE = "aktive_template.html"
     _IBANSPACES = range(18,0,-4)
     _MODES = {"iban": (1,2,3), "sepa": (2,3)}
-    _PLACEHOLDERS = ("<!--SPLIT-->\n","<!--PLACEHOLDER-->")
     _POSITIONCOUNT = 7
     
     # Dunder methods
@@ -153,7 +150,6 @@ class Abrechnung:
         self._donations = 0.0
         self._payment = {"ibanmode": None, "sepamode": None,
                          "ibanknown": False, "iban": "", "name": ""}
-        self._template = self._fetch_html()
     
     def __str__(self):
         """
@@ -173,52 +169,6 @@ class Abrechnung:
         """
         return self._positions[key]
     
-    # Methods for template handling
-    @classmethod
-    def _fetch_html(cls) -> tuple:
-        """
-        Öffnet das HTML-Template, teilt den Inhalt in Sektionen und
-        gegebenenfalls Subsektionen auf und gibt das Ergebnis als
-        Tupel zurück.
-        """
-        with open(cls._FILE) as f:
-            sections = f.read().split(cls._PLACEHOLDERS[0])
-        out = []
-        for i in sections:
-            out.append (i)
-        return tuple(out)
-    
-    def _fill_user(self,text:str):
-        return text
-    
-    def _fill_positions(self,text:str):
-        return text
-
-    def _fill_total(self,text:str):
-        return text
-    
-    def _fill_payment(self,text:str):
-        return text
-
-    # Methods for output
-    _SECTIONS = {"USERDATA": _fill_user, "POSITIONS": _fill_positions,
-                 "TOTAL": _fill_total, "PAYMENT": _fill_payment}
-
-    def html_compose(self):
-        out = ""
-        for section in self._template:
-            # Does this section start with a keyword?
-            for key in self._SECTIONS.keys():
-                if section.startswith("<!--"+key+"-->\n"):
-                    # Keyword found; use corresponding method
-                    out += self._SECTIONS[key](
-                        self,text=section.removeprefix("<!--"+key+"-->\n"))
-                    break
-            else:
-                # No keyword; use string as is
-                out += section
-        return out
-
     # Variable getters and setters
     def _setusername(self,value:str = ""):
         self._user["name"] = str(value)
@@ -364,3 +314,79 @@ class Abrechnung:
                         """)
     ibanknown = property(_getibanknown,_setibanknown,_setibanknown,
                          "Ob die IBAN dem ADFC schon vorliegt.")
+
+
+class HTMLPrinter:
+    """
+    Ein Objekt, welches eine HTML-Vorlage einliest
+    und dann aus dieser und Objekten der Klasse Abrechnung
+    fertig ausgefüllte Abrechnungsformulare im HTML-Format erstellt.
+    """
+
+    # Class constants
+    _CHECKBOXES = {False:"&#9744;",True:"&#9746;"}
+    _FILE = "aktive_template.html"
+    _PLACEHOLDERS = "<!--PLACEHOLDER-->"
+    _SPLIT = "<!--SPLIT-->\n"
+
+    # Dunder methods
+    def __init__(self):
+        """
+        Initialisiert ein Objekt der Klasse HTMLPrinter.
+        Im Rahmen dessen wird eine HTML-Datei als Template geladen.
+        """
+        self._template = self._fetch_html()
+    
+    def __str__(self):
+        return self.html_compose()
+    
+    def __repr__(self):
+        return __class__.__name__+"()"
+    
+    # Template loading
+    @classmethod
+    def _fetch_html(cls) -> tuple:
+        """
+        Öffnet das HTML-Template, teilt den Inhalt in Sektionen und
+        gegebenenfalls Subsektionen auf und gibt das Ergebnis als
+        Tupel zurück.
+        """
+        with open(cls._FILE) as f:
+            sections = f.read().split(cls._SPLIT)
+        out = []
+        for i in sections:
+            out.append (i)
+        return tuple(out)
+    
+    # Methods for template sections
+    def _fill_user(self,text:str):
+        return text
+    
+    def _fill_positions(self,text:str):
+        return text
+
+    def _fill_total(self,text:str):
+        return text
+    
+    def _fill_payment(self,text:str):
+        return text
+
+    # Section keywords and corresponding methods
+    _SECTIONS = {"USERDATA": _fill_user, "POSITIONS": _fill_positions,
+                 "TOTAL": _fill_total, "PAYMENT": _fill_payment}
+
+    # Callable methods
+    def html_compose(self):
+        out = ""
+        for section in self._template:
+            # Does this section start with a keyword?
+            for key in self._SECTIONS.keys():
+                if section.startswith("<!--"+key+"-->\n"):
+                    # Keyword found; use corresponding method
+                    out += self._SECTIONS[key](
+                        self,text=section.removeprefix("<!--"+key+"-->\n"))
+                    break
+            else:
+                # No keyword; use string as is
+                out += section
+        return out
