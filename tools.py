@@ -9,10 +9,7 @@ def cell(value = "", classes="") -> str:
         out += " class=\""+" ".join(classes)+"\""
     elif classes:
         out += f" class=\"{str(classes)}\""
-    if value:
-        out += f">{str(value)}</td>"
-    else:
-        out += "/>"
+    out += f">{str(value)}</td>"
     return out
 
 def euro(value = 0) -> str:
