@@ -201,8 +201,8 @@ class Abrechnung:
         gegebenenfalls Subsektionen auf und gibt das Ergebnis als
         Tupel zurück.
         """
-        f = open(cls._FILE,"r")
-        sections = f.read().split(cls._PLACEHOLDERS[0])
+        with open(cls._FILE) as f:
+            sections = f.read().split(cls._PLACEHOLDERS[0])
         out = []
         for i in sections:
             out.append (i)
