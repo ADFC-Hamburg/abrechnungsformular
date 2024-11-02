@@ -418,15 +418,15 @@ class HTMLPrinter:
             out.append (i)
         return tuple(out)
     
-    _USER_FIELDS = {0: lambda obj: obj.username, 1: lambda obj: obj.usergroup,
-                          2: lambda obj: obj.projectname, 3: lambda obj: obj.projectdate}
+    _USER_FIELDS = (lambda obj: obj.username, lambda obj: obj.usergroup,
+                    lambda obj: obj.projectname, lambda obj: obj.projectdate)
 
     # Methods for template sections
     def _fill_user(self,text:str,input:Abrechnung|None = None):
         segments = text.split(self._PLACEHOLDER)
         if type(input) == Abrechnung:
             for index in range(len(segments)):
-                if index in self._USER_FIELDS.keys():
+                if index < len(self._USER_FIELDS):
                     segments[index] += str(self._USER_FIELDS[index](input))
         return "".join(segments)
     
@@ -477,8 +477,8 @@ class HTMLPrinter:
         return "".join(segments)
     
     # Section keywords and corresponding methods
-    _SECTIONS = {"USERDATA": _fill_user, "POSITIONS": _fill_positions,
-                 "TOTAL": _fill_total, "PAYMENT": _fill_payment}
+    _SECTIONS = (("USERDATA", _fill_user), ("POSITIONS", _fill_positions),
+                 ("TOTAL", _fill_total), ("PAYMENT", _fill_payment))
     
     # Callable methods
     def html_compose(self,input:Abrechnung|None = None):
@@ -493,11 +493,11 @@ class HTMLPrinter:
         
         for section in self._template:
             # Does this section start with a keyword?
-            for key in self._SECTIONS.keys():
-                if section.startswith("<!--"+key+"-->\n"):
+            for key in self._SECTIONS:
+                if section.startswith("<!--"+key[0]+"-->\n"):
                     # Keyword found; use corresponding method
-                    out += self._SECTIONS[key](self,
-                        text=section.removeprefix("<!--"+key+"-->\n"),
+                    out += key[1](self,
+                        text=section.removeprefix("<!--"+key[0]+"-->\n"),
                         input=input)
                     break
             else:
