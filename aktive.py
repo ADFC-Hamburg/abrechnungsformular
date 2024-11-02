@@ -408,9 +408,8 @@ class HTMLPrinter:
     @classmethod
     def _fetch_html(cls) -> tuple:
         """
-        Öffnet das HTML-Template, teilt den Inhalt in Sektionen und
-        gegebenenfalls Subsektionen auf und gibt das Ergebnis als
-        Tupel zurück.
+        Öffnet das HTML-Template, teilt den Inhalt in Sektionen auf
+        und gibt das Ergebnis als Tupel zurück.
         """
         with open(cls._FILE) as f:
             sections = f.read().split(cls._SPLIT)
