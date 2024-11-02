@@ -207,25 +207,33 @@ class Abrechnung:
 
     # Variable getters and setters
     def setusername(self,value:str = ""):
+        """Legt den Namen des Aktiven fest."""
         self._user["name"] = str(value)
     
     def getusername(self) -> str:
+        """Gibt den Namen des Aktiven zurück."""
         return self._user["name"]
     
     def setusergroup(self,value:str = ""):
+        """Legt die Gruppe des Aktiven fest."""
         self._user["group"] = str(value)
     
     def getusergroup(self) -> str:
+        """Gibt die Gruppe des Aktiven zurück."""
         return self._user["group"]
     
     def setprojectname(self,value:str = ""):
+        """Legt den Namen des Projekts fest."""
         self._project["name"] = str(value)
     
     def getprojectname(self) -> str:
+        """Gibt den Namen des Projekts zurück."""
         return self._project["name"]
     
     def setprojectdate(self,value=None):
         """
+        Legt das Datum der Abrechnung fest.
+
         Akzepiert Datums-Objekte oder
         Strings im Format (year-month-day)
         """
@@ -240,17 +248,21 @@ class Abrechnung:
                 self._project["date"] = None
     
     def getprojectdate(self) -> date|None:
+        """Gibt das Datum der Abrechnung zurück."""
         return self._project["date"]
     
     def setdonations(self,value=0.0):
+        """Legt den Betrag eingenommener Spenden fest."""
         self._donations = float(value)
         if self._donations < 0:
             self._donations = 0.0
     
     def getdonations(self) -> float:
+        """Gibt den Betrag eingenommener Spenden zurück."""
         return self._donations
     
     def getincome(self) -> float:
+        """Gibt den Gesamtbetrag der Einnahmen zurück."""
         out = 0.0
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].income
@@ -258,12 +270,14 @@ class Abrechnung:
         return out
 
     def getcost(self) -> float:
+        """Gibt den Gesamtbetrag der Ausgaben zurück."""
         out = 0.0
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].cost
         return out
     
     def gettotal(self) -> float:
+        """Gibt den Betrag der Einnahmen minus Ausgaben zurück."""
         out = 0.0
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].value
@@ -271,19 +285,26 @@ class Abrechnung:
         return out
     
     def setaccountname(self,name:str = ""):
+        """Legt den Namen des Kontoinhabers fest."""
         self._payment["name"] = str(name)
     
     def getaccountname(self) -> str:
+        """Gibt den Namen des Kontoinhabers zurück."""
         return self._payment["name"]
     
     def setaccountiban(self,value=""):
-        value = value.replace(" ","")
+        """
+        Legt die IBAN des Bankkontos fest.
+        Diese muss aus exakt 20 Ziffern bestehen (kein Ländercode).
+        """
+        value = str(value).replace(" ","")
         if len(value) == 20 and value.isdigit():
             self._payment["iban"] = str(value)
         else:
             self._payment["iban"] = ""
     
     def getaccountiban(self,spaces:bool = True) -> str:
+        """Gibt die IBAN des Bankkontos zurück."""
         out = self._payment["iban"]
         if spaces and len(out) > self._IBANSPACES[0]:
             # add spaces
@@ -339,12 +360,14 @@ class Abrechnung:
     accountiban = iban
     ibanmode = property(getibanmode,setibanmode,None,"""
                         Wie die Zahlung abgehandelt wird:
+
                         1 – Ausgaben werden auf Konto überwiesen.
                         2 – Einnahmen werden von Konto abgebucht.
                         3 – Einnahmen werden von Benutzer überwiesen.
                         """)
     sepamode = property(getsepamode,setsepamode,None,"""
                         Ob ein SEPA-Mandatsformular angefordert wird.
+
                         1 – Nein, Mandat ist schon erteilt.
                         2 – Ja, Mandat liegt noch nicht vor.
                         3 – Ja, Mandat ist veraltet.
