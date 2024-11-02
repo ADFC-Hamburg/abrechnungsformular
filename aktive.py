@@ -23,19 +23,19 @@ class Position:
         unitprice: Preis pro Einheit (nur, wenn Anzahl relevant ist)
         value: Einnahmen oder (wenn negativ) Ausgaben
         """
-        self._setname(name)
-        self._setunitcount(unitcount)
-        self._setunitprice(unitprice)
-        self._setvalue(value)
+        self.setname(name)
+        self.setunitcount(unitcount)
+        self.setunitprice(unitprice)
+        self.setvalue(value)
     
     def __str__(self):
-        return tools.euro(self._getvalue())
+        return tools.euro(self.getvalue())
     
     def __repr__(self):
-        return (f"Position(name='{self._getname()}',"
-               +f"unitcount={self._getunitcount()},"
-               +f"unitprice={self._getunitprice()},"
-               +f"value={self._getvalue()})")
+        return (f"Position(name='{self.getname()}',"
+               +f"unitcount={self.getunitcount()},"
+               +f"unitprice={self.getunitprice()},"
+               +f"value={self.getvalue()})")
     
     def __bool__(self):
         return bool(self._name != ""
@@ -59,74 +59,100 @@ class Position:
         
         out.append( tools.cell( escape(self._name) ) )
         if self._unitprice:
-            out.append( tools.cell(self._getunitcount()) )
-            out.append( tools.cell( tools.euro(self._getunitprice()) ) )
+            out.append( tools.cell(self.getunitcount()) )
+            out.append( tools.cell( tools.euro(self.getunitprice()) ) )
         else:
             out.append( tools.cell() )
             out.append( tools.cell() )
         if self._value > 0:
-            out.append( tools.cell( tools.euro(self._getincome()) ) )
+            out.append( tools.cell( tools.euro(self.getincome()) ) )
         else:
             out.append( tools.cell() )
         if self._value < 0:
-            out.append( tools.cell( tools.euro(self._getcost()) ) )
+            out.append( tools.cell( tools.euro(self.getcost()) ) )
         else:
             out.append( tools.cell() )
         
         return "\t"*indent+joiner.join(out)
 
     # Variable getters and setters
-    def _setname(self,value:str = ""):
+    def setname(self,value:str = ""):
+        """Legt den Namen der Position fest."""
         self._name = str(value)
     
-    def _getname(self) -> str:
+    def getname(self) -> str:
+        """Gibt den Namen der Position zurück."""
         return self._name
     
-    def _setunitcount(self,value:int = 1):
+    def setunitcount(self,value:int = 1):
+        """
+        Legt die Mengenzahl der Position fest.
+        Kann nicht kleiner als 1 sein; wird automatisch korrigiert.
+        """
         self._unitcount = int(value)
         if self._unitcount < 1:
             self._unitcount = 1
     
-    def _getunitcount(self) -> int:
+    def getunitcount(self) -> int:
+        """Gibt die Mengenzahl der Position zurück."""
         return self._unitcount
     
-    def _setunitprice(self,value=0.0):
+    def setunitprice(self,value=0.0):
+        """Legt den Preis pro Einheit der Position fest."""
         self._unitprice = float(value)
     
-    def _getunitprice(self) -> float:
+    def getunitprice(self) -> float:
+        """Gibt den Preis pro Einheit der Position zurück."""
         return self._unitprice
     
-    def _setvalue(self,value=0.0):
+    def setvalue(self,value=0.0):
+        """
+        Legt den Gesamtpreis der Position fest.
+        Einnahmen sind positiv, Ausgaben negativ.
+        """
         self._value = float(value)
     
-    def _getvalue(self) -> float:
+    def getvalue(self) -> float:
+        """Gibt den Gesamtpreis der Position zurück."""
         return self._value
     
-    def _setminusvalue(self,value=0.0):
+    def setminusvalue(self,value=0.0):
+        """
+        Legt den Gesamtpreis der Position fest.
+        Ausgaben sind positiv, Einnahmen negativ.
+        """
         self._value = float(value)*-1
     
-    def _getincome(self) -> float:
+    def getincome(self) -> float:
+        """
+        Gibt die Gesamteinnahmen der Position zurück.
+        Bei Ausgaben wird Null zurückgegeben.
+        """
         if self._value > 0:
             return self._value
         return 0.0
     
-    def _getcost(self) -> float:
+    def getcost(self) -> float:
+        """
+        Gibt die Gesamtausgaben der Position zurück.
+        Bei Einnahmen wird Null zurückgegeben.
+        """
         if self._value < 0:
             return self._value*-1
         return 0.0
     
     # Properties
-    name = property(_getname,_setname,_setname,
+    name = property(getname,setname,None,
         "Der Name der Position.")
-    unitcount = property(_getunitcount,_setunitcount,_setunitcount,
+    unitcount = property(getunitcount,setunitcount,None,
         "Anzahl der Einheiten in der Position.")
-    unitprice = property(_getunitprice,_setunitprice,_setunitprice,
+    unitprice = property(getunitprice,setunitprice,None,
         "Preis pro Einheit der Position.")
-    value = property(_getvalue,_setvalue,_setvalue,
+    value = property(getvalue,setvalue,None,
         "Der Gesamtwert der Position in Euro.")
-    income = property(_getincome,_setvalue,_setvalue,
+    income = property(getincome,setvalue,None,
         "Die Einnahmen der Position; gibt bei Ausgaben 0 aus.")
-    cost = property(_getcost,_setminusvalue,_setminusvalue,
+    cost = property(getcost,setminusvalue,None,
         "Die Kosten der Position; gibt bei Einnahmen 0 aus.")
 
 
