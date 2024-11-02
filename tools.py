@@ -1,8 +1,13 @@
+"""
+Sammelmodul für diverse Funktionen, die im Ausgabeprogramm
+der Aktivenabrechnung zum Einsatz kommen.
+"""
+
 from babel.numbers import format_currency
 
 def cell(value = "", classes="") -> str:
     """
-    Gibt eine Tabellenzelle im HTML-Format zurück.
+    Gibt eine Tabellenzelle im HTML-Format (td-Tag) zurück.
     """
     out = "<td"
     if type(classes) in (list,tuple):
