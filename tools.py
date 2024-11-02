@@ -17,8 +17,11 @@ def cell(value = "", classes="") -> str:
     out += f">{str(value)}</td>"
     return out
 
-def euro(value = 0) -> str:
+def euro(value = 0, empty = False) -> str:
     """
     Gibt eine Zahl als Eurobetrag zurück.
+    Ist empty True, wird statt 0,00 € ein leerer String zurückgegeben.
     """
+    if empty and value == 0:
+        return ""
     return format_currency(value,"EUR",locale="de_DE")
