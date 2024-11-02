@@ -60,7 +60,7 @@ class Position:
         out.append( tools.cell( escape(self._name) ) )
         if self._unitprice:
             out.append( tools.cell(self.getunitcount()) )
-            out.append( tools.cell( tools.euro(self.getunitprice()) ) )
+            out.append( tools.cell( tools.euro(abs(self.getunitprice())) ) )
         else:
             out.append( tools.cell() )
             out.append( tools.cell() )
