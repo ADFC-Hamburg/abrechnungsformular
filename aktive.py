@@ -58,20 +58,15 @@ class Position:
             joiner = "\n" + "\t"*indent
         
         out.append( tools.cell( escape(self._name) ) )
+        
         if self._unitprice:
             out.append( tools.cell(self.getunitcount()) )
-            out.append( tools.cell( tools.euro(abs(self.getunitprice())) ) )
         else:
             out.append( tools.cell() )
-            out.append( tools.cell() )
-        if self._value > 0:
-            out.append( tools.cell( tools.euro(self.getincome()) ) )
-        else:
-            out.append( tools.cell() )
-        if self._value < 0:
-            out.append( tools.cell( tools.euro(self.getcost()) ) )
-        else:
-            out.append( tools.cell() )
+        
+        out.append( tools.cell( tools.euro(abs(self.getunitprice()),True) ) )
+        out.append( tools.cell( tools.euro(self.getincome(),True) ) )
+        out.append( tools.cell( tools.euro(self.getcost(),True) ) )
         
         return "\t"*indent+joiner.join(out)
 
@@ -113,7 +108,13 @@ class Position:
         self._value = float(value)
     
     def getvalue(self) -> float:
-        """Gibt den Gesamtpreis der Position zurück."""
+        """
+        Gibt den Gesamtpreis der Position zurück.
+        Bei vorhandendem Stückpreis wird der
+        gespeicherte Gesamtpreis ignoriert.
+        """
+        if self._unitprice != 0:
+            return self._unitprice * self._unitcount
         return self._value
     
     def setminusvalue(self,value=0.0):
@@ -128,18 +129,14 @@ class Position:
         Gibt die Gesamteinnahmen der Position zurück.
         Bei Ausgaben wird Null zurückgegeben.
         """
-        if self._value > 0:
-            return self._value
-        return 0.0
+        return max(0.0, self.getvalue())
     
     def getcost(self) -> float:
         """
         Gibt die Gesamtausgaben der Position zurück.
         Bei Einnahmen wird Null zurückgegeben.
         """
-        if self._value < 0:
-            return self._value*-1
-        return 0.0
+        return max(0.0, self.getvalue()*-1)
     
     # Properties
     name = property(getname,setname,None,
