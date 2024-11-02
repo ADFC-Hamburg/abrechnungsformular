@@ -161,7 +161,8 @@ class Abrechnung:
     
     # Class constants
     _IBANSPACES = range(18,0,-4)
-    _MODES = {"iban": (1,2,3), "sepa": (2,3)}
+    _MODES_IBAN = (1,2,3)
+    _MODES_SEPA = (2,3)
     _POSITIONCOUNT = 7
     
     # Dunder methods
@@ -290,7 +291,7 @@ class Abrechnung:
         return out
 
     def _setibanmode(self,mode=None):
-        if mode and int(mode) in self._MODES["iban"]:
+        if mode and int(mode) in self._MODES_IBAN:
             self._payment["ibanmode"] = int(mode)
         else:
             self._payment["ibanmode"] = None
@@ -299,7 +300,7 @@ class Abrechnung:
         return self._payment["ibanmode"]
     
     def _setsepamode(self,mode=None):
-        if mode and int(mode) in self._MODES["sepa"]:
+        if mode and int(mode) in self._MODES_SEPA:
             self._payment["sepamode"] = int(mode)
         else:
             self._payment["sepamode"] = None
