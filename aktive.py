@@ -206,25 +206,25 @@ class Abrechnung:
         return tuple(out)
 
     # Variable getters and setters
-    def _setusername(self,value:str = ""):
+    def setusername(self,value:str = ""):
         self._user["name"] = str(value)
     
-    def _getusername(self) -> str:
+    def getusername(self) -> str:
         return self._user["name"]
     
-    def _setusergroup(self,value:str = ""):
+    def setusergroup(self,value:str = ""):
         self._user["group"] = str(value)
     
-    def _getusergroup(self) -> str:
+    def getusergroup(self) -> str:
         return self._user["group"]
     
-    def _setprojectname(self,value:str = ""):
+    def setprojectname(self,value:str = ""):
         self._project["name"] = str(value)
     
-    def _getprojectname(self) -> str:
+    def getprojectname(self) -> str:
         return self._project["name"]
     
-    def _setprojectdate(self,value=None):
+    def setprojectdate(self,value=None):
         """
         Akzepiert Datums-Objekte oder
         Strings im Format (year-month-day)
@@ -239,50 +239,50 @@ class Abrechnung:
             except:
                 self._project["date"] = None
     
-    def _getprojectdate(self) -> date|None:
+    def getprojectdate(self) -> date|None:
         return self._project["date"]
     
-    def _setdonations(self,value=0.0):
+    def setdonations(self,value=0.0):
         self._donations = float(value)
         if self._donations < 0:
             self._donations = 0.0
     
-    def _getdonations(self) -> float:
+    def getdonations(self) -> float:
         return self._donations
     
-    def _getincome(self) -> float:
+    def getincome(self) -> float:
         out = 0.0
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].income
         out += self._getdonations()
         return out
 
-    def _getcost(self) -> float:
+    def getcost(self) -> float:
         out = 0.0
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].cost
         return out
     
-    def _gettotal(self) -> float:
+    def gettotal(self) -> float:
         out = 0.0
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].value
         return out
     
-    def _setaccountname(self,name:str = ""):
+    def setaccountname(self,name:str = ""):
         self._payment["name"] = str(name)
     
-    def _getaccountname(self) -> str:
+    def getaccountname(self) -> str:
         return self._payment["name"]
     
-    def _setaccountiban(self,value=""):
+    def setaccountiban(self,value=""):
         value = value.replace(" ","")
         if len(value) == 20 and value.isdigit():
             self._payment["iban"] = str(value)
         else:
             self._payment["iban"] = ""
     
-    def _getaccountiban(self,spaces:bool = True) -> str:
+    def getaccountiban(self,spaces:bool = True) -> str:
         out = self._payment["iban"]
         if spaces and len(out) > self._IBANSPACES[0]:
             # add spaces
@@ -290,65 +290,65 @@ class Abrechnung:
                 out = out[:i] + " " + out[i:]
         return out
 
-    def _setibanmode(self,mode=None):
+    def setibanmode(self,mode=None):
         if mode and int(mode) in self._MODES_IBAN:
             self._payment["ibanmode"] = int(mode)
         else:
             self._payment["ibanmode"] = None
     
-    def _getibanmode(self) -> int|None:
+    def getibanmode(self) -> int|None:
         return self._payment["ibanmode"]
     
-    def _setsepamode(self,mode=None):
+    def setsepamode(self,mode=None):
         if mode and int(mode) in self._MODES_SEPA:
             self._payment["sepamode"] = int(mode)
         else:
             self._payment["sepamode"] = None
     
-    def _getsepamode(self) -> int|None:
+    def getsepamode(self) -> int|None:
         return self._payment["sepamode"]
 
-    def _setibanknown(self,mode=False):
+    def setibanknown(self,mode=False):
         self._payment["ibanknown"] = bool(mode)
     
-    def _getibanknown(self) -> bool:
+    def getibanknown(self) -> bool:
         return self._payment["ibanknown"]
 
     # Properties
-    username = property(_getusername,_setusername,_setusername,
+    username = property(getusername,setusername,None,
                         "Der Name des Aktiven.")
-    usergroup = property(_getusergroup,_setusergroup,_setusergroup,
+    usergroup = property(getusergroup,setusergroup,None,
                          "Der Arbeitsbereich des Aktiven.")
-    projectname = property(_getprojectname,_setprojectname,_setprojectname,
+    projectname = property(getprojectname,setprojectname,None,
                            "Der Name der Aktion oder des Projekts.")
-    projectdate = property(_getprojectdate,_setprojectdate,_setprojectdate,
+    projectdate = property(getprojectdate,setprojectdate,None,
                            "Das Datum der Aktion oder des Projekts.")
-    donations = property(_getdonations,_setdonations,_setdonations,
+    donations = property(getdonations,setdonations,None,
                          "Eingenommene Spenden in Euro.")
-    income = property(_getincome,None,None,
+    income = property(getincome,None,None,
                       "Gesamteinnahmen in Euro.")
-    cost = property(_getcost,None,None,
+    cost = property(getcost,None,None,
                       "Gesamtausgaben in Euro.")
-    total = property(_gettotal,None,None,
+    total = property(gettotal,None,None,
                      "Gesamtwert Einnahmen minus Ausgaben, in Euro.")
-    accountname = property(_getaccountname,_setaccountname,_setaccountname,
+    accountname = property(getaccountname,setaccountname,None,
                            "Der Name des Bankkontoimhabers.")
-    iban = property(_getaccountiban,_setaccountiban,_setaccountiban,
+    iban = property(getaccountiban,setaccountiban,None,
                     "Die IBAN (ohne einleitendes DE) des Bankkontos.")
     accountiban = iban
-    ibanmode = property(_getibanmode,_setibanmode,_setibanmode,"""
+    ibanmode = property(getibanmode,setibanmode,None,"""
                         Wie die Zahlung abgehandelt wird:
                         1 – Ausgaben werden auf Konto überwiesen.
                         2 – Einnahmen werden von Konto abgebucht.
                         3 – Einnahmen werden von Benutzer überwiesen.
                         """)
-    sepamode = property(_getsepamode,_setsepamode,_setsepamode,"""
+    sepamode = property(getsepamode,setsepamode,None,"""
                         Ob ein SEPA-Mandatsformular angefordert wird.
                         1 – Nein, Mandat ist schon erteilt.
                         2 – Ja, Mandat liegt noch nicht vor.
                         3 – Ja, Mandat ist veraltet.
                         """)
-    ibanknown = property(_getibanknown,_setibanknown,_setibanknown,
+    ibanknown = property(getibanknown,setibanknown,None,
                          "Ob die IBAN dem ADFC schon vorliegt.")
 
 
