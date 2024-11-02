@@ -161,12 +161,6 @@ class Abrechnung:
         """
         return tools.euro(self._gettotal())
 
-    def __len__(self):
-        """
-        Gibt die Anzahl der Positionen zurück.
-        """
-        return len(self.positions)
-    
     # Part of initialization
     def _create_positions(self,amount:int):
         """
