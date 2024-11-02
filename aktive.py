@@ -161,6 +161,16 @@ class Abrechnung:
         """
         return tools.euro(self._gettotal())
 
+    def __bool__(self):
+        """
+        Gibt True zurück, falls eine Position einen Wert hat
+        oder eine Spendensumme angegeben wurde.
+        """
+        for position in self.positions:
+            if position:
+                return True
+        return bool(self.donations)
+
     # Part of initialization
     def _create_positions(self,amount:int):
         """
