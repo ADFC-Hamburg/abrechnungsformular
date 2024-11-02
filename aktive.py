@@ -254,7 +254,7 @@ class Abrechnung:
         out = 0.0
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].income
-        out += self._getdonations()
+        out += self.getdonations()
         return out
 
     def getcost(self) -> float:
@@ -267,6 +267,7 @@ class Abrechnung:
         out = 0.0
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].value
+        out += self.getdonations()
         return out
     
     def setaccountname(self,name:str = ""):
