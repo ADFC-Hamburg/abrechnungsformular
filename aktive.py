@@ -491,6 +491,13 @@ class HTMLPrinter:
         return "".join(output)
 
     def _fill_total(self,text:str,input:Abrechnung|None = None):
+        """
+        Ersetzt Platzhalter im String text durch Felder in der
+        Abrechnung input. Falls kein input vorhanden ist, entferne
+        die Platzhalter einfach.
+
+        Platzhalter werden gemäß der Konstante _TOTAL_FIELDS ersetzt.
+        """
         segments = text.split(self._PLACEHOLDER)
 
         if type(input) == Abrechnung and input:
