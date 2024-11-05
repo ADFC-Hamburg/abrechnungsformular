@@ -2,16 +2,24 @@ const moneyform = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 
 const maxPos = 7 //Maximale Anzahl an Positionen im HTML-Dokument
 var multiplier = [0,0,0,0,0,0,0];
 var multiPosition = [false,false,false,false,false,false,false];
-processMem = 0;
+var processMem = 0;
 
 //Funktionen zur Einstellung von Variablen
 
-function positionSetting(x,setting,evaluate=true) { //Ändere Variablen gemäß der Einstellung für Einnahme/Ausgabe für Position x
+/**
+ * Ändere den Multiplikator (Variable multiplier) für Position x.
+ * @param {number} x 			Die Position, die geändert wird
+ * @param {boolean} setting 	true für Einnahme, false für Ausgabe
+ * @param {boolean} [evaluate]	Ob updatePosition ausgeführt wird; Standardmäßig true
+ */
+function positionSetting(x,setting,evaluate=true) { 
 	switch(setting) {
-		case true: //Einnahme
+		case true:
+			//Einnahme
 			multiplier[x-1] = 1;
 			break;
-		case false: //Ausgabe
+		case false:
+			//Ausgabe
 			multiplier[x-1] = -1;
 			break;
 		default:
@@ -21,7 +29,12 @@ function positionSetting(x,setting,evaluate=true) { //Ändere Variablen gemäß 
 	if (evaluate) { updatePosition(x); }
 }
 
-function multiSetting(x,setting) { //Ändere Variablen gemäß der Einstellung für Multipositionen für Position x
+/**
+ * Legt fest, ob Position x eine Mehrfachposition ist; danach updatePosition
+ * @param {number} x		Die Position, die geändert wird
+ * @param {boolean} setting	Ob x eine Mehrfachposition ist
+ */
+function multiSetting(x,setting) {
 	if (setting) {
 		multiPosition[x-1] = true;
 	} else {
@@ -32,9 +45,14 @@ function multiSetting(x,setting) { //Ändere Variablen gemäß der Einstellung f
 
 //Funktionen zur Sichtbarkeit/Verwendbarkeit von HTML-Elementen
 
-function updatePosition(x) { //Aktiviere oder deaktiviere Eingabefelder und ändere Klassen für Position x; danach calculate()
+/**
+ * Aktiviere oder deaktiviere Eingabefelder und ändere Klassen für Position x; danach calculate()
+ * @param {number} x	Die Position, die geändert wird
+ */
+function updatePosition(x) {
 	const field = [document.getElementById("position"+x+"count"), document.getElementById("position"+x+"price"), document.getElementById("position"+x+"amount")];
-	if (multiPosition[x-1]) { //Mehrfacheingabe für Position x aktiviert
+	if (multiPosition[x-1]) {
+		//Mehrfacheingabe für Position x aktiviert
 		field[0].disabled = false;
 		if (field[0].value == "" || field[0].value == 0) { field[0].value = 1; } //Anzahl sollte nicht leer sein, um Teilung durch Null zu vermeiden
 		field[1].disabled = false;
@@ -42,7 +60,8 @@ function updatePosition(x) { //Aktiviere oder deaktiviere Eingabefelder und änd
 		field[2].disabled = true;
 		field[0].parentElement.classList.remove ("locked");
 		field[1].parentElement.classList.remove ("locked");
-	} else { //Mehrfacheingabe für Position x deaktiviert
+	} else {
+		//Mehrfacheingabe für Position x deaktiviert
 		field[0].disabled = true;
 		field[0].value = "";
 		field[1].disabled = true;
@@ -51,23 +70,31 @@ function updatePosition(x) { //Aktiviere oder deaktiviere Eingabefelder und änd
 		field[0].parentElement.classList.add ("locked");
 		field[1].parentElement.classList.add ("locked");
 	}
-	if (multiplier[x-1] < 0) { field[2].classList.add ("negative"); } else { field[2].classList.remove ("negative"); } //Ist Position i eine Ausgabe? Dann roter Text.
+	//Ist Position x eine Ausgabe? Dann roter Text.
+	if (multiplier[x-1] < 0) { field[2].classList.add ("negative"); } else { field[2].classList.remove ("negative"); }
 	calculate();
 }
 
-function processDisplay(mode=0) { //Zeige oder verstecke Zahlungsoptionen
+/**
+ * Zeige oder verstecke Zahlungsoptionen
+ * @param {number} mode	1 für Gesamteinnahmen, -1 für Gesamtausgaben, andere Werte verstecken alles
+ */
+function processDisplay(mode=0) {
 	const field = document.getElementById("fieldsetPayment").getElementsByTagName("section");
 	const button = [document.getElementById("processtouser"), document.getElementById("processsepa"), document.getElementById("processbyuser")];
 	let hide = [true,true];
 	switch (mode) {
 		case 1:
+			//Einnahmen
 			hide[1] = false;
-			switch (processMem) { //Stelle Wahl aus processMem wieder her
+			switch (processMem) {
+				//Stelle Wahl aus processMem wieder her
 				case 0: button[0].checked = false; break;
 				default: button[processMem-1].checked = true;
 			}				
 			break;
 		case -1:
+			//Ausgaben
 			hide[0] = false;
 			button[0].checked = true;
 			break;
