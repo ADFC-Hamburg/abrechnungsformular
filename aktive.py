@@ -418,22 +418,44 @@ class HTMLPrinter:
             out.append (i)
         return tuple(out)
     
+    # Order of fields in sections of the document
     _USER_FIELDS = (lambda obj: obj.username, lambda obj: obj.usergroup,
                     lambda obj: obj.projectname, lambda obj: obj.projectdate)
 
     # Methods for template sections
     def _fill_user(self,text:str,input:Abrechnung|None = None):
+        """
+        Ersetzt Platzhalter im String text durch Felder in der
+        Abrechnung input. Falls kein input vorhanden ist, entferne
+        die Platzhalter einfach.
+
+        Platzhalter werden gemäß der Konstante _USER_FIELDS ersetzt.
+        """
         segments = text.split(self._PLACEHOLDER)
+
         if type(input) == Abrechnung:
+            # input is Abrechnung; replace all placeholders
             for index in range(len(segments)):
                 if index < len(self._USER_FIELDS):
-                    segments[index] += str(self._USER_FIELDS[index](input))
+                    # Replace with what? Use _USER_FIELDS
+                    data = self._USER_FIELDS[index](input)
+                    if type(data) == date:
+                        # This is a date; apply german format
+                        data = format_date(data, format="long", locale="de_DE")
+                    elif data == None:
+                        data = ""
+                    else:
+                        # Remove HTML special characters
+                        data = escape(str(data))
+                    segments[index] += data
+
         return "".join(segments)
     
     def _fill_positions(self,text:str,input:Abrechnung|None = None):
         """
         Gibt HTML-Tabellenreihen mit 8 Spalten aus und fügt
         gegebenenfalls Positionsdaten mit ein.
+
         Spalte 1: Index (1 bis 7)
         Spalten 2-6: Siehe Positions.htmlcells()
         Spalten 7,8: leer
