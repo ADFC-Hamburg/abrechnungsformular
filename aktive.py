@@ -524,6 +524,14 @@ class HTMLPrinter:
         return "".join(segments)
     
     def _fill_payment(self,text:str,input:Abrechnung|None = None):
+        """
+        Ersetzt Platzhalter im String text durch Felder und Checkboxen
+        in der Abrechnung input. Falls kein input vorhanden ist,
+        entferne die Platzhalter und füge leere Checkboxen ein.
+
+        Platzhalter werden gemäß der Konstante _PAYMENT_FIELDS ersetzt,
+        Checkboxen gemäß der Konstante _PAYMENT_CHECKBOXES eingesetzt.
+        """
         segments = text.split(self._PLACEHOLDER)
 
         if type(input) == Abrechnung:
