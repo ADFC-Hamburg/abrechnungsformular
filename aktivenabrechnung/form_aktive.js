@@ -1,10 +1,10 @@
-const moneyform = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }); //wird genutzt, um Geldbeträge zu formatieren
-const maxPos = 7 //Maximale Anzahl an Positionen im HTML-Dokument
+const moneyform = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }); // wird genutzt, um Geldbeträge zu formatieren
+const maxPos = 7 // Maximale Anzahl an Positionen im HTML-Dokument
 var multiplier = [0,0,0,0,0,0,0];
 var multiPosition = [false,false,false,false,false,false,false];
 var processMem = 0;
 
-//Funktionen zur Einstellung von Variablen
+// Funktionen zur Einstellung von Variablen
 
 /**
  * Ändere den Multiplikator (Variable multiplier) für Position x.
@@ -15,11 +15,11 @@ var processMem = 0;
 function positionSetting(x,setting,evaluate=true) { 
 	switch(setting) {
 		case true:
-			//Einnahme
+			// Einnahme
 			multiplier[x-1] = 1;
 			break;
 		case false:
-			//Ausgabe
+			// Ausgabe
 			multiplier[x-1] = -1;
 			break;
 		default:
@@ -43,7 +43,7 @@ function multiSetting(x,setting) {
 	updatePosition(x);
 }
 
-//Funktionen zur Sichtbarkeit/Verwendbarkeit von HTML-Elementen
+// Funktionen zur Sichtbarkeit/Verwendbarkeit von HTML-Elementen
 
 /**
  * Aktiviere oder deaktiviere Eingabefelder und ändere Klassen für Position x; danach calculate()
@@ -52,16 +52,16 @@ function multiSetting(x,setting) {
 function updatePosition(x) {
 	const field = [document.getElementById("position"+x+"count"), document.getElementById("position"+x+"price"), document.getElementById("position"+x+"amount")];
 	if (multiPosition[x-1]) {
-		//Mehrfacheingabe für Position x aktiviert
+		// Mehrfacheingabe für Position x aktiviert
 		field[0].disabled = false;
-		if (field[0].value == "" || field[0].value == 0) { field[0].value = 1; } //Anzahl sollte nicht leer sein, um Teilung durch Null zu vermeiden
+		if (field[0].value == "" || field[0].value == 0) { field[0].value = 1; } // Anzahl sollte nicht leer sein, um Teilung durch Null zu vermeiden
 		field[1].disabled = false;
 		if (field[1].value == "") { field[1].value = Math.round( field[2].value / field[0].value * 100) / 100; }
 		field[2].disabled = true;
 		field[0].parentElement.classList.remove ("locked");
 		field[1].parentElement.classList.remove ("locked");
 	} else {
-		//Mehrfacheingabe für Position x deaktiviert
+		// Mehrfacheingabe für Position x deaktiviert
 		field[0].disabled = true;
 		field[0].value = "";
 		field[1].disabled = true;
@@ -70,7 +70,7 @@ function updatePosition(x) {
 		field[0].parentElement.classList.add ("locked");
 		field[1].parentElement.classList.add ("locked");
 	}
-	//Ist Position x eine Ausgabe? Dann roter Text.
+	// Ist Position x eine Ausgabe? Dann roter Text.
 	if (multiplier[x-1] < 0) { field[2].classList.add ("negative"); } else { field[2].classList.remove ("negative"); }
 	calculate();
 }
@@ -85,16 +85,16 @@ function processDisplay(mode=0) {
 	let hide = [true,true];
 	switch (mode) {
 		case 1:
-			//Einnahmen
+			// Einnahmen
 			hide[1] = false;
 			switch (processMem) {
-				//Stelle Wahl aus processMem wieder her
+				// Stelle Wahl aus processMem wieder her
 				case 0: button[0].checked = false; break;
 				default: button[processMem-1].checked = true;
 			}				
 			break;
 		case -1:
-			//Ausgaben
+			// Ausgaben
 			hide[0] = false;
 			button[0].checked = true;
 			break;
@@ -106,17 +106,27 @@ function processDisplay(mode=0) {
 	field[3].hidden = hide[1];
 }
 
-function processMode(setting) { //Aktiviere oder deaktiviere Knöpfe für Angaben, ob ein SEPA-Mandat vorhanden ist
+/**
+ * Aktiviere oder deaktiviere Knöpfe für Angaben, ob ein SEPA-Mandat vorhanden ist,
+ * abhängig davon, welche Zahlungsart gewählt wurde
+ * @param {number} setting	Welche Zahlungsoption gewählt wurde
+ */
+function processMode(setting) {
 	const button = [document.getElementById("processsepaexists"), document.getElementById("processsepanew"), document.getElementById("processsepachange")];
 	let disable = true;
-	if (setting == 2) { disable = false; processMem = 2; } //Merke, welche Zahlungsoption gedrückt ist, in processMem
+	// Merke, welche Zahlungsoption gedrückt ist, in processMem
+	if (setting == 2) { disable = false; processMem = 2; } 
 	if (setting == 3) { processMem = 3; }
 	for (let i = 0; i < 3; i++) {
 		button[i].disabled = disable;
 	}
 }
-		
-function ibanKnown(check) { //Zeige oder verstecke Eingabefelder zu Bankdaten
+
+/**
+ * Sperre oder entsperre Eingabefelder zu Bankdaten (IBAN und Inhaber)
+ * @param {boolean} check	Ob Eingabefelder gesperrt sein sollen
+ */
+function ibanKnown(check) {
 	const field = [document.getElementById("processiban"), document.getElementById("processowner")];
 	if (check) {
 		field[0].disabled = true;
@@ -130,7 +140,11 @@ function ibanKnown(check) { //Zeige oder verstecke Eingabefelder zu Bankdaten
 		field[1].parentElement.classList.remove ("locked");
 }	}
 
-function positionDisplayInitialize(x) { //Zeige Positionen bis einschließlich x, verstecke den Rest
+/**
+ * Zeige Eingabefelder für die ersten x Positionen und verstecke den Rest
+ * @param {number} x	Die letzte anzuzeigende Position
+ */
+function positionDisplayInitialize(x) {
 	for (let i = 1; i <= maxPos; i++) {
 		if (i<=x) {
 			positionDisplay(i);
@@ -140,20 +154,34 @@ function positionDisplayInitialize(x) { //Zeige Positionen bis einschließlich x
 	}
 }
 
+/**
+ * Zeige oder verstecke die Eingabefelder für Position x
+ * @param {number} x		Die fragliche Position
+ * @param {boolean} show	Ob die Position angezeigt werden soll
+ */
 function positionDisplay(x,show=true) { //Zeige oder verstecke Position x im HTML-Dokument
 	document.getElementById("position"+x+"section").hidden = !(show);
 }
 
-//Funktion zur Berechnung und Anzeige des Gesamtbetrags
+// Funktion zur Berechnung und Anzeige des Gesamtbetrags
 
-function calculate(notreset=true) { //Berechnung des Gesamtbetrages
+/**
+ * Berechne den Gesamtbetrag und gib ihn aus.
+ * @param {boolean} [notreset]	Falls false: Ergebnis ist 0
+ */
+function calculate(notreset=true) {
 	var total = 0;
 	var amount = 0;
 
 	if (notreset) {
-	for (let i = 1; i <= maxPos; i++) { //Zähle alle Beträge zusammen
+	for (let i = 1; i <= maxPos; i++) {
+		// Zähle alle Beträge zusammen
 		const field = [document.getElementById("position"+i+"count"), document.getElementById("position"+i+"price"), document.getElementById("position"+i+"amount")];
-		if (multiPosition[i-1]) { field[2].value = Math.round( field[0].value * field[1].value * 100 ) / 100; } //Falls Mengenangaben aktiviert sind, rechne den Betrag aus
+
+		if (multiPosition[i-1]) {
+			// Mehrfachposition; rechne den Betrag aus
+			field[2].value = Math.round( field[0].value * field[1].value * 100 ) / 100;
+		}
 		amount = field[2].value * multiplier[i-1];
 		if (!(isNaN(amount))) {
 			total += +amount;
@@ -165,7 +193,7 @@ function calculate(notreset=true) { //Berechnung des Gesamtbetrages
 	}
 	}
 	
-	//Gib den Gesamtbetrag aus und zeige passende Zahlungsoptionen an
+	// Gib den Gesamtbetrag aus und zeige passende Zahlungsoptionen an
 	if (total>0.001) {
 		document.getElementById("totalamount").innerHTML = "Insgesamt wurden <b>"+moneyform.format(total)+"</b> eingenommen.";
 		processDisplay(1);
@@ -178,17 +206,19 @@ function calculate(notreset=true) { //Berechnung des Gesamtbetrages
 	}
 }
 
-//Beim Laden der Seite:
+// Beim Laden der Seite:
 
-{	//Mach alle Elemente, die nur für das Script gedacht sind, sichtbar
-	const hiddenElements = document.getElementsByClassName("scriptonly");
-	for (let i = 0; i < hiddenElements.length; i++) {
-		hiddenElements[i].removeAttribute("hidden");
-}	}
+// Mach alle Elemente, die nur für das Script gedacht sind, sichtbar
+const hiddenElements = document.getElementsByClassName("scriptonly");
+for (let i = 0; i < hiddenElements.length; i++) {
+	hiddenElements[i].removeAttribute("hidden");
+}	
 
-{	//Überprüfe, welche Radio-Knöpfe und Checkboxen schon gedrückt sind, und passe Variablen und Sichtbarkeit an
+	
+// Überprüfe, welche Radio-Knöpfe und Checkboxen schon gedrückt sind, und passe Variablen und Sichtbarkeit an
 for (let i = 1; i <= maxPos; i++) {
 	const button = [document.getElementById("position"+i+"plus").checked, document.getElementById("position"+i+"minus").checked, document.getElementById("position"+i+"multi").checked];
+	// Überprüfe, wo bereits zwischen Einnahme und Ausgabe gewählt wurde
 	if (button[0]) {
 		positionSetting(i,true,false);
 	} else if (button[1]) {
@@ -196,15 +226,19 @@ for (let i = 1; i <= maxPos; i++) {
 	}
 	multiSetting(i,button[2]);
 }
-if (document.getElementById("processuserknown").checked) { ibanKnown(true); }
+if (document.getElementById("processuserknown").checked) {
+	ibanKnown(true);
+}
 if ( document.querySelector('input[name="prtype"]:checked') !== null ) {
+	// Eine Zahlungsoption wurde bereits ausgewählt
 	processMode(document.querySelector('input[name="prtype"]:checked').value); 
 }
-}
 
-for (let i = maxPos; i > 0; i--) { //Überprüfe, wie viele Felder noch leer sind, und verstecke Positionen entsprechend
+for (let i = maxPos; i > 0; i--) {
+	// Überprüfe, welche Felder noch leer sind, und verstecke Positionen entsprechend
 	const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"count").value, document.getElementById("position"+i+"price").value, document.getElementById("position"+i+"amount").value];
-	if (!(values[0]=="" && values[2]==0 && values[3]==0)) { //Ist schon ein Feld in Position i ausgefüllt?
+	if (!(values[0]=="" && values[2]==0 && values[3]==0)) {
+		// Ein Feld in Position i ist bereits ausgefüllt
 		positionDisplayInitialize(i+1);
 		break;
 	}
