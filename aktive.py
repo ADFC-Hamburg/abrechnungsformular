@@ -421,6 +421,10 @@ class HTMLPrinter:
     # Order of fields in sections of the document
     _USER_FIELDS = (lambda obj: obj.username, lambda obj: obj.usergroup,
                     lambda obj: obj.projectname, lambda obj: obj.projectdate)
+    _TOTAL_FIELDS = ((lambda obj: obj.donations, True),
+                     (lambda obj: obj.income, True),
+                     (lambda obj: obj.cost, True),
+                     (lambda obj: obj.total, False))
 
     # Methods for template sections
     def _fill_user(self,text:str,input:Abrechnung|None = None):
@@ -488,8 +492,17 @@ class HTMLPrinter:
 
     def _fill_total(self,text:str,input:Abrechnung|None = None):
         segments = text.split(self._PLACEHOLDER)
-        if type(input) == Abrechnung:
-            pass
+
+        if type(input) == Abrechnung and input:
+            # input is non-empty Abrechnung; replace all placeholders
+            for index in range(len(segments)):
+                if index < len(self._TOTAL_FIELDS):
+                    # Replace with what? Use _TOTAL_FIELDS
+                    data = self._TOTAL_FIELDS[index][0](input)
+                    # Format as Euros
+                    data = tools.euro(data,self._TOTAL_FIELDS[index][1])
+                    segments[index] += data
+
         return "".join(segments)
     
     def _fill_payment(self,text:str,input:Abrechnung|None = None):
