@@ -425,6 +425,17 @@ class HTMLPrinter:
                      (lambda obj: obj.income, True),
                      (lambda obj: obj.cost, True),
                      (lambda obj: obj.total, False))
+    _PAYMENT_FIELDS = (None,None,None,
+                       lambda obj: obj.iban, lambda obj: obj.accountname)
+    _PAYMENT_BOXES = (lambda obj: obj.ibanmode == 1,
+                      lambda obj: obj.ibanmode==1 and obj.ibanknown==True,
+                      lambda obj: obj.ibanmode==1 and obj.ibanknown==False,
+                      None,
+                      None,
+                      lambda obj: obj.ibanmode == 2,
+                      lambda obj: obj.ibanmode==2 and obj.sepamode==2,
+                      lambda obj: obj.ibanmode==2 and obj.sepamode==3,
+                      lambda obj: obj.ibanmode == 3)
 
     # Methods for template sections
     def _fill_user(self,text:str,input:Abrechnung|None = None):
@@ -514,8 +525,32 @@ class HTMLPrinter:
     
     def _fill_payment(self,text:str,input:Abrechnung|None = None):
         segments = text.split(self._PLACEHOLDER)
+
         if type(input) == Abrechnung:
-            pass
+            # input is Abrechnung; replace all placeholders
+            for index in range(len(segments)):
+                if (index < len(self._PAYMENT_FIELDS)
+                    and self._PAYMENT_FIELDS[index] != None
+                    and input.ibanmode == 1 and input.ibanknown == False):
+                    # Place account IBAN and account name
+                    # according to _PAYMENT_FIELDS
+                    data = self._PAYMENT_FIELDS[index](input)
+                    segments[index] += escape(str(data))
+                if (index < len(self._PAYMENT_BOXES)
+                    and self._PAYMENT_BOXES[index] != None):
+                    # Insert a checkbox. Use _PAYMENT_BOXES to
+                    # determine whether it is checked or not.
+                    data = self._PAYMENT_BOXES[index](input)
+                    segments[index] += self._CHECKBOXES[data]
+        else:
+            # input is not Abrechnung; place empty checkboxes
+            for index in range(len(segments)):
+                if (index < len(self._PAYMENT_BOXES)
+                    and self._PAYMENT_BOXES[index] != None):
+                    # Insert a checkbox wherever
+                    # _PAYMENT_BOXES is not None.
+                    segments[index] += self._CHECKBOXES[False]            
+
         return "".join(segments)
     
     # Section keywords and corresponding methods
