@@ -2,12 +2,14 @@
 
 from flask import Flask, render_template
 
-app = Flask(__name__)
+from app import aktive
 
-@app.route('/')
-@app.route('/index')
+server = Flask(__name__)
+
+@server.route('/index')
+@server.route('/')
 def index():
     return render_template('form_aktive.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5000)
+    server.run(host='0.0.0.0',port=5000)
