@@ -464,18 +464,20 @@ class HTMLPrinter:
     
     # Class constants
     _CHECKBOXES = {False:"&#9744;",True:"&#9746;"}
-    _FILE = "aktive_template.html"
     _PLACEHOLDER = "<!--PLACEHOLDER-->"
     _POSITIONCOUNT = 7
     _SPLIT = "<!--SPLIT-->\n"
     
     # Dunder methods
-    def __init__(self):
+    def __init__(self,path):
         """
         Initialisiert ein Objekt der Klasse HTMLPrinter.
         Im Rahmen dessen wird eine HTML-Datei als Template geladen.
+
+        Parameter:
+        path - Der Dateipfad der HTML-Vorlage
         """
-        self._template = self._fetch_html()
+        self._template = self._fetch_html(path)
     
     def __str__(self):
         return self.html_compose()
@@ -484,14 +486,13 @@ class HTMLPrinter:
         return __class__.__name__+"()"
     
     # Template loading
-    @classmethod
-    def _fetch_html(cls) -> tuple:
+    def _fetch_html(self,path) -> tuple:
         """
         Öffnet das HTML-Template, teilt den Inhalt in Sektionen auf
         und gibt das Ergebnis als Tupel zurück.
         """
-        with open(cls._FILE) as f:
-            sections = f.read().split(cls._SPLIT)
+        with open(path) as f:
+            sections = f.read().split(self._SPLIT)
         out = []
         for i in sections:
             out.append (i)
