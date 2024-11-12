@@ -1,3 +1,8 @@
+"""
+Modul für Klassen, die Aktivenabrechnungen repräsentieren oder
+selbige als Dokument ausgeben.
+"""
+
 from datetime import date
 from html import escape
 
