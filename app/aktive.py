@@ -209,7 +209,81 @@ class Abrechnung:
         for i in range(amount):
             out.append(Position())
         return tuple(out)
+    
+    # Methods for input
+    def evaluate_query(self,query:dict):
+        """
+        Liest Parameter aus einem HTML-Query in Form eines Dictionary
+        ein und setzt alle Variablen auf den entsprechenden Wert.
 
+        Erkennt die folgenden Schlüssel:
+        uname, dept, pname, pdate, p1name, p1type, p1cnt, p1ppu, p1,
+        p2name, p2type, p2cnt, p2ppu, p2, p3name, p3type, p3cnt, p3ppu,
+        p3, p4name, p4type, p4cnt, p4ppu, p4, p5name, p5type, p5cnt,
+        p5ppu, p5, p6name, p6type, p6cnt, p6ppu, p6, p7name, p7type,
+        p7cnt, p7ppu, p7, dono
+        """
+        if query:
+            keys = tuple(query.keys())
+            
+            # User name and -group, project name and date
+            if 'uname' in keys:
+                self.setusername(query['uname'])
+            if 'dept' in keys:
+                self.setusergroup(query['dept'])
+            if 'pname' in keys:
+                self.setprojectname(query['pname'])
+            if 'pdate' in keys:
+                self.setprojectdate(query['pdate'])
+            
+            # Position values
+            for i in range(self._POSITIONCOUNT):
+                pos = 'p'+str(i+1)
+                if pos+'type' in keys and query[pos+'type'] in {'1','-1'}:
+                    # Position is set to income or cost
+                    if pos+'cnt' in keys and pos+'ppu' in keys\
+                        and query[pos+'cnt'] and query[pos+'ppu']:
+                        # Position has amount and price per unit
+                        self.positions[i].setunitcount(int(query[pos+'cnt']))
+                        amount = float(query[pos+'ppu'])
+                        amount *= float(query[pos+'type'])
+                        self.positions[i].setunitprice(amount)
+                    elif pos in keys and query[pos]:
+                        # Position has a set value
+                        amount = float(query[pos])
+                        amount *= float(query[pos+'type'])
+                        self.positions[i].setvalue(amount)
+                    else:
+                        # Position has no value; ignore name
+                        continue
+                    if pos+'name' in keys:
+                        # Set position name
+                        self.positions[i].setname(query[pos+'name'])
+            
+            # Donation value
+            if 'dono' in keys and query['dono']:
+                self.setdonations(query['dono'])
+            
+            # Payment information
+            if 'prtype' in keys and query['prtype']:
+                self.setibanmode(query['prtype'])
+                if query['prtype'] == '1':
+                    # Payment mode: Transfer to user
+                    if 'known' in keys and query['known'] == '1':
+                        # Payment info is known
+                        self.setibanknown(True)
+                    else:
+                        # Payment info not known
+                        self.setibanknown(False)
+                        if 'iban' in keys:
+                            self.setaccountiban(query['iban'])
+                        if 'owner' in keys:
+                            self.setaccountname(query['owner'])
+                if query['prtype'] == '2':
+                    # Payment mode: debit from user
+                    if 'prsepa' in keys and query['prsepa']:
+                        self.setsepamode(query['prsepa'])
+    
     # Variable getters and setters
     def setusername(self,value:str = ""):
         """Legt den Namen des Aktiven fest."""
