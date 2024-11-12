@@ -9,15 +9,15 @@
 	<meta name="author" content="Patrick Lübcke" />
 	<meta name="generator" content="Geany 1.38" />
 	<meta name="theme-color" content="#24477c" />
-	<link rel="stylesheet" href="form.css">
-	<link rel="icon" href="favicon.ico" sizes="32x32">
-	<link rel="icon" href="icon.svg" type="image/svg+xml">
-	<link rel="apple-touch-icon" href="icon-touch.png">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+	<link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" sizes="32x32">
+	<link rel="icon" href="{{ url_for('static', filename='img/icon.svg') }}" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon_touch.png') }}">
 </head>
 
 <body>
 	<header>
-		<a href="https://hamburg.adfc.de" class="logo"><img src="ADFC-HH-orangewhite.svg" alt="ADFC Hamburg" class="logo" style="height:4rem;"></a>
+		<a href="https://hamburg.adfc.de" class="logo"><img src="{{ url_for('static', filename='img/ADFC-HH-orangewhite.svg') }}" alt="ADFC Hamburg" class="logo" style="height:4rem;"></a>
 		<div>
 			<h1>Aktiven&shy;abrechnung</h1>
 			<p>Hier findest du das Abrechnungs&shy;formular für Aktive und Helfer beim ADFC&nbsp;Hamburg.</p>
@@ -289,7 +289,7 @@
 			Alternativ kannst du die Abrechnung auch ausdrucken und sie uns per Post zusenden oder direkt bei uns in der Geschäftsstelle abgeben.</aside>
 		</fieldset>
 	</form>
-	<script src="form_aktive.js"></script>
+	<script src="{{ url_for('static', filename='js/form_aktive.js') }}"></script>
 </body>
 
 </html>
