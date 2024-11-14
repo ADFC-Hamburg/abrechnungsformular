@@ -13,7 +13,7 @@ from flask import Flask
 from app import routes
 
 # App
-flaskapp = Flask(__name__)
+flaskapp = Flask(__name__, static_folder=None)
 flaskapp.register_blueprint(routes.pages)
 
 # Executable

@@ -14,11 +14,13 @@ with open('VERSION') as f:
     VERSION = f.readline()
 AKTIVE_HTML = 'templates/documents/aktive_template.html'
 AKTIVE_CSS = 'templates/documents/aktive_template.css'
+STATIC = 'pages.static'
 
 # Routes
 pages = Blueprint('pages',__name__,
                   template_folder='templates',
-                  static_folder='static')
+                  static_folder='../static',
+                  static_url_path='/static')
 
 @pages.route('/index')
 @pages.route('/')
@@ -26,7 +28,7 @@ def index():
     """
     Zeigt das Formular zur Erstellung einer Aktivenabrechnung an
     """
-    return render_template('form_aktive.html', version=VERSION)
+    return render_template('form_aktive.html', static=STATIC, version=VERSION)
 
 @pages.route('/Aktivenabrechnung.pdf', methods=['GET'])
 def aktive_pdf():
