@@ -8,62 +8,13 @@ können.
 """
 
 # Imports
-from flask import Flask, render_template, request, abort
-from flask_weasyprint import HTML, CSS, render_pdf
+from flask import Flask
 
-from app import aktive
-
-# Constants
-VERSION = "0.1"
-AKTIVE_HTML = 'templates/documents/aktive_template.html'
-AKTIVE_CSS = 'templates/documents/aktive_template.css'
+from app import routes
 
 # App
 flaskapp = Flask(__name__)
-
-# Routes
-@flaskapp.route('/index')
-@flaskapp.route('/')
-def index():
-    """
-    Zeigt das Formular zur Erstellung einer Aktivenabrechnung an
-    """
-    return render_template('form_aktive.html', version=VERSION)
-
-@flaskapp.route('/Aktivenabrechnung.pdf', methods=['GET'])
-def aktive_pdf():
-    """
-    Zeigt eine Aktivenabrechnung als PDF-Datei an.
-
-    Daten werden aus einem GET-Querystring ausgelesen. Falls es keinen
-    gibt, wird ein vorgefertigtes leeres PDF-Dokument angezeigt.
-    """
-    if request.method == 'GET' and request.args:
-        # Query provided; create new PDF
-        abrechnung = aktive.Abrechnung()
-        try:
-            # Get data from query string
-            abrechnung.evaluate_query(request.args.to_dict())
-        except:
-            # Bad Request
-            abort(400)
-        # Prepare document as HTML
-        printer = aktive.HTMLPrinter(AKTIVE_HTML)
-        document = printer.html_compose(abrechnung)
-        # Read in CSS file
-        with open(AKTIVE_CSS) as f:
-            formatting = f.read()
-        # Create PDF from HTML and CSS
-        return render_pdf(HTML(string=document),
-                          stylesheets=[CSS(string=formatting)])
-    else:
-        # No query provided; use premade empty PDF instead
-        return flaskapp.send_static_file('blank/aktive.pdf')
-
-@flaskapp.route('/favicon.ico')
-def favicon():
-    """Returns the favicon."""
-    return flaskapp.send_static_file('img/favicon.ico')
+flaskapp.register_blueprint(routes.pages)
 
 # Executable
 if __name__ == '__main__':
