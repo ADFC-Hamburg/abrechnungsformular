@@ -7,6 +7,7 @@ anschließend eine fertige Abrechnung im PDF-Format herunterladen
 können.
 """
 
+# Imports
 from flask import Flask, render_template, request, abort
 from flask_weasyprint import HTML, CSS, render_pdf
 
@@ -16,8 +17,10 @@ from app import aktive
 AKTIVE_HTML = 'templates/documents/aktive_template.html'
 AKTIVE_CSS = 'templates/documents/aktive_template.css'
 
+# App
 flaskapp = Flask(__name__)
 
+# Routes
 @flaskapp.route('/index')
 @flaskapp.route('/')
 def index():
@@ -56,5 +59,6 @@ def aktive_pdf():
         # No query provided; use premade empty PDF instead
         return flaskapp.send_static_file('blank/aktive.pdf')
 
+# Executable
 if __name__ == '__main__':
     flaskapp.run(host='0.0.0.0',port=5000)
