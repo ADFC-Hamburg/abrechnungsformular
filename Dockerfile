@@ -6,9 +6,9 @@ FROM python:3.11.2
 # Set the working directory within the container
 WORKDIR /abrechnungsformular
 
-# Install Python dependencies
+# Upgrade pip and install Python dependencies
 COPY ./requirements.txt /abrechnungsformular/requirements.txt
-RUN pip3 install --no-cache-dir --upgrade -r /abrechnungsformular/requirements.txt
+RUN pip3 install --upgrade pip && pip3 install --no-cache-dir --upgrade -r /abrechnungsformular/requirements.txt
 
 # Copy the necessary files and directories into the container
 COPY . /abrechnungsformular
