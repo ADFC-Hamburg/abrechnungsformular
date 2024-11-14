@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Use the official Python 3.11.2 image as base
-FROM python:3.11.2
+FROM python:3.11.2 AS base
 
 # Set the working directory within the container
 WORKDIR /abrechnungsformular
