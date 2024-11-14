@@ -18,5 +18,8 @@ USER appuser
 # Copy the necessary files and directories into the container
 COPY . /abrechnungsformular
 
-# Define the command to run the Flask application
-CMD ["python3", "abrechnungsformular.py"]
+# Expose port 8000 for the Flask application
+EXPOSE 8000
+
+# Define the command to run the Flask application using Gunicorn
+CMD ["gunicorn", "abrechnungsformular:flaskapp", "-b", "0.0.0.0:8000", "-w", "2"]
