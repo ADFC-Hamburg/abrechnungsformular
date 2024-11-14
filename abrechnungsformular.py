@@ -60,6 +60,11 @@ def aktive_pdf():
         # No query provided; use premade empty PDF instead
         return flaskapp.send_static_file('blank/aktive.pdf')
 
+@flaskapp.route('/favicon.ico')
+def favicon():
+    """Returns the favicon."""
+    return flaskapp.send_static_file('img/favicon.ico')
+
 # Executable
 if __name__ == '__main__':
     flaskapp.run(host='0.0.0.0',port=5000)
