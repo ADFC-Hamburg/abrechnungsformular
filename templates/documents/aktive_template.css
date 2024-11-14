@@ -22,17 +22,8 @@ body {
 	margin:0;
 	padding:10mm 15mm 10mm 25mm;
 	position:relative;
-/*	background-color:snow;
-	background: conic-gradient(
-		snow 90deg,
-		seashell 90deg 180deg,
-		snow 180deg 270deg,
-		seashell 270deg
-	);
-	background-repeat: repeat ;
-	background-size: 10mm 10mm;
-	background-position: top left;*/
 }
+
 /*Header*/
 header div {
 	font-size: 8pt;
