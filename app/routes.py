@@ -10,7 +10,8 @@ from flask_weasyprint import HTML, CSS, render_pdf
 from app import aktive
 
 # Constants
-VERSION = "0.1"
+with open('VERSION') as f:
+    VERSION = f.readline()
 AKTIVE_HTML = 'templates/documents/aktive_template.html'
 AKTIVE_CSS = 'templates/documents/aktive_template.css'
 
