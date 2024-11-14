@@ -16,17 +16,17 @@ from app import aktive
 AKTIVE_HTML = 'templates/documents/aktive_template.html'
 AKTIVE_CSS = 'templates/documents/aktive_template.css'
 
-server = Flask(__name__)
+flaskapp = Flask(__name__)
 
-@server.route('/index')
-@server.route('/')
+@flaskapp.route('/index')
+@flaskapp.route('/')
 def index():
     """
     Zeigt das Formular zur Erstellung einer Aktivenabrechnung an
     """
     return render_template('form_aktive.html')
 
-@server.route('/Aktivenabrechnung.pdf', methods=['GET'])
+@flaskapp.route('/Aktivenabrechnung.pdf', methods=['GET'])
 def aktive_pdf():
     """
     Zeigt eine Aktivenabrechnung als PDF-Datei an.
@@ -54,7 +54,7 @@ def aktive_pdf():
                           stylesheets=[CSS(string=formatting)])
     else:
         # No query provided; use premade empty PDF instead
-        return server.send_static_file('blank/aktive.pdf')
+        return flaskapp.send_static_file('blank/aktive.pdf')
 
 if __name__ == '__main__':
-    server.run(host='0.0.0.0',port=5000)
+    flaskapp.run(host='0.0.0.0',port=5000)
