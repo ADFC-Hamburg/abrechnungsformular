@@ -14,6 +14,7 @@ from flask_weasyprint import HTML, CSS, render_pdf
 from app import aktive
 
 # Constants
+VERSION = "0.1"
 AKTIVE_HTML = 'templates/documents/aktive_template.html'
 AKTIVE_CSS = 'templates/documents/aktive_template.css'
 
@@ -27,7 +28,7 @@ def index():
     """
     Zeigt das Formular zur Erstellung einer Aktivenabrechnung an
     """
-    return render_template('form_aktive.html')
+    return render_template('form_aktive.html', version=VERSION)
 
 @flaskapp.route('/Aktivenabrechnung.pdf', methods=['GET'])
 def aktive_pdf():
