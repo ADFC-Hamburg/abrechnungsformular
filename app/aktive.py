@@ -78,7 +78,7 @@ class Position:
     # Variable getters and setters
     def setname(self,value:str = ""):
         """Legt den Namen der Position fest."""
-        self._name = str(value)
+        self._name = str(value).strip()
     
     def getname(self) -> str:
         """Gibt den Namen der Position zurück."""
@@ -287,7 +287,7 @@ class Abrechnung:
     # Variable getters and setters
     def setusername(self,value:str = ""):
         """Legt den Namen des Aktiven fest."""
-        self._user["name"] = str(value)
+        self._user["name"] = str(value).strip()
     
     def getusername(self) -> str:
         """Gibt den Namen des Aktiven zurück."""
@@ -295,7 +295,7 @@ class Abrechnung:
     
     def setusergroup(self,value:str = ""):
         """Legt die Gruppe des Aktiven fest."""
-        self._user["group"] = str(value)
+        self._user["group"] = str(value).strip()
     
     def getusergroup(self) -> str:
         """Gibt die Gruppe des Aktiven zurück."""
@@ -303,7 +303,7 @@ class Abrechnung:
     
     def setprojectname(self,value:str = ""):
         """Legt den Namen des Projekts fest."""
-        self._project["name"] = str(value)
+        self._project["name"] = str(value).strip()
     
     def getprojectname(self) -> str:
         """Gibt den Namen des Projekts zurück."""
@@ -365,7 +365,7 @@ class Abrechnung:
     
     def setaccountname(self,name:str = ""):
         """Legt den Namen des Kontoinhabers fest."""
-        self._payment["name"] = str(name)
+        self._payment["name"] = str(name).strip()
     
     def getaccountname(self) -> str:
         """Gibt den Namen des Kontoinhabers zurück."""
