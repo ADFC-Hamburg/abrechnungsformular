@@ -30,7 +30,7 @@ def index():
     """
     return render_template('form_aktive.html', static=STATIC, version=VERSION)
 
-@pages.route('/Aktivenabrechnung.pdf', methods=['GET'])
+@pages.route('/abrechnung', methods=['GET'])
 def aktive_pdf():
     """
     Zeigt eine Aktivenabrechnung als PDF-Datei an.
@@ -53,9 +53,12 @@ def aktive_pdf():
         # Read in CSS file
         with open(AKTIVE_CSS) as f:
             formatting = f.read()
+        # Select a filename for the resulting file
+        filename = abrechnung.suggest_filename()+'.pdf'
         # Create PDF from HTML and CSS
         return render_pdf(HTML(string=document),
-                          stylesheets=[CSS(string=formatting)])
+                          stylesheets=[CSS(string=formatting)],
+                          download_filename=filename)
     else:
         # No query provided; use premade empty PDF instead
         return pages.send_static_file('blank/aktive.pdf')
