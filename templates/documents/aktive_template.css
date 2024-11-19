@@ -5,7 +5,7 @@
 :root {
 	font-size: 10pt;
 	font-family: Arial, Helvetica, Arimo, Liberation Sans, sans-serif;
-	--serif: Times New Roman, Times, Timos, Liberation Serif, serif;
+	--serif: Times New Roman, Times, Tinos, Liberation Serif, serif;
 	line-height:1.1;
 }
 * {
