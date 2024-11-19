@@ -87,7 +87,7 @@ table {
 }
 td, th {
 	height:7mm;
-	vertical-align:center;
+	vertical-align:middle;
 	margin:0;
 	padding: 0 1.2mm;
 	border:0.5pt solid;
@@ -215,7 +215,7 @@ td, th {
 	width:100%;
 }
 .subtable td {
-	height:unset;
+	height:auto;
 	padding:0 1.2mm 0 1.2mm !important;
 }
 .subtable td:nth-child(2) {
@@ -234,7 +234,7 @@ td, th {
 }
 .bottomtable th {
 	text-align:left;
-	height:unset;
+	height:auto;
 }
 .bottomtable .inbetween {
 	border-style:none;
