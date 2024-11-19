@@ -6,6 +6,13 @@ FROM python:3.11.2 AS base
 # Set the working directory within the container
 WORKDIR /abrechnungsformular
 
+# Install necessary packages
+RUN apt-get update
+RUN apt-get install -y fonts-croscore
+
+# Cleanup cache and temporary files from apt-get
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Upgrade pip and install Python dependencies
 COPY ./requirements.txt /abrechnungsformular/requirements.txt
 RUN pip3 install --upgrade pip && pip3 install --no-cache-dir --upgrade -r /abrechnungsformular/requirements.txt
