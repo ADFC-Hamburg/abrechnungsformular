@@ -296,7 +296,7 @@ class Abrechnung:
         out = self._NAME
         if self.getprojectname():
             # Add project name without special characters
-            out += " "+sub('[^A-Za-zÄÖÜäöüß0-9\-_ ]','',
+            out += " "+sub('[^A-Za-zÄÖÜäöüß0-9\\-_ ]','',
                            self.getprojectname())
         if self.getprojectdate():
             # Add project date
