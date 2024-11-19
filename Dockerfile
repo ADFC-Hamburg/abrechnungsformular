@@ -22,4 +22,4 @@ COPY . /abrechnungsformular
 EXPOSE 8000
 
 # Define the command to run the Flask application using Gunicorn
-CMD ["gunicorn", "abrechnungsformular:flaskapp", "-b", "0.0.0.0:8000", "-w", "2"]
+CMD ["gunicorn", "--bind=0.0.0.0:8000", "--workers=2", "abrechnungsformular:flaskapp"]
