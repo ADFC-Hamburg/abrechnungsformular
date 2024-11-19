@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1
 
-# Use the official Python 3.11.2 image as base
-FROM python:3.11.2 AS base
+# Use the official Python 3.13.0-slim image as base
+FROM python:3.13.0-slim AS base
 
 # Set the working directory within the container
 WORKDIR /abrechnungsformular
 
 # Install necessary packages
 RUN apt-get update
-RUN apt-get install -y fonts-croscore
+RUN apt-get install -y fonts-croscore libgtk-3-0
 
 # Cleanup cache and temporary files from apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
