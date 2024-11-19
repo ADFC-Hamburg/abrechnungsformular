@@ -5,6 +5,7 @@ selbige als Dokument ausgeben.
 
 from datetime import date
 from html import escape
+from re import sub
 
 from babel.dates import format_date
 
@@ -168,6 +169,7 @@ class Abrechnung:
     _IBANSPACES = range(18,0,-4)
     _MODES_IBAN = (1,2,3)
     _MODES_SEPA = (2,3)
+    _NAME = "Aktivenabrechnung"
     _POSITIONCOUNT = 7
     
     # Dunder methods
@@ -283,6 +285,23 @@ class Abrechnung:
                     # Payment mode: debit from user
                     if 'prsepa' in keys and query['prsepa']:
                         self.setsepamode(query['prsepa'])
+    
+    # Methods for output
+    def suggest_filename(self) -> str:
+        """
+        Gibt eine Empfehlung für einen Dateinamen aus für Dateien, die
+        aus diesem Objekt generiert werden.
+        """
+        # Use constant _NAME as filename
+        out = self._NAME
+        if self.getprojectname():
+            # Add project name without special characters
+            out += " "+sub('[^A-Za-zÄÖÜäöüß0-9\-_ ]','',
+                           self.getprojectname())
+        if self.getprojectdate():
+            # Add project date
+            out += " "+str(self.getprojectdate())
+        return out
     
     # Variable getters and setters
     def setusername(self,value:str = ""):
