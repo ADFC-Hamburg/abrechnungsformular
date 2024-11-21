@@ -75,8 +75,13 @@ function updatePosition(x) {
 		field[1].parentElement.classList.add ("locked");
 	}
 	// Ist Position x eine Ausgabe? Dann roter Text.
-	if (multiplier[x-1] < 0) { field[2].classList.add ("negative"); } else { field[2].classList.remove ("negative"); }
-	calculate();
+	if (multiplier[x-1] < 0) {
+		field[1].classList.add ("negative");
+		field[2].classList.add ("negative");
+	} else {
+		field[1].classList.remove ("negative");
+		field[2].classList.remove ("negative");
+	}
 }
 
 /**
