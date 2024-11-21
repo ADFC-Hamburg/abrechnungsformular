@@ -50,29 +50,22 @@ function multiSetting(x,setting) {
 // Funktionen zur Sichtbarkeit/Verwendbarkeit von HTML-Elementen
 
 /**
- * Aktiviere oder deaktiviere Eingabefelder und ändere Klassen für Position x; danach calculate()
+ * Aktualisiere Eingabefelder und ändere Klassen für Position x.
+ * 
  * @param {number} x	Die Position, die geändert wird
  */
 function updatePosition(x) {
 	const field = [document.getElementById("position"+x+"count"), document.getElementById("position"+x+"price"), document.getElementById("position"+x+"amount")];
+	if (field[0].value == "" || field[0].value == 0) {
+		// Anzahl sollte nicht leer sein, um Teilung durch Null zu vermeiden
+		field[0].value = 1;
+	}
 	if (multiPosition[x-1]) {
 		// Mehrfacheingabe für Position x aktiviert
-		field[0].disabled = false;
-		if (field[0].value == "" || field[0].value == 0) { field[0].value = 1; } // Anzahl sollte nicht leer sein, um Teilung durch Null zu vermeiden
-		field[1].disabled = false;
-		if (field[1].value == "") { field[1].value = Math.round( field[2].value / field[0].value * 100) / 100; }
-		field[2].disabled = true;
-		field[0].parentElement.classList.remove ("locked");
-		field[1].parentElement.classList.remove ("locked");
+		field[2].value = Math.round( field[0].value * field[1].value * 100 ) / 100;
 	} else {
 		// Mehrfacheingabe für Position x deaktiviert
-		field[0].disabled = true;
-		field[0].value = "";
-		field[1].disabled = true;
 		field[1].value = "";
-		field[2].disabled = false;
-		field[0].parentElement.classList.add ("locked");
-		field[1].parentElement.classList.add ("locked");
 	}
 	// Ist Position x eine Ausgabe? Dann roter Text.
 	if (multiplier[x-1] < 0) {
@@ -206,10 +199,6 @@ function calculate(notreset=true) {
 		// Zähle alle Beträge zusammen
 		const field = [document.getElementById("position"+i+"count"), document.getElementById("position"+i+"price"), document.getElementById("position"+i+"amount")];
 
-		if (multiPosition[i-1]) {
-			// Mehrfachposition; rechne den Betrag aus
-			field[2].value = Math.round( field[0].value * field[1].value * 100 ) / 100;
-		}
 		amount = field[2].value * multiplier[i-1];
 		if (!(isNaN(amount))) {
 			total += +amount;
@@ -236,23 +225,33 @@ function calculate(notreset=true) {
 
 // Beim Laden der Seite:
 
+/*
 // Mach alle Elemente, die nur für das Script gedacht sind, sichtbar
 const hiddenElements = document.getElementsByClassName("scriptonly");
 for (let i = 0; i < hiddenElements.length; i++) {
 	hiddenElements[i].removeAttribute("hidden");
 }	
-
+*/
 	
 // Überprüfe, welche Radio-Knöpfe und Checkboxen schon gedrückt sind, und passe Variablen und Sichtbarkeit an
 for (let i = 1; i <= maxPos; i++) {
-	const button = [document.getElementById("position"+i+"plus").checked, document.getElementById("position"+i+"minus").checked, document.getElementById("position"+i+"multi").checked];
+	const button = [document.getElementById("position"+i+"plus").checked, document.getElementById("position"+i+"minus").checked];
 	// Überprüfe, wo bereits zwischen Einnahme und Ausgabe gewählt wurde
 	if (button[0]) {
 		positionSetting(i,true,false);
 	} else if (button[1]) {
 		positionSetting(i,false,false);
 	}
-	multiSetting(i,button[2]);
+
+	// Überprüfe, welche Positionen einen Stückpreis haben
+	if ( document.getElementById("position"+i+"price").value > 0) {
+		multiSetting(i,true);
+	} else {
+		multiSetting(i,false);
+	}
+
+	// Berechne den aktuellen Gesamtbetrag.
+	calculate();
 }
 if (document.getElementById("processuserknown").checked) {
 	ibanKnown(true);
