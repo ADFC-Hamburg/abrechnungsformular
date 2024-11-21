@@ -9,7 +9,7 @@ from re import sub
 
 from babel.dates import format_date
 
-from app import tools
+from app import tools, VERSION
 
 
 class Position:
@@ -535,6 +535,9 @@ class HTMLPrinter:
                       lambda obj: obj.ibanmode==2 and obj.sepamode==2,
                       lambda obj: obj.ibanmode==2 and obj.sepamode==3,
                       lambda obj: obj.ibanmode == 3)
+    _DATE_FIELDS = (lambda: format_date(date.today(), format="long",
+                                          locale="de_DE"),
+                    lambda: "v"+VERSION)
 
     # Methods for template sections
     def _fill_user(self,text:str,input:Abrechnung|None = None):
@@ -656,13 +659,30 @@ class HTMLPrinter:
                     and self._PAYMENT_BOXES[index] != None):
                     # Insert a checkbox wherever
                     # _PAYMENT_BOXES is not None.
-                    segments[index] += self._CHECKBOXES[False]            
+                    segments[index] += self._CHECKBOXES[False]
 
+        return "".join(segments)
+    
+    def _fill_date(self,text:str,input:Abrechnung|None = None):
+        """
+        Ersetzt Platzhalter im String durch Datum und Versionsnummer.
+
+        Platzhalter werden gemäß der Konstante _DATE_FIELDS ersetzt.
+        """
+        # input will be ignored
+        segments = text.split(self._PLACEHOLDER)
+        
+        # Replace all placeholders
+        for index in range(len(segments)):
+            if (index < len(self._DATE_FIELDS)):
+                segments[index] += self._DATE_FIELDS[index]()
+        
         return "".join(segments)
     
     # Section keywords and corresponding methods
     _SECTIONS = (("USERDATA", _fill_user), ("POSITIONS", _fill_positions),
-                 ("TOTAL", _fill_total), ("PAYMENT", _fill_payment))
+                 ("TOTAL", _fill_total), ("PAYMENT", _fill_payment),
+                 ("DATE", _fill_date))
     
     # Callable methods
     def html_compose(self,input:Abrechnung|None = None):

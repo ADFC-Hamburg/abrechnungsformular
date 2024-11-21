@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Version number is now printed on resulting PDF document.
+
 ### Changed
 
 - Input fields for unit prices in form now have red text when position is set to expense

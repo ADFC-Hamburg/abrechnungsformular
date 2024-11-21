@@ -122,6 +122,11 @@ td, th {
 	background-position:center center;
 	background-size: 100% 100%, auto;
 }
+.version {
+	font-size:	6pt;
+	text-align:	right;
+	vertical-align:	20%;
+}
 
 /*Angabenfelder oben*/
 .angaben {
