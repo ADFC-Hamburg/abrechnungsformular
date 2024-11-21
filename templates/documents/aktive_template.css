@@ -4,9 +4,8 @@
 }
 :root {
 	font-size: 10pt;
-	font-family: Arial, Helvetica, Arimo, Liberation Sans, sans-serif;
-	--serif: Times New Roman, Times, Tinos, Liberation Serif, serif;
-	line-height:1.1;
+	font-family: Arial, Helvetica, Arimo, "Liberation Sans", sans-serif;
+	--serif: "Times New Roman", Times, Tinos, "Liberation Serif", serif;
 }
 * {
 	box-sizing:	border-box;
@@ -112,7 +111,7 @@ td, th {
 	text-align:center;
 	width:6.5mm;
 	padding:0;
-	font-family: DejaVu Sans, sans-serif;
+	font-family: "DejaVu Sans", sans-serif;
 }
 .check:nth-child(2) {
 	width:4.5mm;
