@@ -8,6 +8,10 @@ var processMem = 0;
 
 /**
  * Ändere den Multiplikator (Variable multiplier) für Position x.
+ * 
+ * Wird im HTML-Dokument von den Radio-Tasten aufgerufen, mit denen
+ * Einnahme oder Ausgabe gewählt wird.
+ *  
  * @param {number} x 			Die Position, die geändert wird
  * @param {boolean} setting 	true für Einnahme, false für Ausgabe
  * @param {boolean} [evaluate]	Ob updatePosition ausgeführt wird; Standardmäßig true
@@ -107,8 +111,12 @@ function processDisplay(mode=0) {
 }
 
 /**
- * Aktiviere oder deaktiviere Knöpfe für Angaben, ob ein SEPA-Mandat vorhanden ist,
- * abhängig davon, welche Zahlungsart gewählt wurde
+ * Aktiviere oder deaktiviere Knöpfe für Angaben, ob ein SEPA-Mandat
+ * vorhanden ist, abhängig davon, welche Zahlungsart gewählt wurde.
+ * 
+ * Wird im HTML-Dokument von den Radio-Tasten aufgerufen, mit denen
+ * die Überweisungsmethode gewählt wird.
+ * 
  * @param {number} setting	Welche Zahlungsoption gewählt wurde
  */
 function processMode(setting) {
@@ -124,6 +132,10 @@ function processMode(setting) {
 
 /**
  * Sperre oder entsperre Eingabefelder zu Bankdaten (IBAN und Inhaber)
+ * 
+ * Wird im Dokument von der Checkbox aufgerufen, die wählt, ob die
+ * IBAN dem ADFC schon bekannt ist.
+ * 
  * @param {boolean} check	Ob Eingabefelder gesperrt sein sollen
  */
 function ibanKnown(check) {
@@ -141,7 +153,10 @@ function ibanKnown(check) {
 }	}
 
 /**
- * Zeige Eingabefelder für die ersten x Positionen und verstecke den Rest
+ * Zeige Eingabefelder für die ersten x Positionen und verstecke den Rest.
+ * 
+ * Wird im Dokument vom Reset-Knopf aufgerufen.
+ * 
  * @param {number} x	Die letzte anzuzeigende Position
  */
 function positionDisplayInitialize(x) {
@@ -156,6 +171,10 @@ function positionDisplayInitialize(x) {
 
 /**
  * Zeige oder verstecke die Eingabefelder für Position x
+ * 
+ * Wird im Dokument von Eingabefeldern für Positionsname, -Anzahl,
+ * -Stückpreis und -Betrag aufgerufen.
+ * 
  * @param {number} x		Die fragliche Position
  * @param {boolean} show	Ob die Position angezeigt werden soll
  */
@@ -167,6 +186,10 @@ function positionDisplay(x,show=true) { //Zeige oder verstecke Position x im HTM
 
 /**
  * Berechne den Gesamtbetrag und gib ihn aus.
+ * 
+ * Wird im Dokument von allen Geld- und Anzahlfeldern sowie vom
+ * Reset-Knopf aufgerufen.
+ * 
  * @param {boolean} [notreset]	Falls false: Ergebnis ist 0
  */
 function calculate(notreset=true) {
