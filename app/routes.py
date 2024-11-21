@@ -7,11 +7,9 @@ entsprechenden Inhalte anzeigt.
 from flask import Blueprint, render_template, request, abort
 from flask_weasyprint import HTML, CSS, render_pdf
 
-from app import aktive
+from app import aktive, VERSION
 
 # Constants
-with open('VERSION') as f:
-    VERSION = f.readline()
 AKTIVE_HTML = 'templates/documents/aktive_template.html'
 AKTIVE_CSS = 'templates/documents/aktive_template.css'
 STATIC = 'pages.static'
