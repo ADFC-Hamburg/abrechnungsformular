@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Button to download blank PDF file added to form
+
 ### Changed
 
 - Reset button in form labeled and colored red
