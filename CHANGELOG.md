@@ -12,6 +12,7 @@
 - Reset button in form labeled and colored red
 - Logo in form now handled via CSS
 - Minor changes to form header layout
+- Invoice has '1' in unit count if valid position does not have a price per unit
 
 ### Fixed
 

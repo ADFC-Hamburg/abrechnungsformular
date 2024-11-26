@@ -65,7 +65,7 @@ class Position:
         
         out.append( tools.cell( escape(self._name) ) )
         
-        if self._unitprice:
+        if self:
             out.append( tools.cell(self.getunitcount()) )
         else:
             out.append( tools.cell() )
