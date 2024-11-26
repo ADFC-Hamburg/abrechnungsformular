@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Reset button in form labeled and colored red
+
 ## v1.1 - 2024-11-21
 
 ### Added
