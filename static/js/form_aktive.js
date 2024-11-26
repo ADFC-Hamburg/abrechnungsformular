@@ -103,6 +103,13 @@ function processDisplay(mode=0) {
 		default:
 			break;
 	}
+	// Should IBAN field be disabled?
+	if (hide[0] || document.getElementById("processuserknown").checked) {
+		ibanLock(true);
+	} else {
+		ibanLock(false);
+	}
+	// Zeige und verstecke Zahlungsoptionen
 	field[1].hidden = hide[0];
 	field[2].hidden = hide[1];
 	field[3].hidden = hide[1];
@@ -136,7 +143,7 @@ function processMode(setting) {
  * 
  * @param {boolean} check	Ob Eingabefelder gesperrt sein sollen
  */
-function ibanKnown(check) {
+function ibanLock(check) {
 	const field = [document.getElementById("processiban"), document.getElementById("processowner")];
 	if (check) {
 		field[0].disabled = true;
@@ -230,12 +237,12 @@ function calculate(notreset=true) {
 const hiddenElements = document.getElementsByClassName("scriptonly");
 for (let i = 0; i < hiddenElements.length; i++) {
 	hiddenElements[i].removeAttribute("hidden");
-}	
+}
 */
 
 // Setze spätestes erlaubtes Datum auf heute
 document.getElementById("projectdate").max = new Date().toISOString().split("T")[0];
-	
+
 // Überprüfe, welche Radio-Knöpfe und Checkboxen schon gedrückt sind, und passe Variablen und Sichtbarkeit an
 for (let i = 1; i <= maxPos; i++) {
 	const button = [document.getElementById("position"+i+"plus").checked, document.getElementById("position"+i+"minus").checked];
@@ -257,7 +264,7 @@ for (let i = 1; i <= maxPos; i++) {
 	calculate();
 }
 if (document.getElementById("processuserknown").checked) {
-	ibanKnown(true);
+	ibanLock(true);
 }
 if ( document.querySelector('input[name="prtype"]:checked') !== null ) {
 	// Eine Zahlungsoption wurde bereits ausgewählt

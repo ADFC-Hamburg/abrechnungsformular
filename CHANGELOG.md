@@ -13,6 +13,10 @@
 - Logo in form now handled via CSS
 - Minor changes to form header layout
 
+### Fixed
+
+- Could not submit form with invalid IBAN entered even when IBAN field was hidden
+
 ## v1.1 - 2024-11-21
 
 ### Added
