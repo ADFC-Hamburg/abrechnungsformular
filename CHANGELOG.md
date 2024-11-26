@@ -9,6 +9,8 @@
 ### Changed
 
 - Reset button in form labeled and colored red
+- Logo in form now handled via CSS
+- Minor changes to form header layout
 
 ## v1.1 - 2024-11-21
 

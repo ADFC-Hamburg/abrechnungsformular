@@ -17,7 +17,23 @@ body {
 
 /* Dokument-Header ———————————————————————————*/
 
+body > header::before {
+	content:	"";
+	display:	block;
+
+	width:		10.667rem;
+	height:		4rem;
+	margin:		.75rem auto;
+
+	background-image:url('../img/ADFC-HH-orangewhite.svg');
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size:100% auto;
+}
 body > header {
+	position:	relative;
+	display:	flow-root;
+
 	text-align:	center;
 	vertical-align:	bottom;
 	background-color:var(--adfc-blue);
@@ -30,10 +46,9 @@ body > header h1 {
 	display:	inline;
 }
 body > header div {
-	margin-left:	auto;
-	margin-right:	auto;
+	margin-left:	2em;
+	margin-right:	2em;
 	padding:	0.1em;
-	max-width:	80%
 }
 body > header p {
 	font-style:	italic;
@@ -41,10 +56,6 @@ body > header p {
 body > header img {
 	color:		white;
 	font-weight:	bold;
-}
-img.logo {
-	height:		4rem;
-	margin:		0.75rem;
 }
 
 /* Formular ——————————————————————————————————*/
@@ -216,12 +227,13 @@ span.money::after {
 /* Logo- und Überschriftposition auf breitem Bildschirm */
 
 @media (min-width:48rem) {
-	a.logo {
+	body > header::before {
 		position:	absolute;
+		margin:		0;
 		left:		1.75rem;
-		top:		0.5rem;
+		height:		100%;
 	}
-	header div {
+	body > header div {
 		max-width:	60%;
 		margin-left:	max(16rem,20%);
 	}
