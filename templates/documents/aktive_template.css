@@ -196,11 +196,11 @@ td, th {
 .ein_aus tfoot tr:nth-child(3) td:nth-child(2)::before {
 	content:	"";
 	position:	absolute;
-	right:		-.5px;
-	left:		-.5px;
+	right:		-.75px;
+	left:		-.75px;
 	top:		50%;
 	height:		4mm;
-	border:		.5px solid black;
+	border:		.75px solid black;
 	border-top-style:none;
 	z-index:	-1;
 }
