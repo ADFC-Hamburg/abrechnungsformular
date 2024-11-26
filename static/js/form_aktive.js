@@ -14,7 +14,7 @@ var processMem = 0;
  *  
  * @param {number} x 			Die Position, die geändert wird
  * @param {boolean} setting 	true für Einnahme, false für Ausgabe
- * @param {boolean} [evaluate]	Ob updatePosition ausgeführt wird; Standardmäßig true
+ * @param {boolean} [evaluate]	Ob updatePosition und calculate ausgeführt werden; Standardmäßig true
  */
 function positionSetting(x,setting,evaluate=true) { 
 	switch(setting) {
@@ -30,7 +30,10 @@ function positionSetting(x,setting,evaluate=true) {
 			multiplier[x-1] = 0;
 			break;
 	}
-	if (evaluate) { updatePosition(x); }
+	if (evaluate) {
+		updatePosition(x);
+		calculate();
+	}
 }
 
 /**

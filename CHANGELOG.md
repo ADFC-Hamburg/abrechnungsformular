@@ -16,6 +16,7 @@
 ### Fixed
 
 - Could not submit form with invalid IBAN entered even when IBAN field was hidden
+- Money total did not update when position was switched between income and expense
 
 ## v1.1 - 2024-11-21
 
