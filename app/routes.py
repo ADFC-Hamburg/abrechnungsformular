@@ -59,7 +59,7 @@ def aktive_pdf():
                           download_filename=filename)
     else:
         # No query provided; use premade empty PDF instead
-        return pages.send_static_file('blank/aktive.pdf')
+        return pages.send_static_file('blank/Aktivenabrechnung.pdf')
 
 @pages.route('/favicon.ico')
 def favicon():
