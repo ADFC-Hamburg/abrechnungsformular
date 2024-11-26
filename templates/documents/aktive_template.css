@@ -1,126 +1,129 @@
 @page {
-	size: A4 portrait;
-	margin: 0;
+	size:		A4 portrait;
+	margin:		0;
 }
 :root {
-	font-size: 10pt;
-	font-family: Arial, Helvetica, Arimo, "Liberation Sans", sans-serif;
-	--serif: "Times New Roman", Times, Tinos, "Liberation Serif", serif;
+	font-size:	10pt;
+	font-family:	Arial, Helvetica, Arimo, "Liberation Sans", sans-serif;
+	--serif:	"Times New Roman", Times, Tinos, "Liberation Serif", serif;
 }
 * {
 	box-sizing:	border-box;
 }
 body {
-	padding:0;
-	margin:0;
+	padding:	0;
+	margin: 	0;
 }
 .document {
-	width: 210mm;
-	height: 297mm;
-	border:0;
-	margin:0;
-	padding:10mm 15mm 10mm 25mm;
-	position:relative;
+	width:		210mm;
+	height:		297mm;
+	border:		0;
+	margin:		0;
+	padding:	10mm 15mm 10mm 25mm;
+	position:	relative;
 }
 
-/*Header*/
+/* Header */
+
 header div {
-	font-size: 8pt;
-	position: absolute;
-	transform-origin: top left;
-	margin:0;
-	padding:0;
+	font-size:	8pt;
+	position:	absolute;
+	transform-origin:top left;
+	margin: 	0;
+	padding:	0;
 }
 header .top {
-	font-family: var(--serif);
-	left:13.4mm;
-	top:4.3mm;
+	font-family:	var(--serif);
+	left:		13.4mm;
+	top:		4.3mm;
 }
 header .symbol {
-	font-size: 40pt;
-	left:175mm;
-	top:0mm;
+	font-size:	40pt;
+	left:		175mm;
+	top:		0mm;
 }
 header .info {
-	font-weight:bold;
-	left:151.3mm;
-	top:33mm;
-	width:43.5mm;
+	font-weight:	bold;
+	left:		151.3mm;
+	top:		33mm;
+	width:		43.5mm;
 }
 header .box {
-	text-align:justify;
-	left:146.9mm;
-	top:47.6mm;
-	width:54.4mm;
-	border:0.5pt solid black;
-	padding:1mm;
+	text-align:	justify;
+	left:		146.9mm;
+	top:		47.6mm;
+	width:		54.4mm;
+	border:		0.5pt solid black;
+	padding:	1mm;
 }
 
-/*Adressfeld*/
+/* Adressfeld */
+
 adress {
-	font-size:12pt;
-	position:absolute;
-	left:25mm;
-	top:55mm;
-	width:80mm;
-	height:40mm;
+	font-size:	12pt;
+	position:	absolute;
+	left:		25mm;
+	top:		55mm;
+	width:		80mm;
+	height:		40mm;
 }
 
-/*Allgemeine Formatierung*/
+/* Allgemeine Formatierung */
+
 h1 {
-	font-size:inherit;
-	margin:0 0 0.5pt;
+	font-size:	inherit;
+	margin:		0 0 0.5pt;
 }
 h1 strong {
-	font-size:200%;
+	font-size:	200%;
 }
 table + h1,
 table + table {
-	margin-top:8pt;
+	margin-top:	8pt;
 }
 table {
-	position:relative;
-	left:-1.4mm;
-	width:100%;
-	border-collapse: collapse;
+	position:	relative;
+	left:		-1.4mm;
+	width:		100%;
+	border-collapse:collapse;
 }
 td, th {
-	height:7mm;
-	vertical-align:middle;
-	margin:0;
-	padding: 0 1.2mm;
-	border:0.5pt solid;
-	border-color:black;
+	height:		7mm;
+	vertical-align:	middle;
+	margin: 	0;
+	padding:	0 1.2mm;
+	border: 	0.5pt solid;
+	border-color:	black;
 }
 .left {
-	text-align:left;
+	text-align:	left;
 }
 .center {
-	text-align:center;
+	text-align:	center;
 }
 .compact {
-	padding:0;
+	padding:	0;
 }
 .row2 {
 	border-top-style:hidden;
 }
 .hide {
-	border-style:none;
+	border-style:	none;
 }
 .check {
-	text-align:center;
-	width:6.5mm;
-	padding:0;
-	font-family: "DejaVu Sans", sans-serif;
+	text-align:	center;
+	width:		6.5mm;
+	padding:	0;
+	font-family:	"DejaVu Sans", sans-serif;
 }
 .check:nth-child(2) {
-	width:4.5mm;
+	width:		4.5mm;
 }
 .lock {
-	background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M0 99 L99 0 L100 1 L1 100' fill='black' /><path d='M0 1 L99 100 L100 99 L1 0' fill='black' /></svg>");
+	background:	url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M0 99 L99 0 L100 1 L1 100' fill='black' /><path d='M0 1 L99 100 L100 99 L1 0' fill='black' /></svg>");
 	background-repeat:no-repeat;
 	background-position:center center;
-	background-size: 100% 100%, auto;
+	background-size:100% 100%, auto;
 }
 .version {
 	font-size:	6pt;
@@ -128,136 +131,140 @@ td, th {
 	vertical-align:	20%;
 }
 
-/*Angabenfelder oben*/
+/* Angabenfelder oben */
+
 .angaben {
-	position:absolute;
-	width:116.5mm;
-	left:25mm;
-	top:10mm;
+	position:	absolute;
+	width:		116.5mm;
+	left:		25mm;
+	top:		10mm;
 }
 .angaben td, .angaben th {
-	border:0.5pt solid black;
+	border:		0.5pt solid black;
 }
 .angaben td:nth-child(2), .angaben th:nth-child(2) {
-	width:89mm;
-	max-width:89mm;
-	white-space:nowrap;
-	overflow:hidden;
-	text-overflow:ellipsis;
-	border-left:0.5pt hidden;
+	width:		89mm;
+	max-width:	89mm;
+	white-space:	nowrap;
+	overflow:	hidden;
+	text-overflow:	ellipsis;
+	border-left:	0.5pt hidden;
 }
 .abrechnung {
-	position:absolute;
-	width:173.8mm;
-	left:25mm;
-	top:95mm;
+	position:	absolute;
+	width:		173.8mm;
+	left:		25mm;
+	top:		95mm;
 }
 
-/*Abrechnungstabelle*/
+/* Abrechnungstabelle */
+
 .ein_aus .wide {
-	width:67mm;
-	max-width:67mm;
-	white-space:nowrap;
+	width:		67mm;
+	max-width:	67mm;
+	white-space:	nowrap;
 }
 .ein_aus td {
-	text-align:right;
-	white-space:nowrap;
+	text-align:	right;
+	white-space:	nowrap;
 }
 .ein_aus thead th {
-	text-align:center;
-	font-weight:normal;
-	height:4.1mm;
+	text-align:	center;
+	font-weight:	normal;
+	height:		4.1mm;
 }
 .ein_aus tbody {
-	border-width:1pt;
-	border-style:solid none;
-	border-color:black;
+	border-width:	1pt;
+	border-style:	solid none;
+	border-color:	black;
 }
 .ein_aus tbody td:first-child {
-	text-align:center;
+	text-align:	center;
 }
 .ein_aus tbody td:nth-child(2) {
-	width:67mm;
-	max-width:67mm;
-	text-align:left;
-	white-space:nowrap;
-	overflow:hidden;
-	text-overflow:ellipsis;
+	width:		67mm;
+	max-width:	67mm;
+	text-align:	left;
+	white-space:	nowrap;
+	overflow:	hidden;
+	text-overflow:	ellipsis;
 }
 .ein_aus tfoot tr:nth-child(3) td:nth-child(2) {
-	position:relative;
-	text-align:center;
+	position:	relative;
+	text-align:	center;
 }
 .ein_aus tfoot tr:nth-child(3) td:nth-child(2)::before {
-	content:"";
-	position:absolute;
-	right:-.5px;
-	left:-.5px;
-	top:50%;
-	height:4mm;
-	border:.5px solid black;
+	content:	"";
+	position:	absolute;
+	right:		-.5px;
+	left:		-.5px;
+	top:		50%;
+	height:		4mm;
+	border:		.5px solid black;
 	border-top-style:none;
-	z-index:-1;
+	z-index:	-1;
 }
 
-/*Abwicklungstabelle*/
+/* Abwicklungstabelle */
+
 .abwicklung {
-	width:169.1mm;
-	border:.5px solid black;
+	width:		169.1mm;
+	border:		.5px solid black;
 }
 .abwicklung td {
-	border-style:none;
+	border-style:	none;
 }
 .abwicklung tr:nth-child(3n-2) td {
-	padding-top: 3.2mm;
-	padding-bottom: 1.2mm;
+	padding-top:	3.2mm;
+	padding-bottom:	1.2mm;
 }
 .abwicklung tr:last-child td {
-	padding-bottom: 3.2mm;
+	padding-bottom:	3.2mm;
 }
 
 .subtable {
-	width:100%;
+	width:		100%;
 }
 .subtable td {
-	height:auto;
-	padding:0 1.2mm 0 1.2mm !important;
+	height:		auto;
+	padding:	0 1.2mm 0 1.2mm !important;
 }
 .subtable td:nth-child(2) {
-	width:36.5%;
-	border:.5px solid black;
+	width:		36.5%;
+	border:		.5px solid black;
 }
 .subtable td:nth-child(4) {
-	width:63.4mm;
-	height:6.8mm;
-	border:.5px solid black;
+	width:		63.4mm;
+	height:		6.8mm;
+	border:		.5px solid black;
 }
 
-/*Tabellen unten*/
+/* Tabellen unten */
+
 .bottomtable {
-	width:169.1mm;
+	width:		169.1mm;
 }
 .bottomtable th {
-	text-align:left;
-	height:auto;
+	text-align:	left;
+	height:		auto;
 }
 .bottomtable .inbetween {
-	border-style:none;
-	width:10mm;
+	border-style:	none;
+	width:		10mm;
 }
 .bottomtable td:first-child {
-	width:30mm;
+	width:		30mm;
 }
 .bottomtable td:nth-child(2) {
-	width:61.4mm;
+	width:		61.4mm;
 }
 
 .bottomtable td:nth-child(3n-2) {
 	border-right-style:hidden;
 }
 p {
-	margin:0;
+	margin:		0;
 }
 p + p {
-	margin-top:1.6mm;
+	margin-top:	1.6mm;
 }
