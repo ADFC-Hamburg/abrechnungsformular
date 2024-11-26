@@ -3,6 +3,9 @@
 # Use the official Python 3.13.0-slim image as base
 FROM python:3.13.0-slim AS base
 
+# Description of resulting image
+LABEL org.opencontainers.image.description "Ein Webserver, über welchen Aktive und Helfer des ADFC Hamburg Abrechnungsformulare ausfüllen und herunterladen können."
+
 # Set the working directory within the container
 WORKDIR /abrechnungsformular
 
