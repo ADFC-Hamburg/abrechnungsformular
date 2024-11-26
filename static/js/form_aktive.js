@@ -232,6 +232,9 @@ for (let i = 0; i < hiddenElements.length; i++) {
 	hiddenElements[i].removeAttribute("hidden");
 }	
 */
+
+// Setze spätestes erlaubtes Datum auf heute
+document.getElementById("projectdate").max = new Date().toISOString().split("T")[0];
 	
 // Überprüfe, welche Radio-Knöpfe und Checkboxen schon gedrückt sind, und passe Variablen und Sichtbarkeit an
 for (let i = 1; i <= maxPos; i++) {

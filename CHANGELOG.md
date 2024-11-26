@@ -5,6 +5,7 @@
 ### Added
 
 - Button to download blank PDF file added to form
+- Date field restricts entering dates beyond the present day
 
 ### Changed
 
