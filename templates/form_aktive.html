@@ -27,19 +27,19 @@
 		<!--Name und Bereich--><fieldset>
 			<legend>Persönliche Angaben</legend>
 			<span class="avoidwrap">
-				<label for="username">Dein Name: </label><input type="text" class="field" name="uname" id="username" autocomplete="name">
+				<label>Dein Name: <input type="text" class="field" name="uname" id="username" autocomplete="name"></label>
 			</span>
 			<span class="avoidwrap">
-				<label for="userdepartment">Dein Arbeitsbereich: </label><input type="text" class="field" name="dept" id="userdepartment" autocomplete="on">
+				<label>Dein Arbeitsbereich: <input type="text" class="field" name="dept" id="userdepartment" autocomplete="on"></label>
 			</span>
 		</fieldset>
 		<!--Projekt--><fieldset class="right">
 			<legend>Angaben zur Aktion oder zum Projekt</legend>
 			<span class="avoidwrap">
-				<label for="projectname">Name der Aktion: </label><input type="text" class="field" name="pname" id="projectname">
+				<label>Name der Aktion: <input type="text" class="field" name="pname" id="projectname"></label>
 			</span>
 			<span class="avoidwrap">
-				<label for="projectdate">Datum der Aktion: </label><input type="date" class="field" name="pdate" id="projectdate">
+				<label>Datum der Aktion: <input type="date" class="field" name="pdate" id="projectdate"></label>
 			</span>
 		</fieldset>
 		</header>
@@ -51,24 +51,24 @@
 				</div>
 				<div class="select">
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position1plus" name="p1type" value=1 oninput="positionSetting(1,true)" checked><label for="position1plus">Einnahme</label>
+						<label><input type="radio" class="selector" id="position1plus" name="p1type" value=1 oninput="positionSetting(1,true)" checked>Einnahme</label>
 					</span>
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position1minus" name="p1type" value=-1 oninput="positionSetting(1,false)"><label for="position1minus">Ausgabe</label>
+						<label><input type="radio" class="selector" id="position1minus" name="p1type" value=-1 oninput="positionSetting(1,false)">Ausgabe</label>
 					</span>
 					<!-- <span class="avoidwrap">
-						<input type="checkbox" class="selector scriptonly" id="position1multi" oninput="multiSetting(1,this.checked)" hidden><label for="position1multi" class="scriptonly" hidden>Mehrere Stückzahlen</label>
+						<label class="scriptonly" hidden><input type="checkbox" class="selector" id="position1multi" oninput="multiSetting(1,this.checked)">Mehrere Stückzahlen</label>
 					</span> -->
 				</div>
 				<div class="subinput">
 					<span class="avoidwrap">
-						<label for="position1count">Anzahl: </label><input type="number" class="field" name="p1cnt" id="position1count" min=0 step=1 size=4 oninput="updatePosition(1); calculate(); positionDisplay(2);">
+						<label>Anzahl: <input type="number" class="field" name="p1cnt" id="position1count" min=0 step=1 size=4 oninput="updatePosition(1); calculate(); positionDisplay(2);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position1price">Einzelpreis: </label><input type="number" class="field" name="p1ppu" id="position1price" min="0" step="0.01" class="money" oninput="multiSetting(1,true); calculate(); positionDisplay(2);">
+						<label>Einzelpreis: <input type="number" class="field" name="p1ppu" id="position1price" min="0" step="0.01" class="money" oninput="multiSetting(1,true); calculate(); positionDisplay(2);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position1amount">Gesamt: </label><input type="number" class="field" name="p1" id="position1amount" min="0" step="0.01" class="money" oninput="multiSetting(1,false); calculate(); positionDisplay(2);">
+						<label>Gesamt: <input type="number" class="field" name="p1" id="position1amount" min="0" step="0.01" class="money" oninput="multiSetting(1,false); calculate(); positionDisplay(2);"></label>
 					</span>
 				</div>
 			</section>
@@ -78,24 +78,24 @@
 				</div>
 				<div class="select">
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position2plus" name="p2type" value="1" oninput="positionSetting(2,true)" checked><label for="position2plus">Einnahme</label>
+						<label><input type="radio" class="selector" id="position2plus" name="p2type" value="1" oninput="positionSetting(2,true)" checked">Einnahme</label>
 					</span>
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position2minus" name="p2type" value="-1" oninput="positionSetting(2,false)"><label for="position2minus">Ausgabe</label>
+						<label><input type="radio" class="selector" id="position2minus" name="p2type" value="-1" oninput="positionSetting(2,false)">Ausgabe</label>
 					</span>
 					<!-- <span class="avoidwrap">
-						<input type="checkbox" class="selector scriptonly" id="position2multi" oninput="multiSetting(2,this.checked)" hidden><label for="position2multi" class="scriptonly" hidden>Mehrere Stückzahlen</label>
+						<label class="scriptonly" hidden><input type="checkbox" class="selector" id="position2multi" oninput="multiSetting(2,this.checked)">Mehrere Stückzahlen</label>
 					</span> -->
 				</div>
 				<div class="subinput">
 					<span class="avoidwrap">
-						<label for="position2count">Anzahl: </label><input type="number" class="field" name="p2cnt" id="position2count" min=0 step=1 size=4 oninput="updatePosition(2); calculate(); positionDisplay(3);">
+						<label>Anzahl: <input type="number" class="field" name="p2cnt" id="position2count" min=0 step=1 size=4 oninput="updatePosition(2); calculate(); positionDisplay(3);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position2price">Einzelpreis: </label><input type="number" class="field" name="p2ppu" id="position2price" min="0" step="0.01" class="money" oninput="multiSetting(2,true); calculate(); positionDisplay(3);">
+						<label>Einzelpreis: <input type="number" class="field" name="p2ppu" id="position2price" min="0" step="0.01" class="money" oninput="multiSetting(2,true); calculate(); positionDisplay(3);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position2amount">Gesamt: </label><input type="number" class="field" name="p2" id="position2amount" min="0" step="0.01" class="money" oninput="multiSetting(2,false); calculate(); positionDisplay(3);">
+						<label>Gesamt: <input type="number" class="field" name="p2" id="position2amount" min="0" step="0.01" class="money" oninput="multiSetting(2,false); calculate(); positionDisplay(3);"></label>
 					</span>
 				</div>
 			</section>
@@ -105,24 +105,24 @@
 				</div>
 				<div class="select">
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position3plus" name="p3type" value="1" oninput="positionSetting(3,true)" checked><label for="position3plus">Einnahme</label>
+						<label><input type="radio" class="selector" id="position3plus" name="p3type" value="1" oninput="positionSetting(3,true)" checked>Einnahme</label>
 					</span>
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position3minus" name="p3type" value="-1" oninput="positionSetting(3,false)"><label for="position3minus">Ausgabe</label>
+						<label><input type="radio" class="selector" id="position3minus" name="p3type" value="-1" oninput="positionSetting(3,false)">Ausgabe</label>
 					</span>
 					<!-- <span class="avoidwrap">
-						<input type="checkbox" class="selector scriptonly" id="position3multi" oninput="multiSetting(3,this.checked)" hidden><label for="position3multi" class="scriptonly" hidden>Mehrere Stückzahlen</label>
+						<label class="scriptonly" hidden><input type="checkbox" class="selector" id="position3multi" oninput="multiSetting(3,this.checked)">Mehrere Stückzahlen</label>
 					</span> -->
 				</div>
 				<div class="subinput">
 					<span class="avoidwrap">
-						<label for="position3count">Anzahl: </label><input type="number" class="field" name="p3cnt" id="position3count" min=0 step=1 size=4 oninput="updatePosition(3); calculate(); positionDisplay(4);">
+						<label>Anzahl: <input type="number" class="field" name="p3cnt" id="position3count" min=0 step=1 size=4 oninput="updatePosition(3); calculate(); positionDisplay(4);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position3price">Einzelpreis: </label><input type="number" class="field" name="p3ppu" id="position3price" min="0" step="0.01" class="money" oninput="multiSetting(3,true); calculate(); positionDisplay(4);">
+						<label>Einzelpreis: <input type="number" class="field" name="p3ppu" id="position3price" min="0" step="0.01" class="money" oninput="multiSetting(3,true); calculate(); positionDisplay(4);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position3amount">Gesamt: </label><input type="number" class="field" name="p3" id="position3amount" min="0" step="0.01" class="money" oninput="multiSetting(3,false); calculate(); positionDisplay(4);">
+						<label>Gesamt: <input type="number" class="field" name="p3" id="position3amount" min="0" step="0.01" class="money" oninput="multiSetting(3,false); calculate(); positionDisplay(4);"></label>
 					</span>
 				</div>
 			</section>
@@ -132,24 +132,24 @@
 				</div>
 				<div class="select">
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position4plus" name="p4type" value="1" oninput="positionSetting(4,true)" checked><label for="position4plus">Einnahme</label>
+						<label><input type="radio" class="selector" id="position4plus" name="p4type" value="1" oninput="positionSetting(4,true)" checked>Einnahme</label>
 					</span>
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position4minus" name="p4type" value="-1" oninput="positionSetting(4,false)"><label for="position4minus">Ausgabe</label>
+						<label><input type="radio" class="selector" id="position4minus" name="p4type" value="-1" oninput="positionSetting(4,false)">Ausgabe</label>
 					</span>
 					<!-- <span class="avoidwrap">
-						<input type="checkbox" class="selector scriptonly" id="position4multi" oninput="multiSetting(4,this.checked)" hidden><label for="position4multi" class="scriptonly" hidden>Mehrere Stückzahlen</label>
+						<label class="scriptonly" hidden><input type="checkbox" class="selector" id="position4multi" oninput="multiSetting(4,this.checked)">Mehrere Stückzahlen</label>
 					</span> -->
 				</div>
 				<div class="subinput">
 					<span class="avoidwrap">
-						<label for="position4count">Anzahl: </label><input type="number" class="field" name="p4cnt" id="position4count" min=0 step=1 size=4 oninput="updatePosition(4); calculate(); positionDisplay(5);">
+						<label>Anzahl: <input type="number" class="field" name="p4cnt" id="position4count" min=0 step=1 size=4 oninput="updatePosition(4); calculate(); positionDisplay(5);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position4price">Einzelpreis: </label><input type="number" class="field" name="p4ppu" id="position4price" min="0" step="0.01" class="money" oninput="multiSetting(4,true); calculate(); positionDisplay(5);">
+						<label>Einzelpreis: <input type="number" class="field" name="p4ppu" id="position4price" min="0" step="0.01" class="money" oninput="multiSetting(4,true); calculate(); positionDisplay(5);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position4amount">Gesamt: </label><input type="number" class="field" name="p4" id="position4amount" min="0" step="0.01" class="money" oninput="multiSetting(4,false); calculate(); positionDisplay(5);">
+						<label>Gesamt: <input type="number" class="field" name="p4" id="position4amount" min="0" step="0.01" class="money" oninput="multiSetting(4,false); calculate(); positionDisplay(5);"></label>
 					</span>
 				</div>
 			</section>
@@ -159,24 +159,24 @@
 				</div>
 				<div class="select">
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position5plus" name="p5type" value="1" oninput="positionSetting(5,true)" checked><label for="position5plus">Einnahme</label>
+						<label><input type="radio" class="selector" id="position5plus" name="p5type" value="1" oninput="positionSetting(5,true)" checked>Einnahme</label>
 					</span>
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position5minus" name="p5type" value="-1" oninput="positionSetting(5,false)"><label for="position5minus">Ausgabe</label>
+						<label><input type="radio" class="selector" id="position5minus" name="p5type" value="-1" oninput="positionSetting(5,false)">Ausgabe</label>
 					</span>
 					<!-- <span class="avoidwrap">
-						<input type="checkbox" class="selector scriptonly" id="position5multi" oninput="multiSetting(5,this.checked)" hidden><label for="position5multi" class="scriptonly" hidden>Mehrere Stückzahlen</label>
+						<label class="scriptonly" hidden><input type="checkbox" class="selector" id="position5multi" oninput="multiSetting(5,this.checked)">Mehrere Stückzahlen</label>
 					</span> -->
 				</div>
 				<div class="subinput">
 					<span class="avoidwrap">
-						<label for="position5count">Anzahl: </label><input type="number" class="field" name="p5cnt" id="position5count" min=0 step=1 size=4 oninput="updatePosition(5); calculate(); positionDisplay(6);">
+						<label>Anzahl: <input type="number" class="field" name="p5cnt" id="position5count" min=0 step=1 size=4 oninput="updatePosition(5); calculate(); positionDisplay(6);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position5price">Einzelpreis: </label><input type="number" class="field" name="p5ppu" id="position5price" min="0" step="0.01" class="money" oninput="multiSetting(5,true); calculate(); positionDisplay(6);">
+						<label>Einzelpreis: <input type="number" class="field" name="p5ppu" id="position5price" min="0" step="0.01" class="money" oninput="multiSetting(5,true); calculate(); positionDisplay(6);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position5amount">Gesamt: </label><input type="number" class="field" name="p5" id="position5amount" min="0" step="0.01" class="money" oninput="multiSetting(5,false); calculate(); positionDisplay(6);">
+						<label>Gesamt: <input type="number" class="field" name="p5" id="position5amount" min="0" step="0.01" class="money" oninput="multiSetting(5,false); calculate(); positionDisplay(6);"></label>
 					</span>
 				</div>
 			</section>
@@ -186,24 +186,24 @@
 				</div>
 				<div class="select">
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position6plus" name="p6type" value="1" oninput="positionSetting(6,true)" checked><label for="position6plus">Einnahme</label>
+						<label><input type="radio" class="selector" id="position6plus" name="p6type" value="1" oninput="positionSetting(6,true)" checked>Einnahme</label>
 					</span>
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position6minus" name="p6type" value="-1" oninput="positionSetting(6,false)"><label for="position6minus">Ausgabe</label>
+						<label><input type="radio" class="selector" id="position6minus" name="p6type" value="-1" oninput="positionSetting(6,false)">Ausgabe</label>
 					</span>
 					<!-- <span class="avoidwrap">
-						<input type="checkbox" class="selector scriptonly" id="position6multi" oninput="multiSetting(6,this.checked)" hidden><label for="position6multi" class="scriptonly" hidden>Mehrere Stückzahlen</label>
+						<label class="scriptonly" hidden><input type="checkbox" class="selector" id="position6multi" oninput="multiSetting(6,this.checked)">Mehrere Stückzahlen</label>
 					</span> -->
 				</div>
 				<div class="subinput">
 					<span class="avoidwrap">
-						<label for="position6count">Anzahl: </label><input type="number" class="field" name="p6cnt" id="position6count" min=0 step=1 size=4 oninput="updatePosition(6); calculate(); positionDisplay(7);">
+						<label>Anzahl: <input type="number" class="field" name="p6cnt" id="position6count" min=0 step=1 size=4 oninput="updatePosition(6); calculate(); positionDisplay(7);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position6price">Einzelpreis: </label><input type="number" class="field" name="p6ppu" id="position6price" min="0" step="0.01" class="money" oninput="multiSetting(6,true); calculate(); positionDisplay(7);">
+						<label>Einzelpreis: <input type="number" class="field" name="p6ppu" id="position6price" min="0" step="0.01" class="money" oninput="multiSetting(6,true); calculate(); positionDisplay(7);"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position6amount">Gesamt: </label><input type="number" class="field" name="p6" id="position6amount" min="0" step="0.01" class="money" oninput="multiSetting(6,false); calculate(); positionDisplay(7);">
+						<label>Gesamt: <input type="number" class="field" name="p6" id="position6amount" min="0" step="0.01" class="money" oninput="multiSetting(6,false); calculate(); positionDisplay(7);"></label>
 					</span>
 				</div>
 			</section>
@@ -213,30 +213,30 @@
 				</div>
 				<div class="select">
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position7plus" name="p7type" value="1" oninput="positionSetting(7,true)" checked><label for="position7plus">Einnahme</label>
+						<label><input type="radio" class="selector" id="position7plus" name="p7type" value="1" oninput="positionSetting(7,true)" checked>Einnahme</label>
 					</span>
 					<span class="avoidwrap">
-						<input type="radio" class="selector" id="position7minus" name="p7type" value="-1" oninput="positionSetting(7,false)"><label for="position7minus">Ausgabe</label>
+						<label><input type="radio" class="selector" id="position7minus" name="p7type" value="-1" oninput="positionSetting(7,false)">Ausgabe</label>
 					</span>
 					<!-- <span class="avoidwrap">
-						<input type="checkbox" class="selector scriptonly" id="position7multi" oninput="multiSetting(7,this.checked)" hidden><label for="position7multi" class="scriptonly" hidden>Mehrere Stückzahlen</label>
+						<label class="scriptonly" hidden><input type="checkbox" class="selector" id="position7multi" oninput="multiSetting(7,this.checked)">Mehrere Stückzahlen</label>
 					</span> -->
 				</div>
 				<div class="subinput">
 					<span class="avoidwrap">
-						<label for="position7count">Anzahl: </label><input type="number" class="field" name="p7cnt" id="position7count" min=0 step=1 size=4 oninput="updatePosition(7); calculate()">
+						<label>Anzahl: <input type="number" class="field" name="p7cnt" id="position7count" min=0 step=1 size=4 oninput="updatePosition(7); calculate()"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position7price">Einzelpreis: </label><input type="number" class="field" name="p7ppu" id="position7price" min="0" step="0.01" class="money" oninput="multiSetting(7,true); calculate()">
+						<label>Einzelpreis: <input type="number" class="field" name="p7ppu" id="position7price" min="0" step="0.01" class="money" oninput="multiSetting(7,true); calculate()"></label>
 					</span>
 					<span class="avoidwrap money">
-						<label for="position7amount">Gesamt: </label><input type="number" class="field" name="p7" id="position7amount" min="0" step="0.01" class="money" oninput="multiSetting(7,false); calculate()">
+						<label>Gesamt: <input type="number" class="field" name="p7" id="position7amount" min="0" step="0.01" class="money" oninput="multiSetting(7,false); calculate()"></label>
 					</span>
 				</div>
 			</section>
 			<!--Spenden--><section>
 				<span class="money">
-					<label for="donations">Zusätzlich eingenommene Spenden: </label><input type="number" name="dono" id="donations" min="0" step="0.01" class="money" oninput="calculate()">
+					<label>Zusätzlich eingenommene Spenden: <input type="number" name="dono" id="donations" min="0" step="0.01" class="money" oninput="calculate()"></label>
 				</span>
 			</section>
 		</fieldset>
@@ -245,38 +245,38 @@
 			<section id="totalamount">Bitte gib an, wie du diese Abrechnung verbuchen lassen möchtest:</section>
 			<!--Überweisung an User--><section>
 				<div class="select">
-					<input type="radio" id="processtouser" name="prtype" value="1" oninput="processMode(1)"><label for="processtouser">Wir überweisen den Abrechnungsbetrag auf dein Konto.</label><br>
+					<label><input type="radio" id="processtouser" name="prtype" value="1" oninput="processMode(1)">Wir überweisen den Abrechnungsbetrag auf dein Konto.</label><br>
 				</div>
 				<div class="subinput">
 					<span class="avoidwrap">
-						<label for="processiban"><abbr title="Internationale Bankkontonummer">IBAN</abbr>: </label><span class="iban">DE</span><input type="text" name="iban" id="processiban" size=20 maxlength="20" pattern="\d{20}?" title="20-stellige IBAN, ohne Leerzeichen" class="iban">
+						<label><abbr title="Internationale Bankkontonummer">IBAN</abbr>: <span class="iban">DE</span><input type="text" name="iban" id="processiban" size=20 maxlength="20" pattern="\d{20}?" title="20-stellige IBAN, ohne Leerzeichen" class="iban"></label>
 					</span>
 					<span class="avoidwrap">
-						<label for="processowner">Kontoinhaber: </label><input type="text" name="owner" id="processowner" autocomplete="name">
+						<label>Kontoinhaber: <input type="text" name="owner" id="processowner" autocomplete="name"></label>
 					</span><br>
-					<input type="checkbox" name="known" id="processuserknown" value="1" oninput="ibanLock(this.checked)"><label for="processuserknown">Meine Bankverbindung ist dem ADFC Hamburg bekannt.</label>
+					<label><input type="checkbox" name="known" id="processuserknown" value="1" oninput="ibanLock(this.checked)">Meine Bankverbindung ist dem ADFC Hamburg bekannt.</label>
 				</div>
 			</section>
 			<!--Einzug--><section>
 				<div class="select">
-					<input type="radio" id="processsepa" name="prtype" value="2" oninput="processMode(2)"><label for="processsepa">Den Abrechnungsbetrag per <abbr title="Single Euro Payments Area">SEPA</abbr>-Lastschriftmandat einziehen lassen.</label>
+					<label><input type="radio" id="processsepa" name="prtype" value="2" oninput="processMode(2)">Den Abrechnungsbetrag per <abbr title="Single Euro Payments Area">SEPA</abbr>-Lastschriftmandat einziehen lassen.</label>
 					<aside>Bei Bedarf können wir dir dir das Formular zur Erteilung eines <abbr title="Single Euro Payments Area">SEPA</abbr>-Lastschriftmandats gerne zusenden.</aside>
 				</div>
 				<div class="subselect">
 					<span class="avoidwrap">
-						<input type="radio" class="selector" name="prsepa" id="processsepaexists" value="1"><label for="processsepaexists">Du hast uns bereits ein aktuelles <abbr title="Single Euro Payments Area">SEPA</abbr>-Mandat erteilt.</label>
+						<label><input type="radio" class="selector" name="prsepa" id="processsepaexists" value="1">Du hast uns bereits ein aktuelles <abbr title="Single Euro Payments Area">SEPA</abbr>-Mandat erteilt.</label>
 					</span><br>
 					<span class="avoidwrap">
-						<input type="radio" class="selector" name="prsepa" id="processsepanew" value="2"><label for="processsepanew">Du hast uns noch kein <abbr title="Single Euro Payments Area">SEPA</abbr>-Mandat erteilt.</label>
+						<label><input type="radio" class="selector" name="prsepa" id="processsepanew" value="2">Du hast uns noch kein <abbr title="Single Euro Payments Area">SEPA</abbr>-Mandat erteilt.</label>
 					</span>
 					<span class="avoidwrap">
-						<input type="radio" class="selector" name="prsepa" id="processsepachange" value="3"><label for="processsepachange">Deine Bankverbindung hat sich geändert.</label>
+						<label><input type="radio" class="selector" name="prsepa" id="processsepachange" value="3">Deine Bankverbindung hat sich geändert.</label>
 					</span>
 					</div>
 			</section>
 			<!--Überweisung von User--><section>
 				<div class="select">
-					<input type="radio" id="processbyuser" name="prtype" value="3" oninput="processMode(3)"><label for="processbyuser">Du überweist den Abrechnungsbetrag selbst.</label>
+					<label><input type="radio" id="processbyuser" name="prtype" value="3" oninput="processMode(3)">Du überweist den Abrechnungsbetrag selbst.</label>
 					<aside id="processnote">Bitte überweise den Abrechnungsbetrag innerhalb von 10 Tagen auf das Konto des ADFC Hamburg mit der folgenden <abbr title="Internationale Bankkontonummer">IBAN</abbr>: <span class="iban">DE80&nbsp;4306&nbsp;0967&nbsp;2029&nbsp;4456&nbsp;00</span></aside>
 				</div>
 			</section>

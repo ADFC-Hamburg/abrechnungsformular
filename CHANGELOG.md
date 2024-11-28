@@ -5,6 +5,7 @@
 ### Changed
 
 - Changed labels "Mengenpreis" to "Einzelpreis"
+- Fields are now embedded in labels
 
 ## v1.2 - 2024-11-26
 

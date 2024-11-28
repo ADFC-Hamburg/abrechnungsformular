@@ -194,11 +194,9 @@ aside {
 	font-size:	80%;
 	margin:		0.25em;
 }
-input[disabled] + label {
-	color:		lightgrey;
-}
-span.money::after {
+span.money label::after {
 	content:	"€";
+	padding-left:	.25em;
 }
 .negative {
 	color:		red;
