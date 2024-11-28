@@ -6,6 +6,7 @@
 
 - Changed labels "Mengenpreis" to "Einzelpreis"
 - Fields are now embedded in labels
+- Multiline labels for radio buttons and checkboxes now indent properly
 
 ## v1.2 - 2024-11-26
 

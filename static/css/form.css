@@ -139,6 +139,18 @@ input[type="radio"] {
 
 	accent-color:	var(--radio-color);
 }
+label.option {
+	display:	inline-block;
+	position:	relative;
+	padding-left:	1.5em;
+}
+label.option > input[type="checkbox"],
+label.option > input[type="radio"] {
+
+	position:	absolute;
+	left:		0;
+	top:		0;
+}
 
 /* Buttons ———————————————————————————————————*/
 
