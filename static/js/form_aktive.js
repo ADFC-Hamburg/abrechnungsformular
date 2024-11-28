@@ -285,3 +285,29 @@ for (let i = maxPos; i > 0; i--) {
 	}
 	positionDisplayInitialize(1);
 }
+
+// Gib HTML-Elementen auslösbare Events
+for (let i = 0; i < maxPos; i++) {
+	// Ereignisse für Positionsfelder-input
+	const id = "position"+(i+1);
+	const displayFields = ["name","count","price","amount"];
+	
+	document.getElementById(id+"plus").addEventListener('input',function(){ positionSetting(i+1,true); });
+	document.getElementById(id+"minus").addEventListener('input',function(){ positionSetting(i+1,false); });
+	document.getElementById(id+"count").addEventListener('input',function(){ updatePosition(i+1); calculate(); });
+	document.getElementById(id+"price").addEventListener('input',function(){ multiSetting(i+1,true); calculate(); });
+	document.getElementById(id+"amount").addEventListener('input',function(){ multiSetting(i+1,false); calculate(); });
+	
+	if (i < maxPos-1) {
+		// Anzeige weiterer Positionen bei Eingabe
+		for (let j = 0; j < displayFields.length; j++) {
+			document.getElementById(id+displayFields[j]).addEventListener('input',function(){ positionDisplay(i+2); });
+		}
+	}
+}
+document.getElementById("donations").addEventListener('input',calculate);
+// Ereignisse für Zahlungsoptionen-input
+document.getElementById("processtouser").addEventListener('input',function(){ processMode(1); });
+document.getElementById("processsepa").addEventListener('input',function(){ processMode(2); });
+document.getElementById("processbyuser").addEventListener('input',function(){ processMode(3); });
+document.getElementById("processuserknown").addEventListener('input',function(){ ibanLock(this.checked); });
