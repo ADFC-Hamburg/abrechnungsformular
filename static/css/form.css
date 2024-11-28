@@ -246,7 +246,10 @@ span.money::after {
 		--adfc-blue:	hsl(216, 55%, 15%);
 		--radio-color:	black !important;
 	}
-	fieldset {
+	body > header::before {
+		background-image:url('../img/ADFC-HH-white.svg');
+	}
+		fieldset {
 		background-color:white !important;
 	}
 	fieldset,
