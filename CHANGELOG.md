@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Changed labels "Mengenpreis" to "Einzelpreis"
+
 ## v1.2 - 2024-11-26
 
 ### Added
