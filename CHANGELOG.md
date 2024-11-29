@@ -9,6 +9,10 @@
 - Multiline labels for radio buttons and checkboxes now indent properly
 - Moved form events from HTML tags to JavaScript listeners
 
+### Fixed
+
+- Positions set to cost still treated like cost after form reset
+
 ## v1.2 - 2024-11-26
 
 ### Added

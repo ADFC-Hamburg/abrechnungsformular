@@ -166,8 +166,6 @@ function ibanLock(check) {
 /**
  * Zeige Eingabefelder für die ersten x Positionen und verstecke den Rest.
  * 
- * Wird im Dokument vom Reset-Knopf aufgerufen.
- * 
  * @param {number} x	Die letzte anzuzeigende Position
  */
 function positionDisplayInitialize(x) {
@@ -198,16 +196,12 @@ function positionDisplay(x,show=true) { //Zeige oder verstecke Position x im HTM
 /**
  * Berechne den Gesamtbetrag und gib ihn aus.
  * 
- * Wird im Dokument von allen Geld- und Anzahlfeldern sowie vom
- * Reset-Knopf aufgerufen.
- * 
- * @param {boolean} [notreset]	Falls false: Ergebnis ist 0
+ * Zum Aufruf durch alle Geld- und Anzahlfelder.
  */
-function calculate(notreset=true) {
+function calculate() {
 	var total = 0;
 	var amount = 0;
 
-	if (notreset) {
 	for (let i = 1; i <= maxPos; i++) {
 		// Zähle alle Beträge zusammen
 		const field = [document.getElementById("position"+i+"count"), document.getElementById("position"+i+"price"), document.getElementById("position"+i+"amount")];
@@ -220,7 +214,6 @@ function calculate(notreset=true) {
 	amount = document.getElementById("donations").value;
 	if (!(isNaN(amount))) {
 		total += +amount;
-	}
 	}
 	
 	// Gib den Gesamtbetrag aus und zeige passende Zahlungsoptionen an
@@ -271,6 +264,28 @@ function start() {
 	document.getElementById("processsepa").addEventListener('input',function(){ processMode(2); });
 	document.getElementById("processbyuser").addEventListener('input',function(){ processMode(3); });
 	document.getElementById("processuserknown").addEventListener('input',function(){ ibanLock(this.checked); });
+
+	// Ereignisse für Schaltflächen
+	document.getElementById("reset").addEventListener('click',restart);
+}
+
+/**
+ * Setze manche Variablen und Klassen zurück.
+ *
+ * Zum Aufruf durch die Reset-Schaltfläche.
+ */
+function restart() {
+	processMem=0;
+	multiplier = [1,1,1,1,1,1,1];
+	const negatives = document.querySelectorAll(".negative")
+
+	positionDisplayInitialize(1);
+	processDisplay(0);
+	document.getElementById("totalamount").innerHTML = "<aside>Das Formular wurde zurückgesetzt.</aside>";
+
+	for (const field of negatives) {
+		field.classList.remove ("negative");
+	}
 }
 
 // Überprüfe, welche Radio-Knöpfe und Checkboxen schon gedrückt sind, und passe Variablen und Sichtbarkeit an

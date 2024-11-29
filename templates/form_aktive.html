@@ -300,8 +300,8 @@
 			<legend>Daten absenden</legend>
 			<input type="submit" value="Abrechnung erstellen">
 			<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
-			<input type="reset" onclick="positionDisplayInitialize(1); calculate(false); processMem=0;" value="Formular zurücksetzen">
-			<aside id="test">Lade hier die fertige Abrechnung als PDF-Datei runter und sende sie uns per E-Mail an <a href="mailto:buchhaltung@adfc.hamburg.de">buchhaltung@adfc.hamburg.de</a>.<br />
+			<input type="reset" id="reset" value="Formular zurücksetzen">
+			<aside>Lade hier die fertige Abrechnung als PDF-Datei runter und sende sie uns per E-Mail an <a href="mailto:buchhaltung@adfc.hamburg.de">buchhaltung@adfc.hamburg.de</a>.<br />
 			Alternativ kannst du die Abrechnung auch ausdrucken und sie uns per Post zusenden oder direkt bei uns in der Geschäftsstelle abgeben.</aside>
 		</fieldset>
 	</form>
