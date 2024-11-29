@@ -9,8 +9,8 @@ var processMem = 0;
 /**
  * Ändere den Multiplikator (Variable multiplier) für Position x.
  * 
- * Wird im HTML-Dokument von den Radio-Tasten aufgerufen, mit denen
- * Einnahme oder Ausgabe gewählt wird.
+ * Zum Aufruf durch Radio-Tasten,
+ * mit denen Einnahme oder Ausgabe gewählt wird.
  *  
  * @param {number} x 			Die Position, die geändert wird
  * @param {boolean} setting 	true für Einnahme, false für Ausgabe
@@ -37,7 +37,9 @@ function positionSetting(x,setting,evaluate=true) {
 }
 
 /**
- * Legt fest, ob Position x eine Mehrfachposition ist; danach updatePosition
+ * Legt fest, ob Position x eine Mehrfachposition ist;
+ * danach updatePosition
+ * 
  * @param {number} x		Die Position, die geändert wird
  * @param {boolean} setting	Ob x eine Mehrfachposition ist
  */
@@ -122,8 +124,8 @@ function processDisplay(mode=0) {
  * Aktiviere oder deaktiviere Knöpfe für Angaben, ob ein SEPA-Mandat
  * vorhanden ist, abhängig davon, welche Zahlungsart gewählt wurde.
  * 
- * Wird im HTML-Dokument von den Radio-Tasten aufgerufen, mit denen
- * die Überweisungsmethode gewählt wird.
+ * Zum Aufruf durch Radio-Tasten,
+ * mit denen die Überweisungsmethode gewählt wird.
  * 
  * @param {number} setting	Welche Zahlungsoption gewählt wurde
  */
@@ -142,8 +144,8 @@ function processMode(setting) {
 /**
  * Sperre oder entsperre Eingabefelder zu Bankdaten (IBAN und Inhaber)
  * 
- * Wird im Dokument von der Checkbox aufgerufen, die wählt, ob die
- * IBAN dem ADFC schon bekannt ist.
+ * Zum Aufruf durch die Checkbox, die wählt,
+ * ob die IBAN dem ADFC schon bekannt ist.
  * 
  * @param {boolean} check	Ob Eingabefelder gesperrt sein sollen
  */
@@ -181,8 +183,8 @@ function positionDisplayInitialize(x) {
 /**
  * Zeige oder verstecke die Eingabefelder für Position x
  * 
- * Wird im Dokument von Eingabefeldern für Positionsname, -Anzahl,
- * -Stückpreis und -Betrag aufgerufen.
+ * Zum Aufruf durch Eingabefelder für Positionsname, -Anzahl,
+ * -Stückpreis und -Betrag.
  * 
  * @param {number} x		Die fragliche Position
  * @param {boolean} show	Ob die Position angezeigt werden soll
@@ -268,6 +270,7 @@ for (let i = 1; i <= maxPos; i++) {
 	calculate();
 }
 if (document.getElementById("processuserknown").checked) {
+// IBAN ist bereits als bekannt angegeben
 	ibanLock(true);
 }
 if ( document.querySelector('input[name="prtype"]:checked') !== null ) {
@@ -275,8 +278,8 @@ if ( document.querySelector('input[name="prtype"]:checked') !== null ) {
 	processMode(document.querySelector('input[name="prtype"]:checked').value); 
 }
 
-for (let i = maxPos; i > 0; i--) {
 	// Überprüfe, welche Felder noch leer sind, und verstecke Positionen entsprechend
+for (let i = maxPos; i > 0; i--) {
 	const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"count").value, document.getElementById("position"+i+"price").value, document.getElementById("position"+i+"amount").value];
 	if (!(values[0]=="" && values[2]==0 && values[3]==0)) {
 		// Ein Feld in Position i ist bereits ausgefüllt

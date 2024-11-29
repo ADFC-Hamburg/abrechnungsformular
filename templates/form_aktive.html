@@ -24,7 +24,8 @@
 	</header>
 	<form action="{{ url_for('pages.aktive_pdf') }}" method="get">
 		<header>
-		<!--Name und Bereich--><fieldset>
+		<!--Name und Bereich-->
+		<fieldset>
 			<legend>Persönliche Angaben</legend>
 			<span class="avoidwrap">
 				<label>Dein Name: <input type="text" class="field" name="uname" id="username" autocomplete="name"></label>
@@ -43,9 +44,11 @@
 			</span>
 		</fieldset>
 		</header>
-		<!--Geldbeträge--><fieldset>
+		<!--Geldbeträge-->
+		<fieldset>
 			<legend>Einnahmen und Ausgaben</legend>
-			<!--Postition 1--><section id="position1section">
+			<!--Postition 1-->
+			<section id="position1section">
 				<div class="select">
 					<input type="text" class="field" name="p1name" id="position1name" placeholder="Position 1" size=24>
 				</div>
@@ -72,7 +75,8 @@
 					</span>
 				</div>
 			</section>
-			<!--Postition 2--><section id="position2section">
+			<!--Postition 2-->
+			<section id="position2section">
 				<div class="select">
 					<input type="text" class="field" name="p2name" id="position2name" placeholder="Position 2" size=24>
 				</div>
@@ -99,7 +103,8 @@
 					</span>
 				</div>
 			</section>
-			<!--Postition 3--><section id="position3section">
+			<!--Postition 3-->
+			<section id="position3section">
 				<div class="select">
 					<input type="text" class="field" name="p3name" id="position3name" placeholder="Position 3" size=24>
 				</div>
@@ -126,7 +131,8 @@
 					</span>
 				</div>
 			</section>
-			<!--Postition 4--><section id="position4section">
+			<!--Postition 4-->
+			<section id="position4section">
 				<div class="select">
 					<input type="text" class="field" name="p4name" id="position4name" placeholder="Position 4" size=24>
 				</div>
@@ -153,7 +159,8 @@
 					</span>
 				</div>
 			</section>
-			<!--Postition 5--><section id="position5section">
+			<!--Postition 5-->
+			<section id="position5section">
 				<div class="select">
 					<input type="text" class="field" name="p5name" id="position5name" placeholder="Position 5" size=24>
 				</div>
@@ -180,7 +187,8 @@
 					</span>
 				</div>
 			</section>
-			<!--Postition 6--><section id="position6section">
+			<!--Postition 6-->
+			<section id="position6section">
 				<div class="select">
 					<input type="text" class="field" name="p6name" id="position6name" placeholder="Position 6" size=24>
 				</div>
@@ -207,7 +215,8 @@
 					</span>
 				</div>
 			</section>
-			<!--Postition 7--><section id="position7section">
+			<!--Postition 7-->
+			<section id="position7section">
 				<div class="select">
 					<input type="text" class="field" name="p7name" id="position7name" placeholder="Position 7" size=24>
 				</div>
@@ -234,16 +243,19 @@
 					</span>
 				</div>
 			</section>
-			<!--Spenden--><section>
+			<!--Spenden-->
+			<section>
 				<span class="money">
 					<label>Zusätzlich eingenommene Spenden: <input type="number" name="dono" id="donations" min="0" step="0.01" class="money"></label>
 				</span>
 			</section>
 		</fieldset>
-		<!--Zahlung--><fieldset class="right" id="fieldsetPayment">
+		<!--Zahlung-->
+		<fieldset class="right" id="fieldsetPayment">
 			<legend>Zahlungsabwicklung</legend>
 			<section id="totalamount">Bitte gib an, wie du diese Abrechnung verbuchen lassen möchtest:</section>
-			<!--Überweisung an User--><section>
+			<!--Überweisung an User-->
+			<section>
 				<div class="select">
 					<label class="option"><input type="radio" id="processtouser" name="prtype" value="1">Wir überweisen den Abrechnungsbetrag auf dein Konto.</label><br>
 				</div>
@@ -257,7 +269,8 @@
 					<label class="option"><input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem ADFC Hamburg bekannt.</label>
 				</div>
 			</section>
-			<!--Einzug--><section>
+			<!--Einzug-->
+			<section>
 				<div class="select">
 					<label class="option"><input type="radio" id="processsepa" name="prtype" value="2">Den Abrechnungsbetrag per <abbr title="Single Euro Payments Area">SEPA</abbr>-Lastschriftmandat einziehen lassen.</label>
 					<aside>Bei Bedarf können wir dir dir das Formular zur Erteilung eines <abbr title="Single Euro Payments Area">SEPA</abbr>-Lastschriftmandats gerne zusenden.</aside>
@@ -274,14 +287,16 @@
 					</span>
 					</div>
 			</section>
-			<!--Überweisung von User--><section>
+			<!--Überweisung von User-->
+			<section>
 				<div class="select">
 					<label class="option"><input type="radio" id="processbyuser" name="prtype" value="3">Du überweist den Abrechnungsbetrag selbst.</label>
 					<aside id="processnote">Bitte überweise den Abrechnungsbetrag innerhalb von 10 Tagen auf das Konto des ADFC Hamburg mit der folgenden <abbr title="Internationale Bankkontonummer">IBAN</abbr>: <span class="iban">DE80&nbsp;4306&nbsp;0967&nbsp;2029&nbsp;4456&nbsp;00</span></aside>
 				</div>
 			</section>
 		</fieldset>
-		<!--Absenden--><fieldset class="right">
+		<!--Absenden-->
+		<fieldset class="right">
 			<legend>Daten absenden</legend>
 			<input type="submit" value="Abrechnung erstellen">
 			<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
