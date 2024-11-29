@@ -12,6 +12,7 @@
 ### Fixed
 
 - Positions set to cost still treated like cost after form reset
+- Form did not properly handle already filled fields when accessing via browser's back or forward
 
 ## v1.2 - 2024-11-26
 

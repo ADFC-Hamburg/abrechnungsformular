@@ -267,6 +267,9 @@ function start() {
 
 	// Ereignisse für Schaltflächen
 	document.getElementById("reset").addEventListener('click',restart);
+
+	// Ereignis beim Anzeigen der Seite
+	window.addEventListener("pageshow", display);
 }
 
 /**
@@ -288,42 +291,49 @@ function restart() {
 	}
 }
 
-// Überprüfe, welche Radio-Knöpfe und Checkboxen schon gedrückt sind, und passe Variablen und Sichtbarkeit an
-for (let i = 1; i <= maxPos; i++) {
-	const button = [document.getElementById("position"+i+"plus").checked, document.getElementById("position"+i+"minus").checked];
-	// Überprüfe, wo bereits zwischen Einnahme und Ausgabe gewählt wurde
-	if (button[1]) {
-		positionSetting(i,false,false);
-	}
+/**
+ * Überprüft, welche Elemente bereits ausgefüllt sind und bereite
+ * Variablen und die Anzeige von Feldern entsprechend vor.
+ *
+ * Zum Aufruf durch ein pageshow-Ereignis.
+ */
+function display() {
+	for (let i = 1; i <= maxPos; i++) {
+		const button = [document.getElementById("position"+i+"plus").checked, document.getElementById("position"+i+"minus").checked];
+		// Überprüfe, wo bereits zwischen Einnahme und Ausgabe gewählt wurde
+		if (button[1]) {
+			positionSetting(i,false,false);
+		}
 
-	// Überprüfe, welche Positionen einen Stückpreis haben
-	if ( document.getElementById("position"+i+"price").value > 0) {
-		multiSetting(i,true);
-	} else {
-		multiSetting(i,false);
-	}
+		// Überprüfe, welche Positionen einen Stückpreis haben
+		if ( document.getElementById("position"+i+"price").value > 0) {
+			multiSetting(i,true);
+		} else {
+			multiSetting(i,false);
+		}
 
-	// Berechne den aktuellen Gesamtbetrag.
-	calculate();
-}
-if (document.getElementById("processuserknown").checked) {
-// IBAN ist bereits als bekannt angegeben
-	ibanLock(true);
-}
-if ( document.querySelector('input[name="prtype"]:checked') !== null ) {
-	// Eine Zahlungsoption wurde bereits ausgewählt
-	processMode(document.querySelector('input[name="prtype"]:checked').value); 
-}
+		// Berechne den aktuellen Gesamtbetrag.
+		calculate();
+	}
+	if (document.getElementById("processuserknown").checked) {
+		// IBAN ist bereits als bekannt angegeben
+		ibanLock(true);
+	}
+	if ( document.querySelector('input[name="prtype"]:checked') !== null ) {
+		// Eine Zahlungsoption wurde bereits ausgewählt
+		processMode(document.querySelector('input[name="prtype"]:checked').value); 
+	}
 
 	// Überprüfe, welche Felder noch leer sind, und verstecke Positionen entsprechend
-for (let i = maxPos; i > 0; i--) {
-	const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"count").value, document.getElementById("position"+i+"price").value, document.getElementById("position"+i+"amount").value];
-	if (!(values[0]=="" && values[2]==0 && values[3]==0)) {
-		// Ein Feld in Position i ist bereits ausgefüllt
-		positionDisplayInitialize(i+1);
-		break;
+	for (let i = maxPos; i > 0; i--) {
+		const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"count").value, document.getElementById("position"+i+"price").value, document.getElementById("position"+i+"amount").value];
+		if (!(values[0]=="" && values[2]==0 && values[3]==0)) {
+			// Ein Feld in Position i ist bereits ausgefüllt
+			positionDisplayInitialize(i+1);
+			break;
+		}
+		positionDisplayInitialize(1);
 	}
-	positionDisplayInitialize(1);
 }
 
 // Beim Starten dieses Scripts
