@@ -1,6 +1,6 @@
 const moneyform = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }); // wird genutzt, um Geldbeträge zu formatieren
 const maxPos = 7 // Maximale Anzahl an Positionen im HTML-Dokument
-var multiplier = [0,0,0,0,0,0,0];
+var multiplier = [1,1,1,1,1,1,1];
 var multiPosition = [false,false,false,false,false,false,false];
 var processMem = 0;
 
@@ -253,9 +253,7 @@ document.getElementById("projectdate").max = new Date().toISOString().split("T")
 for (let i = 1; i <= maxPos; i++) {
 	const button = [document.getElementById("position"+i+"plus").checked, document.getElementById("position"+i+"minus").checked];
 	// Überprüfe, wo bereits zwischen Einnahme und Ausgabe gewählt wurde
-	if (button[0]) {
-		positionSetting(i,true,false);
-	} else if (button[1]) {
+	if (button[1]) {
 		positionSetting(i,false,false);
 	}
 
