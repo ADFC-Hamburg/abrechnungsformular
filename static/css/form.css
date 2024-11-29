@@ -172,6 +172,7 @@ input[type="button"],
 	font-size:	small;
 
 	cursor:		default;
+	user-select:	none;
 }
 input[type="reset"] {
 	background-color:hsl(10, 91%, 52%);
