@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Web App Manifest
+
 ### Changed
 
 - Changed labels "Mengenpreis" to "Einzelpreis"
