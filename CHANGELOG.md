@@ -6,6 +6,7 @@
 
 - Web App Manifest
 - Form validates number inputs
+- Form validates that no position is filled in partially
 
 ### Changed
 

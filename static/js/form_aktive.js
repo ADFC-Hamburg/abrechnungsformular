@@ -264,6 +264,25 @@ function validateNumber(target) {
 }
 
 /**
+ * Überprüft, ob eine Position halb ausgefüllt ist
+ * (d.h. Postion hat einen Namen, aber keinen Wert oder umgekehrt)
+ * und gibt in diesem Fall eine Fehlermeldung aus.
+ * 
+ * @param {int} position	Die ID-Nummer der zu validierenden Position
+ */
+function validateCompletion(position) {
+	const fields = [document.getElementById("position"+position+"name"),document.getElementById("position"+position+"amount")]
+	if (fields[0].value == "" && fields[1].value != 0) {
+		fields[0].setCustomValidity('Bitte fülle diese Position vollständig aus.');
+	} else {
+		fields[0].setCustomValidity('');
+	}
+	if (fields[0].value != "" && fields[1].value == 0) {
+		fields[1].setCustomValidity('Bitte fülle diese Position vollständig aus.');
+	} 
+}
+
+/**
  * Validiert das gesamte Formular.
  */
 function validateForm() {
@@ -272,6 +291,7 @@ function validateForm() {
 		validateNumber(document.getElementById(id+"count"));
 		validateNumber(document.getElementById(id+"price"));
 		validateNumber(document.getElementById(id+"amount"));
+		validateCompletion(i+1);
 	}
 	validateNumber(document.getElementById("donations"));
 }
