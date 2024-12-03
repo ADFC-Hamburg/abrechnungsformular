@@ -232,6 +232,23 @@ function calculate() {
 // Funktionen zur Validierung
 
 /**
+ * Überprüft, ob ein Geldbetrag irgendwo im Formular eingegeben wurde.
+ * 
+ * @returns {bool}	Ob ein Geldbetrag eingegeben wurde
+ */
+function anyAmountEntered() {
+	if (document.getElementById('donations').value != 0) {
+		return true;
+	}
+	for (let i = 0; i < maxPos; i++) {
+		if (document.getElementById('position'+(i+1)+'amount').value != 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * Überprüft ein Zahleneingabefeld und gibt gegebenenfalls 
  * eine passende Fehlermeldung aus.
  * 
@@ -286,7 +303,14 @@ function validateCompletion(position) {
  * Validiert das gesamte Formular.
  */
 function validateForm() {
+	// Ist mindestens ein Betrag angegeben?
+	if (!(anyAmountEntered())) {
+		document.getElementById("submit").setCustomValidity('Bitte trage mindestens eine Position oder Spende in das Formular ein.')
+	} else {
+		document.getElementById("submit").setCustomValidity('');
+	}
 	for (let i = 0; i < maxPos; i++) {
+		// Validiere jede Positionen
 		const id = "position"+(i+1);
 		validateNumber(document.getElementById(id+"count"));
 		validateNumber(document.getElementById(id+"price"));

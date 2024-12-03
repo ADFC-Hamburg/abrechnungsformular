@@ -7,6 +7,7 @@
 - Web App Manifest
 - Form validates number inputs
 - Form validates that no position is filled in partially
+- Form validates that at least one position or donation is filled in
 
 ### Changed
 
