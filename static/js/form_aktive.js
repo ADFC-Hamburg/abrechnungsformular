@@ -234,6 +234,8 @@ function calculate() {
 /**
  * Überprüft, ob ein Geldbetrag irgendwo im Formular eingegeben wurde.
  * 
+ * @since	1.3
+ * 
  * @returns {bool}	Ob ein Geldbetrag eingegeben wurde
  */
 function anyAmountEntered() {
@@ -251,6 +253,8 @@ function anyAmountEntered() {
 /**
  * Überprüft ein Zahleneingabefeld und gibt gegebenenfalls 
  * eine passende Fehlermeldung aus.
+* 
+ * @since	1.3
  * 
  * @param {HTMLInputElement} target	Das Eingabefeld, das überprüft wird 
  */
@@ -271,7 +275,7 @@ function validateNumber(target) {
 		} else if (target.step == 1) {
 			target.setCustomValidity('Bitte gib hier nur ganze Zahlen ein.')
 		} else {
-			target.setCustumValidity('Bitte gib hier nur Zahlen in '+target.step+'erschritten ein.')
+			target.setCustomValidity('Bitte gib hier nur Zahlen in '+target.step+'erschritten ein.')
 		}
 	} else if (target.validity.valueMissing) {
 		target.setCustomValidity('Bitte fülle dieses Feld aus.')
@@ -284,6 +288,8 @@ function validateNumber(target) {
  * Überprüft, ob eine Position halb ausgefüllt ist
  * (d.h. Postion hat einen Namen, aber keinen Wert oder umgekehrt)
  * und gibt in diesem Fall eine Fehlermeldung aus.
+ * 
+ * @since	1.3
  * 
  * @param {int} position	Die ID-Nummer der zu validierenden Position
  */
@@ -301,6 +307,8 @@ function validateCompletion(position) {
 
 /**
  * Validiert das gesamte Formular.
+ * 
+ * @since	1.3
  */
 function validateForm() {
 	// Ist mindestens ein Betrag angegeben?
@@ -324,6 +332,8 @@ function validateForm() {
 
 /**
  * Funktion zum Aufruf beim Starten dieses Scripts
+ * 
+ * @since	1.3
  */
 function start() {
 	// Setze spätestes erlaubtes Datum auf heute
@@ -373,6 +383,8 @@ function start() {
 
 /**
  * Setze manche Variablen und Klassen zurück.
+ * 
+ * @since	1.3
  *
  * Zum Aufruf durch die Reset-Schaltfläche.
  */
@@ -393,6 +405,8 @@ function restart() {
 /**
  * Überprüft, welche Elemente bereits ausgefüllt sind und bereite
  * Variablen und die Anzeige von Feldern entsprechend vor.
+ * 
+ * @since	1.3
  *
  * Zum Aufruf durch ein pageshow-Ereignis.
  */
