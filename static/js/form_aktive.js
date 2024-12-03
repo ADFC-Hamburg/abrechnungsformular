@@ -229,6 +229,53 @@ function calculate() {
 	}
 }
 
+// Funktionen zur Validierung
+
+/**
+ * Überprüft ein Zahleneingabefeld und gibt gegebenenfalls 
+ * eine passende Fehlermeldung aus.
+ * 
+ * @param {HTMLInputElement} target	Das Eingabefeld, das überprüft wird 
+ */
+function validateNumber(target) {
+	if (target.validity.rangeUnderflow) {
+		if (target.min == 0 && target.id.includes('position')) {
+			target.setCustomValidity('Bitte gib hier einen Betrag ein, der nicht negativ ist; verwende stattdessen die Auswahlfelder "Einnahme" und "Ausgabe".');
+		} else if (target.min == 0) {
+			target.setCustomValidity('Bitte gib hier einen Betrag ein, der nicht negativ ist.');
+		} else {
+			target.setCustomValidity('Bitte gib hier eine Zahl ein, die nicht kleiner als '+target.min+' ist.');
+		}
+	} else 	if (target.validity.rangeOverflow) {
+		target.setCustomValidity('Bitte gib hier eine Zahl ein, die nicht größer als '+target.max+' ist.');
+	} else if (target.validity.stepMismatch) {
+		if (target.step == 0.01) {
+			target.setCustomValidity('Bitte gib hier nur ganze Centbeträge ein.')
+		} else if (target.step == 1) {
+			target.setCustomValidity('Bitte gib hier nur ganze Zahlen ein.')
+		} else {
+			target.setCustumValidity('Bitte gib hier nur Zahlen in '+target.step+'erschritten ein.')
+		}
+	} else if (target.validity.valueMissing) {
+		target.setCustomValidity('Bitte fülle dieses Feld aus.')
+	} else {
+		target.setCustomValidity('');
+	}
+}
+
+/**
+ * Validiert das gesamte Formular.
+ */
+function validateForm() {
+	for (let i = 0; i < maxPos; i++) {
+		const id = "position"+(i+1);
+		validateNumber(document.getElementById(id+"count"));
+		validateNumber(document.getElementById(id+"price"));
+		validateNumber(document.getElementById(id+"amount"));
+	}
+	validateNumber(document.getElementById("donations"));
+}
+
 // Funktionen zum grundlegenden Ablauf
 
 /**
@@ -244,11 +291,17 @@ function start() {
 		const id = "position"+(i+1);
 		const displayFields = ["name","count","price","amount"];
 
+		// Auswertung von Eingaben
 		document.getElementById(id+"plus").addEventListener('input',function(){ positionSetting(i+1,true); });
 		document.getElementById(id+"minus").addEventListener('input',function(){ positionSetting(i+1,false); });
 		document.getElementById(id+"count").addEventListener('input',function(){ updatePosition(i+1); calculate(); });
 		document.getElementById(id+"price").addEventListener('input',function(){ multiSetting(i+1,true); calculate(); });
 		document.getElementById(id+"amount").addEventListener('input',function(){ multiSetting(i+1,false); calculate(); });
+
+		// Validierung von Eingaben
+		document.getElementById(id+"count").addEventListener('change',function(){ validateNumber(this); });
+		document.getElementById(id+"price").addEventListener('change',function(){ validateNumber(this); });
+		document.getElementById(id+"amount").addEventListener('change',function(){ validateNumber(this); });
 
 		if (i < maxPos-1) {
 			// Anzeige weiterer Positionen bei Eingabe
@@ -258,6 +311,7 @@ function start() {
 		}
 	}
 	document.getElementById("donations").addEventListener('input',calculate);
+	document.getElementById("donations").addEventListener('change',function(){ validateNumber(this); });
 
 	// Ereignisse für Zahlungsoptionen-input
 	document.getElementById("processtouser").addEventListener('input',function(){ processMode(1); });
@@ -266,6 +320,7 @@ function start() {
 	document.getElementById("processuserknown").addEventListener('input',function(){ ibanLock(this.checked); });
 
 	// Ereignisse für Schaltflächen
+	document.getElementById("submit").addEventListener('click',validateForm);
 	document.getElementById("reset").addEventListener('click',restart);
 
 	// Ereignis beim Anzeigen der Seite

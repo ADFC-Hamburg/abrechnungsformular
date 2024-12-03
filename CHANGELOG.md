@@ -5,6 +5,7 @@
 ### Added
 
 - Web App Manifest
+- Form validates number inputs
 
 ### Changed
 
