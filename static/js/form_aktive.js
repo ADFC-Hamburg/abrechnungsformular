@@ -249,6 +249,23 @@ function anyAmountEntered() {
 	}
 	return false;
 }
+/**
+ * Überprüft ein Datumseingabefeld und gibt gegebenenfalls 
+ * eine passende Fehlermeldung aus.
+* 
+ * @since	1.3
+ * 
+ * @param {HTMLInputElement} target	Das Eingabefeld, das überprüft wird
+ */
+function validateDate(target) {
+	if (target.validity.valueMissing) {
+		target.setCustomValidity('Bitte gib hier ein Datum ein.');
+	} else if (target.validity.rangeOverflow) {
+		target.setCustomValidity('Bitte gib hier ein Datum ein, das nicht in der Zukunft liegt.');
+	} else if (target.validity.rangeUnderflow) {
+		target.setCustomValidity('Bitte gib hier ein Datum ein, das nicht vor dem '+new Date(target.min).toLocaleDateString('de-DE',{year:'numeric',month:'long',day:'numeric'})+' liegt.');
+	}
+}
 
 /**
  * Überprüft ein Zahleneingabefeld und gibt gegebenenfalls 
@@ -311,6 +328,9 @@ function validateCompletion(position) {
  * @since	1.3
  */
 function validateForm() {
+	
+	validateDate(document.getElementById("projectdate"));
+	
 	// Ist mindestens ein Betrag angegeben?
 	if (!(anyAmountEntered())) {
 		document.getElementById("submit").setCustomValidity('Bitte trage mindestens eine Position oder Spende in das Formular ein.')
@@ -366,6 +386,9 @@ function start() {
 	}
 	document.getElementById("donations").addEventListener('input',calculate);
 	document.getElementById("donations").addEventListener('change',function(){ validateNumber(this); });
+
+	// Ereignisse für persönliche Angabefelder
+	document.getElementById("projectdate").addEventListener('change',function(){ validateDate(this); });
 
 	// Ereignisse für Zahlungsoptionen-input
 	document.getElementById("processtouser").addEventListener('input',function(){ processMode(1); });
