@@ -286,6 +286,8 @@ function validateNumber(target) {
 		}
 	} else 	if (target.validity.rangeOverflow) {
 		target.setCustomValidity('Bitte gib hier eine Zahl ein, die nicht größer als '+target.max+' ist.');
+} else if (target.validity.badInput) {
+		target.setCustomValidity('Bitte gib hier nur Zahlen ein.');
 	} else if (target.validity.stepMismatch) {
 		if (target.step == 0.01) {
 			target.setCustomValidity('Bitte gib hier nur ganze Centbeträge ein.');

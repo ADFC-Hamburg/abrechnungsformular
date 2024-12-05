@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Error message for bad input (i.e. letters) in number input field
+
 ## v 1.3 - 2024-12-03
 
 ### Added
