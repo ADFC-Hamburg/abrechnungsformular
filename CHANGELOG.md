@@ -12,6 +12,8 @@
 - Personal name/group and project name/date input now required
 - IBAN and account owner input now required (if Javascript is active)
 - Streamlined HTML code (fewer span elements)
+- Redesigned input elements (size and border)
+- Minor layout improvements
 
 ### Fixed
 

@@ -111,7 +111,7 @@ fieldset section::after {
 	width:		auto;
 }
 .subselect {
-	padding-left:	10%;
+	padding-left:	2.5rem;
 	float:		right;
 	text-align:	left;
 }
@@ -119,9 +119,23 @@ fieldset section::after {
 	float:		right;
 	text-align:	right;
 }
+.subinput label {
+	display:	block;
+}
 
 /* Input-Felder ——————————————————————————————*/
 
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+
+	border-style:	solid;
+	border-color:	black;
+	border-width:	1px;
+
+	padding:	.25em;
+	margin-bottom:	.25em;
+}
 input[type="text"]:focus,
 input[type="number"]:focus,
 input[type="date"]:focus {
@@ -236,7 +250,7 @@ label.money::after {
 	}
 } */
 
-/* Logo- und Überschriftposition auf breitem Bildschirm */
+/* Layout auf breitem Bildschirm */
 
 @media (min-width:48rem) {
 	body > header::before {
@@ -248,6 +262,18 @@ label.money::after {
 	body > header div {
 		max-width:	60%;
 		margin-left:	max(16rem,20%);
+	}
+	.subinput {
+		margin-left:	2.5em;
+	}
+	.subinput label {
+		display:	inline-block;
+	}
+	.select {
+		margin-bottom:	.25em;
+	}
+	label + label.field {
+		margin-left:	.5em;
 	}
 }
 
