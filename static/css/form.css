@@ -105,9 +105,6 @@ fieldset section::after {
 	clear:		both;
 	display:	table;
 }
-.avoidwrap {
-	display:	inline-block;
-}
 .select {
 	float:		left;
 	clear:		left;
@@ -133,6 +130,10 @@ input[type="date"]:focus {
 	border-color:	var(--highlight);
 	outline:	0;
 	box-shadow:	0 0 0.5em var(--highlight);
+}
+label {
+	display:	inline-block;
+	line-height:	1.4;
 }
 input[type="checkbox"],
 input[type="radio"] {
@@ -207,7 +208,7 @@ aside {
 	font-size:	80%;
 	margin:		0.25em;
 }
-span.money label::after {
+label.money::after {
 	content:	"€";
 	padding-left:	.25em;
 }
