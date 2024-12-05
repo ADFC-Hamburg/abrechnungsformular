@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.4 - 2024-12-05
 
 ### Added
 
@@ -19,7 +19,7 @@
 
 - Date input, once confirmed invalid, cannot successfully validate
 
-## v 1.3 - 2024-12-03
+## v1.3 - 2024-12-03
 
 ### Added
 
