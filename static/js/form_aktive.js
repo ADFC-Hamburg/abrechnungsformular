@@ -143,6 +143,7 @@ function processMode(setting) {
 
 /**
  * Sperre oder entsperre Eingabefelder zu Bankdaten (IBAN und Inhaber)
+ * und mache eine Angabe notwendig oder nicht notwendig.
  * 
  * Zum Aufruf durch die Checkbox, die wählt,
  * ob die IBAN dem ADFC schon bekannt ist.
@@ -154,11 +155,15 @@ function ibanLock(check) {
 	if (check) {
 		field[0].disabled = true;
 		field[1].disabled = true;
+		field[0].required = false;
+		field[1].required = false;
 		field[0].parentElement.classList.add ("locked");
 		field[1].parentElement.classList.add ("locked");
 	} else {
 		field[0].disabled = false;
 		field[1].disabled = false;
+		field[0].required = true;
+		field[1].required = true;
 		field[0].parentElement.classList.remove ("locked");
 		field[1].parentElement.classList.remove ("locked");
 }	}

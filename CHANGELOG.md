@@ -7,6 +7,10 @@
 - Form validates text inputs
 - Error message for bad input (i.e. letters) in number input field
 
+### Changed
+
+- IBAN and account owner input now required (if Javascript is active)
+
 ## v 1.3 - 2024-12-03
 
 ### Added
