@@ -288,14 +288,14 @@ function validateNumber(target) {
 		target.setCustomValidity('Bitte gib hier eine Zahl ein, die nicht größer als '+target.max+' ist.');
 	} else if (target.validity.stepMismatch) {
 		if (target.step == 0.01) {
-			target.setCustomValidity('Bitte gib hier nur ganze Centbeträge ein.')
+			target.setCustomValidity('Bitte gib hier nur ganze Centbeträge ein.');
 		} else if (target.step == 1) {
-			target.setCustomValidity('Bitte gib hier nur ganze Zahlen ein.')
+			target.setCustomValidity('Bitte gib hier nur ganze Zahlen ein.');
 		} else {
-			target.setCustomValidity('Bitte gib hier nur Zahlen in '+target.step+'erschritten ein.')
+			target.setCustomValidity('Bitte gib hier nur Zahlen in '+target.step+'erschritten ein.');
 		}
 	} else if (target.validity.valueMissing) {
-		target.setCustomValidity('Bitte fülle dieses Feld aus.')
+		target.setCustomValidity('Bitte fülle dieses Feld aus.');
 	} else {
 		target.setCustomValidity('');
 	}
@@ -311,7 +311,7 @@ function validateNumber(target) {
  * @param {int} position	Die ID-Nummer der zu validierenden Position
  */
 function validateCompletion(position) {
-	const fields = [document.getElementById("position"+position+"name"),document.getElementById("position"+position+"amount")]
+	const fields = [document.getElementById("position"+position+"name"),document.getElementById("position"+position+"amount")];
 	if (fields[0].value == "" && fields[1].value != 0) {
 		fields[0].setCustomValidity('Bitte fülle diese Position vollständig aus.');
 	} else {
@@ -333,7 +333,7 @@ function validateForm() {
 	
 	// Ist mindestens ein Betrag angegeben?
 	if (!(anyAmountEntered())) {
-		document.getElementById("submit").setCustomValidity('Bitte trage mindestens eine Position oder Spende in das Formular ein.')
+		document.getElementById("submit").setCustomValidity('Bitte trage mindestens eine Position oder Spende in das Formular ein.');
 	} else {
 		document.getElementById("submit").setCustomValidity('');
 	}
