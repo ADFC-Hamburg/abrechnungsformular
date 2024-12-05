@@ -12,6 +12,10 @@
 - Personal name/group and project name/date input now required
 - IBAN and account owner input now required (if Javascript is active)
 
+### Fixed
+
+- Date input, once confirmed invalid, cannot successfully validate
+
 ## v 1.3 - 2024-12-03
 
 ### Added

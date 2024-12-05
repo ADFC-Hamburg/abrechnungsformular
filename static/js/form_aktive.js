@@ -283,6 +283,8 @@ function validateDate(target) {
 		target.setCustomValidity('Bitte gib hier ein Datum ein, das nicht in der Zukunft liegt.');
 	} else if (target.validity.rangeUnderflow) {
 		target.setCustomValidity('Bitte gib hier ein Datum ein, das nicht vor dem '+new Date(target.min).toLocaleDateString('de-DE',{year:'numeric',month:'long',day:'numeric'})+' liegt.');
+	} else {
+		target.setCustomValidity('');
 	}
 }
 
