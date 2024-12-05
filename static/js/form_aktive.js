@@ -229,7 +229,7 @@ function calculate() {
 	}
 }
 
-// Funktionen zur Validierung
+// Funktionen, die anderen Funktionen Informationen bereitstellen
 
 /**
  * Überprüft, ob ein Geldbetrag irgendwo im Formular eingegeben wurde.
@@ -249,6 +249,20 @@ function anyAmountEntered() {
 	}
 	return false;
 }
+
+/**
+ * Gibt einen Array mit allen Texteingebefeldern zurück
+ * 
+ * @since 1.4
+ * 
+ * @returns {Array}	Alle Texteingabefelder im Dokument
+ */
+function allTextfields() {
+	return Array.from(document.querySelectorAll("input[type='text']"));
+}
+
+// Funktionen zur Validierung
+
 /**
  * Überprüft ein Datumseingabefeld und gibt gegebenenfalls 
  * eine passende Fehlermeldung aus.
@@ -264,6 +278,29 @@ function validateDate(target) {
 		target.setCustomValidity('Bitte gib hier ein Datum ein, das nicht in der Zukunft liegt.');
 	} else if (target.validity.rangeUnderflow) {
 		target.setCustomValidity('Bitte gib hier ein Datum ein, das nicht vor dem '+new Date(target.min).toLocaleDateString('de-DE',{year:'numeric',month:'long',day:'numeric'})+' liegt.');
+	}
+}
+
+/**
+ * Überprüft ein Texteingabefeld und gibt gegebenenfalls
+ * eine passende Fehlermeldung aus.
+ * 
+ * @since	1.4
+ * 
+ * @param {HTMLInputElement} target	Das Eingabefeld, das überprüft wird
+ */
+function validateText(target) {
+	target.value = target.value.trim()
+	if (target.validity.valueMissing) {
+		target.setCustomValidity('Bitte fülle dieses Feld aus.');
+	} else if (target.validity.patternMismatch) {
+		target.setCustomValidity('Bitte gib einen passenden Text ein ('+target.title+').');
+	} else if (target.validity.tooLong) {
+		target.setCustomValidity('Bitte gib einen Text ein, der nicht länger als '+target.maxlength+' Zeichen ist.');
+	} else if (target.validity.tooShort) {
+		target.setCustomValidity('Bitte gib einen Text ein, der nicht kürzer als '+target.minlength+' Zeichen ist.');
+	} else {
+		target.setCustomValidity('');
 	}
 }
 
@@ -286,7 +323,7 @@ function validateNumber(target) {
 		}
 	} else 	if (target.validity.rangeOverflow) {
 		target.setCustomValidity('Bitte gib hier eine Zahl ein, die nicht größer als '+target.max+' ist.');
-} else if (target.validity.badInput) {
+	} else if (target.validity.badInput) {
 		target.setCustomValidity('Bitte gib hier nur Zahlen ein.');
 	} else if (target.validity.stepMismatch) {
 		if (target.step == 0.01) {
@@ -333,6 +370,11 @@ function validateForm() {
 	
 	validateDate(document.getElementById("projectdate"));
 	
+	// Validiere alle Textfelder
+	for (const element of allTextfields()) {
+		validateText(element);
+	}
+
 	// Ist mindestens ein Betrag angegeben?
 	if (!(anyAmountEntered())) {
 		document.getElementById("submit").setCustomValidity('Bitte trage mindestens eine Position oder Spende in das Formular ein.');
@@ -362,6 +404,12 @@ function start() {
 	document.getElementById("projectdate").max = new Date().toISOString().split("T")[0];
 
 	// Gib HTML-Elementen auslösbare Ereignisse
+
+	// Ereignisse für Texteingabefelder
+	for (const element of allTextfields()) {
+		element.addEventListener('change',function(){ validateText(this); });
+	}
+
 	for (let i = 0; i < maxPos; i++) {
 		// Ereignisse für Positionsfelder-input
 		const id = "position"+(i+1);
