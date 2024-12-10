@@ -130,6 +130,8 @@ input[type="text"],
 input[type="number"],
 input[type="date"] {
 
+	background-color:white;
+
 	border-style:	solid;
 	border-color:	black;
 	border-width:	1px;
