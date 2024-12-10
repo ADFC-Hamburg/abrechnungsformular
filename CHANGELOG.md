@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+- Form button size on small screens
+
 ## v1.4 - 2024-12-05
 
 ### Added
