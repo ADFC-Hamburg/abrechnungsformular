@@ -4,6 +4,7 @@
 
 ### Added
 - Invalid form inputs are highlighted
+- Form validates IBAN input via checksum
 
 ### Changed
 - Form button size on small screens

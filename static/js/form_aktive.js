@@ -312,6 +312,44 @@ function validateText(target) {
 }
 
 /**
+ * Überprüft ein Textfeld, dass für deutsche IBAN bestimmt ist,
+ * auf Eingabe (falls vorausgesetzt), Länge und Prüfsumme;
+ * gibt gegebenenfalls eine passende Fehlermeldung aus.
+ * 
+ * @since	1.5
+ * 
+ * @param {HTMLInputElement} target	Das Eingabefeld, das überprüft wird 
+ */
+function validateIban(target) {
+	target.value = target.value.toUpperCase().replace(/[^0-9]/g,'');
+	if (target.validity.valueMissing) {
+		target.setCustomValidity('Bitte fülle dieses Feld aus.');
+	} else if (target.value.length > 20) {
+		let overflow = target.value.length - 20;
+		if (overflow == 1) {
+			overflow = 'ein';
+		}
+		target.setCustomValidity('Diese IBAN ist '+overflow+' Zeichen zu lang.');
+	} else if (target.value.length < 20) {
+		let missing = 20 - target.value.length;
+		if (missing == 1) {
+			missing = 'ein';
+		}
+		target.setCustomValidity('Diese IBAN ist '+missing+' Zeichen zu kurz.');
+	} else {
+		let checksum = target.value.substring(2) + '1314' + target.value.substring(0,2);
+		while (checksum.length>9) {
+			checksum = checksum.substring(0,9) % 97 + checksum.substring(9);
+		}
+		if (checksum % 97 == 1) {
+			target.setCustomValidity('');
+		} else {
+			target.setCustomValidity('Dies ist keine gültige IBAN. Überprüfe deine Eingabe bitte auf Fehler.');
+		}
+	}
+}
+
+/**
  * Überprüft ein Zahleneingabefeld und gibt gegebenenfalls 
  * eine passende Fehlermeldung aus.
 * 
@@ -379,7 +417,11 @@ function validateForm() {
 	
 	// Validiere alle Textfelder
 	for (const element of allTextfields()) {
-		validateText(element);
+		if (element.id == 'processiban') {
+			validateIban(element);
+		} else {
+			validateText(element);
+		}
 	}
 
 	// Ist mindestens ein Betrag angegeben?
@@ -414,7 +456,11 @@ function start() {
 
 	// Ereignisse für Texteingabefelder
 	for (const element of allTextfields()) {
-		element.addEventListener('change',function(){ validateText(this); });
+		if (element.id == 'processiban') {
+			element.addEventListener('change',function(){ validateIban(this); });
+		} else {
+			element.addEventListener('change',function(){ validateText(this); });
+		}
 	}
 
 	for (let i = 0; i < maxPos; i++) {
