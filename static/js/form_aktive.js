@@ -321,10 +321,10 @@ function validateText(target) {
  */
 function validateNumber(target) {
 	if (target.validity.rangeUnderflow) {
-		if (target.min == 0 && target.id.includes('position')) {
+		if (target.min == 0 && (target.id.includes('price') || target.id.includes('amount'))) {
 			target.setCustomValidity('Bitte gib hier einen Betrag ein, der nicht negativ ist; verwende stattdessen die Auswahlfelder "Einnahme" und "Ausgabe".');
 		} else if (target.min == 0) {
-			target.setCustomValidity('Bitte gib hier einen Betrag ein, der nicht negativ ist.');
+			target.setCustomValidity('Bitte gib hier eine Zahl ein, der nicht negativ ist.');
 		} else {
 			target.setCustomValidity('Bitte gib hier eine Zahl ein, die nicht kleiner als '+target.min+' ist.');
 		}
