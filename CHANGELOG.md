@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.5 - 2024-12-10
 
 ### Added
 - Invalid form inputs are highlighted
