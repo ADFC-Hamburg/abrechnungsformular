@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- Invalid form inputs are highlighted
+
 ### Changed
 - Form button size on small screens
 

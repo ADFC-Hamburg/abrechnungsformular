@@ -6,6 +6,7 @@
 	--highlight:	#f47216;
 	--radio-color:	hsl(25, 91%, 50%);
 	--fldst-color:	hsl(25, 91%, 95%);
+	--invalid-color:hsl(348, 100%, 50%);
 }
 * {
 	box-sizing:	border-box;
@@ -145,6 +146,21 @@ input[type="date"]:focus {
 	outline:	0;
 	box-shadow:	0 0 0.5em var(--highlight);
 }
+@keyframes invalid-pulse {
+	50%	{box-shadow:	0 0 0 0 var(--invalid-color);}
+	100%	{box-shadow:	0 0 0.15em 0.05em var(--invalid-color);}
+}
+input[type="text"]:user-invalid:not(:focus),
+input[type="number"]:user-invalid:not(:focus),
+input[type="date"]:user-invalid:not(:focus) {
+
+	box-shadow:	0 0 0.15em 0.05em var(--invalid-color);
+
+	animation-name:		invalid-pulse;
+	animation-duration:	.3s;
+	animation-delay:	-.15s;
+	animation-iteration-count:2;
+}
 label {
 	display:	inline-block;
 	line-height:	1.4;
@@ -187,7 +203,7 @@ input[type="button"],
 	border-radius:	0.25em;
 
 	text-decoration:none;
-text-align:	center;
+	text-align:	center;
 	font-weight:	bold;
 	font-family:	Arial, Helvetica, sans-serif;
 	font-size:	small;
