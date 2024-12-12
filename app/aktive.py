@@ -395,7 +395,7 @@ class Abrechnung:
         Legt die IBAN des Bankkontos fest.
         Entfernt dabei alle Zeichen außer Buchstaben und Ziffern.
         """
-        value = sub('[\W_]+', '',value.upper())
+        value = sub('[\\W_]+', '',value.upper())
         if len(value) > 34:
             value = value[:34]
         self._payment["iban"] = str(value)
