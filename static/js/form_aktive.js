@@ -1,6 +1,7 @@
 const moneyform = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }); // wird genutzt, um Geldbeträge zu formatieren
 const maxPos = 7; // Maximale Anzahl an Positionen im HTML-Dokument
 const ibanLength = [['NO'],['BE'],[],['DK','FK','FO','FI','GL','NL','SD'],['MK','SI'],['AT','BA','EE','KZ','XK','LT','LU','MN'],['HR','LV','LI','CH'],['BH','BG','CR','GE','DE','IE','ME','RS','GB','VA'],['TL','GI','IQ','IL','OM','SO','AE'],['AD','CZ','MD','PK','RO','SA','SK','ES','SE','TN','VG'],['LY','PT','ST'],['IS','TR'],['BI','DJ','FR','GR','IT','MR','MC','SM'],['AL','AZ','BY','CY','DO','SV','GT','HU','LB','NI','PL'],['BR','EG','PS','QA','UA'],['JO','KW','MU','YE'],['MT','SC'],['LC'],['RU']];
+const ibanNoLetters = ['AE','AT','BA','BE','BI','CR','CZ','DE','DJ','DK','EE','EG','ES','FI','FO','GL','HR','HU','IL','IS','LT','LY','ME','MN','MR','NO','PL','PT','RS','SD','SE','SI','SK','SO','ST','TL','TN','VA','XK'];
 
 var multiplier = [1,1,1,1,1,1,1];
 var multiPosition = [false,false,false,false,false,false,false];
@@ -360,6 +361,9 @@ function validateIban(target) {
 			missing = 'ein';
 		}
 		target.setCustomValidity('Diese IBAN ist '+missing+' Zeichen zu kurz.');
+		} else if (ibanNoLetters.includes(country) && /[A-Z]/.test(target.value.substring(2))) {
+			// Zu viele Buchstaben (sollte nur Ländercode sein)
+			target.setCustomValidity('IBAN mit Ländercode '+country+' dürfen keine weiteren Buchstaben enthalten.');
 	} else {
 			// Berechne Prüfsumme
 			let checksum = target.value.substring(4) + target.value.substring(0,4);
