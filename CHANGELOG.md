@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- Form validates IBAN length based on coutry code
+- Form validates correct pattern for some country codes
+
+### Changed
+- Form input for IBAN no longer assumes country code DE
+- PDF template no longer assumes country code DE
+
 ## v1.5 - 2024-12-10
 
 ### Added
