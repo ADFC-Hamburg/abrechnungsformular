@@ -166,7 +166,7 @@ class Abrechnung:
     """
     
     # Class constants
-    _IBANSPACES = range(18,0,-4)
+    _IBANSPACES = range(32,0,-4)
     _MODES_IBAN = (1,2,3)
     _MODES_SEPA = (2,3)
     _NAME = "Aktivenabrechnung"
@@ -404,10 +404,11 @@ class Abrechnung:
     def getaccountiban(self,spaces:bool = True) -> str:
         """Gibt die IBAN des Bankkontos zurück."""
         out = self._payment["iban"]
-        if spaces and len(out) > self._IBANSPACES[0]:
+        if spaces:
             # add spaces
             for i in self._IBANSPACES:
-                out = out[:i] + " " + out[i:]
+                if len(out) > i:
+                    out = out[:i] + " " + out[i:]
         return out
 
     def setibanmode(self,mode=None):
