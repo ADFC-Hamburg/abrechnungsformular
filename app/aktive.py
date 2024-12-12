@@ -190,7 +190,7 @@ class Abrechnung:
         """
         Gibt den Abrechnungsbetrag zurück.
         """
-        return tools.euro(self._gettotal())
+        return tools.euro(self.gettotal())
 
     def __bool__(self):
         """
