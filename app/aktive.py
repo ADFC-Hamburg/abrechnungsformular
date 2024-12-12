@@ -525,7 +525,7 @@ class HTMLPrinter:
                      (lambda obj: obj.cost, True),
                      (lambda obj: obj.total, False))
     _PAYMENT_FIELDS = (None,None,None,
-                       lambda obj: obj.iban, lambda obj: obj.accountname)
+                       lambda obj: obj.iban or 'DE', lambda obj: obj.accountname)
     _PAYMENT_BOXES = (lambda obj: obj.ibanmode == 1,
                       lambda obj: obj.ibanmode==1 and obj.ibanknown==True,
                       lambda obj: obj.ibanmode==1 and obj.ibanknown==False,
