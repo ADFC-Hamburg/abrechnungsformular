@@ -393,13 +393,12 @@ class Abrechnung:
     def setaccountiban(self,value=""):
         """
         Legt die IBAN des Bankkontos fest.
-        Diese muss aus exakt 20 Ziffern bestehen (kein Ländercode).
+        Entfernt dabei alle Zeichen außer Buchstaben und Ziffern.
         """
-        value = str(value).replace(" ","")
-        if len(value) == 20 and value.isdigit():
-            self._payment["iban"] = str(value)
-        else:
-            self._payment["iban"] = ""
+        value = sub('[\W_]+', '',value.upper())
+        if len(value) > 34:
+            value = value[:34]
+        self._payment["iban"] = str(value)
     
     def getaccountiban(self,spaces:bool = True) -> str:
         """Gibt die IBAN des Bankkontos zurück."""
