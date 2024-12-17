@@ -13,6 +13,10 @@
 - Rewritten mialing instructions at bottom of form
 - Minor changes to mailing instruction layout
 - Swapped radio buttons income and expense; expense made default
+- Rewritten instruction box in PDF document
+
+### Removed
+- Line on top of PDF file
 
 ## v1.5 - 2024-12-10
 

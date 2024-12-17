@@ -70,6 +70,9 @@ adress {
 
 /* Allgemeine Formatierung */
 
+a {
+	color:		black;
+}
 h1 {
 	font-size:	inherit;
 	margin:		0 0 0.5pt;
