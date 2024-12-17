@@ -7,6 +7,7 @@
 - Gendered form header
 - Rewritten mialing instructions at bottom of form
 - Minor changes to mailing instruction layout
+- Swapped radio buttons income and expense; expense made default
 
 ## v1.5 - 2024-12-10
 
