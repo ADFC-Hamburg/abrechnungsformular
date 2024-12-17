@@ -5,6 +5,8 @@
 ### Changed
 
 - Gendered form header
+- Rewritten mialing instructions at bottom of form
+- Minor changes to mailing instruction layout
 
 ## v1.5 - 2024-12-10
 
