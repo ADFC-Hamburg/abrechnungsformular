@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.6 - 2024-12-19
 
 ### Added
 - Form validates IBAN length based on coutry code
