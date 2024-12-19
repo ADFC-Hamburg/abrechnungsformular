@@ -5,6 +5,7 @@
 ### Added
 - Form validates IBAN length based on coutry code
 - Form validates correct pattern for some country codes
+- Contact/data protection links and version at bottom of form
 
 ### Changed
 - Form input for IBAN no longer assumes country code DE
