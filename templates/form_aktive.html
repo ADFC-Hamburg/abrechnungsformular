@@ -20,7 +20,7 @@
 	<header>
 		<div>
 			<h1>Aktiven&shy;abrechnung</h1>
-			<p>Hier findest du das Abrechnungs&shy;formular für Aktive und Helfer beim ADFC&nbsp;Hamburg.</p>
+			<p>Hier findest du das Abrechnungs&shy;formular für Aktive und Helfer&ast;innen beim ADFC&nbsp;Hamburg.</p>
 		</div>
 	</header>
 	<form action="{{ url_for('pages.aktive_pdf') }}" method="get">
@@ -39,15 +39,15 @@
 		</header>
 		<!--Geldbeträge-->
 		<fieldset>
-			<legend>Einnahmen und Ausgaben</legend>
+			<legend>Ausgaben und Einnahmen</legend>
 			<!--Postition 1-->
 			<section id="position1section">
 				<div class="select">
 					<input type="text" class="field" name="p1name" id="position1name" placeholder="Position 1" size=24>
 				</div>
 				<div class="select">
-					<label class="option"><input type="radio" id="position1plus" name="p1type" value=1 checked>Einnahme</label>
-					<label class="option"><input type="radio" id="position1minus" name="p1type" value=-1>Ausgabe</label>
+					<label class="option"><input type="radio" id="position1minus" name="p1type" value=-1 checked>Ausgabe</label>
+					<label class="option"><input type="radio" id="position1plus" name="p1type" value=1>Einnahme</label>
 					<!-- <span class="avoidwrap">
 						<label class="scriptonly option" hidden><input type="checkbox" id="position1multi">Mehrere Stückzahlen</label>
 					</span> -->
@@ -64,8 +64,8 @@
 					<input type="text" class="field" name="p2name" id="position2name" placeholder="Position 2" size=24>
 				</div>
 				<div class="select">
-					<label class="option"><input type="radio" id="position2plus" name="p2type" value="1" checked>Einnahme</label>
-					<label class="option"><input type="radio" id="position2minus" name="p2type" value="-1">Ausgabe</label>
+					<label class="option"><input type="radio" id="position2minus" name="p2type" value=-1 checked>Ausgabe</label>
+					<label class="option"><input type="radio" id="position2plus" name="p2type" value=1>Einnahme</label>
 					<!-- <span class="avoidwrap">
 						<label class="scriptonly option" hidden><input type="checkbox" id="position2multi">Mehrere Stückzahlen</label>
 					</span> -->
@@ -82,8 +82,8 @@
 					<input type="text" class="field" name="p3name" id="position3name" placeholder="Position 3" size=24>
 				</div>
 				<div class="select">
-					<label class="option"><input type="radio" id="position3plus" name="p3type" value="1" checked>Einnahme</label>
-					<label class="option"><input type="radio" id="position3minus" name="p3type" value="-1">Ausgabe</label>
+					<label class="option"><input type="radio" id="position3minus" name="p3type" value=-1 checked>Ausgabe</label>
+					<label class="option"><input type="radio" id="position3plus" name="p3type" value=1>Einnahme</label>
 					<!-- <span class="avoidwrap">
 						<label class="scriptonly option" hidden><input type="checkbox" id="position3multi">Mehrere Stückzahlen</label>
 					</span> -->
@@ -100,8 +100,8 @@
 					<input type="text" class="field" name="p4name" id="position4name" placeholder="Position 4" size=24>
 				</div>
 				<div class="select">
-					<label class="option"><input type="radio" id="position4plus" name="p4type" value="1" checked>Einnahme</label>
-					<label class="option"><input type="radio" id="position4minus" name="p4type" value="-1">Ausgabe</label>
+					<label class="option"><input type="radio" id="position4minus" name="p4type" value=-1 checked>Ausgabe</label>
+					<label class="option"><input type="radio" id="position4plus" name="p4type" value=1>Einnahme</label>
 					<!-- <span class="avoidwrap">
 						<label class="scriptonly option" hidden><input type="checkbox" id="position4multi">Mehrere Stückzahlen</label>
 					</span> -->
@@ -118,8 +118,8 @@
 					<input type="text" class="field" name="p5name" id="position5name" placeholder="Position 5" size=24>
 				</div>
 				<div class="select">
-					<label class="option"><input type="radio" id="position5plus" name="p5type" value="1" checked>Einnahme</label>
-					<label class="option"><input type="radio" id="position5minus" name="p5type" value="-1">Ausgabe</label>
+					<label class="option"><input type="radio" id="position5minus" name="p5type" value=-1 checked>Ausgabe</label>
+					<label class="option"><input type="radio" id="position5plus" name="p5type" value=1>Einnahme</label>
 					<!-- <span class="avoidwrap">
 						<label class="scriptonly option" hidden><input type="checkbox" id="position5multi">Mehrere Stückzahlen</label>
 					</span> -->
@@ -136,8 +136,8 @@
 					<input type="text" class="field" name="p6name" id="position6name" placeholder="Position 6" size=24>
 				</div>
 				<div class="select">
-					<label class="option"><input type="radio" id="position6plus" name="p6type" value="1" checked>Einnahme</label>
-					<label class="option"><input type="radio" id="position6minus" name="p6type" value="-1">Ausgabe</label>
+					<label class="option"><input type="radio" id="position6minus" name="p6type" value=-1 checked>Ausgabe</label>
+					<label class="option"><input type="radio" id="position6plus" name="p6type" value=1>Einnahme</label>
 					<!-- <span class="avoidwrap">
 						<label class="scriptonly option" hidden><input type="checkbox" id="position6multi">Mehrere Stückzahlen</label>
 					</span> -->
@@ -154,8 +154,8 @@
 					<input type="text" class="field" name="p7name" id="position7name" placeholder="Position 7" size=24>
 				</div>
 				<div class="select">
-					<label class="option"><input type="radio" id="position7plus" name="p7type" value="1" checked>Einnahme</label>
-					<label class="option"><input type="radio" id="position7minus" name="p7type" value="-1">Ausgabe</label>
+					<label class="option"><input type="radio" id="position7minus" name="p7type" value=-1 checked>Ausgabe</label>
+					<label class="option"><input type="radio" id="position7plus" name="p7type" value=1>Einnahme</label>
 					<!-- <span class="avoidwrap">
 						<label class="scriptonly option" hidden><input type="checkbox" id="position7multi">Mehrere Stückzahlen</label>
 					</span> -->
@@ -214,8 +214,8 @@
 			<input type="submit" id="submit" value="Abrechnung erstellen">
 			<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
 			<input type="reset" id="reset" value="Formular zurücksetzen">
-			<aside>Lade hier die fertige Abrechnung als PDF-Datei runter und sende sie uns per E-Mail an <a href="mailto:buchhaltung@adfc.hamburg.de">buchhaltung@adfc.hamburg.de</a>.<br />
-			Alternativ kannst du die Abrechnung auch ausdrucken und sie uns per Post zusenden oder direkt bei uns in der Geschäftsstelle abgeben.</aside>
+			<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:buchhaltung@adfc.hamburg.de">buchhaltung@adfc.hamburg.de</a> schicken.<br />
+			<b>Papierbelege schickst du bitte im Original</b> und mit der dazugehörigen Positionsnummer versehen <b>zusammen mit dem ausgedruckten, ausgefüllten und unterschriebenen Formular</b> an die Geschäftsstelle (<address>ADFC Hamburg, Koppel 34-36, 20099 Hamburg</address>) oder gibst es dort ab.</aside>
 		</fieldset>
 	</form>
 	<script src="{{ url_for(static, filename='js/form_aktive.js') }}"></script>

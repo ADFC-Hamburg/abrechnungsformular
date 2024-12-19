@@ -246,6 +246,12 @@ aside {
 	font-size:	80%;
 	margin:		0.25em;
 }
+aside address {
+	display:	inline;
+}
+aside br {
+	margin-bottom:	.25em;
+}
 label.money::after {
 	content:	"€";
 	padding-left:	.25em;

@@ -190,7 +190,7 @@ class Abrechnung:
         """
         Gibt den Abrechnungsbetrag zurück.
         """
-        return tools.euro(self._gettotal())
+        return tools.euro(self.gettotal())
 
     def __bool__(self):
         """
@@ -223,7 +223,7 @@ class Abrechnung:
         p2name, p2type, p2cnt, p2ppu, p2, p3name, p3type, p3cnt, p3ppu,
         p3, p4name, p4type, p4cnt, p4ppu, p4, p5name, p5type, p5cnt,
         p5ppu, p5, p6name, p6type, p6cnt, p6ppu, p6, p7name, p7type,
-        p7cnt, p7ppu, p7, dono
+        p7cnt, p7ppu, p7, dono, prtype, known, iban, owner, prsepa
         """
         if query:
             keys = tuple(query.keys())
