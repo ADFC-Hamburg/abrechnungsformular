@@ -1,5 +1,12 @@
 const moneyform = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }); // wird genutzt, um Geldbeträge zu formatieren
-const maxPos = 7 // Maximale Anzahl an Positionen im HTML-Dokument
+const maxPos = 7; // Maximale Anzahl an Positionen im HTML-Dokument
+
+// Listen von IBAN-Ländercodes mit bestimmten Eigenschaften
+const ibanLength = [['NO'],['BE'],[],['DK','FK','FO','FI','GL','NL','SD'],['MK','SI'],['AT','BA','EE','KZ','XK','LT','LU','MN'],['HR','LV','LI','CH'],['BH','BG','CR','GE','DE','IE','ME','RS','GB','VA'],['TL','GI','IQ','IL','OM','SO','AE'],['AD','CZ','MD','PK','RO','SA','SK','ES','SE','TN','VG'],['LY','PT','ST'],['IS','TR'],['BI','DJ','FR','GR','IT','MR','MC','SM'],['AL','AZ','BY','CY','DO','SV','GT','HU','LB','NI','PL'],['BR','EG','PS','QA','UA'],['JO','KW','MU','YE'],['MT','SC'],['LC'],['RU']];
+const ibanNoLetters = ['AE','AT','BA','BE','BI','CR','CZ','DE','DJ','DK','EE','EG','ES','FI','FO','GL','HR','HU','IL','IS','LT','LY','ME','MN','MR','NO','PL','PT','RS','SD','SE','SI','SK','SO','ST','TL','TN','VA','XK'];
+const iban2Letters = ['FK','GE'];
+const iban4Letters = ['GB','IE','IQ','NI','NL','SV','VG'];
+
 var multiplier = [1,1,1,1,1,1,1];
 var multiPosition = [false,false,false,false,false,false,false];
 var processMem = 0;
@@ -321,30 +328,66 @@ function validateText(target) {
  * @param {HTMLInputElement} target	Das Eingabefeld, das überprüft wird 
  */
 function validateIban(target) {
-	target.value = target.value.toUpperCase().replace(/[^0-9]/g,'');
+	target.value = target.value.toUpperCase().replace(/[^0-9A-Z]/g,'');
 	if (target.validity.valueMissing) {
+		// Eingabe vorrausgesetzt, aber fehlt
 		target.setCustomValidity('Bitte fülle dieses Feld aus.');
-	} else if (target.value.length > 20) {
-		let overflow = target.value.length - 20;
+	} else if ((target.value.length - 1)*(target.value.length - 4) <= 0) {
+		// Länge 1-4
+		target.setCustomValidity('Bitte fülle dieses Feld vollständig aus.');
+	} else if (!(/^[A-Z]{2}[0-9]{2}/.test(target.value))) {
+		// Fängt nicht an mit Buchstabe-Buchstabe-Zahl-Zahl
+		target.setCustomValidity('Bitte schreibe eine IBAN in dieses Feld.');
+	} else {
+
+		const country = target.value.substring(0,2);
+		let minLength = 15;
+		let maxLength = 34;
+		for (let i = 0; i < ibanLength.length; i++) {
+			// Wie lang sollte eine IBAN mit diesem Ländercode sein?
+			if (ibanLength[i].includes(country)) {
+				minLength = i+15;
+				maxLength = i+15;
+				break;
+			}
+		}
+		if (target.value.length > maxLength) {
+			// IBAN zu lang
+			let overflow = target.value.length - maxLength;
 		if (overflow == 1) {
 			overflow = 'ein';
 		}
 		target.setCustomValidity('Diese IBAN ist '+overflow+' Zeichen zu lang.');
-	} else if (target.value.length < 20) {
-		let missing = 20 - target.value.length;
+		} else if (target.value.length < minLength) {
+			// IBAN zu kurz
+			let missing = minLength - target.value.length;
 		if (missing == 1) {
 			missing = 'ein';
 		}
 		target.setCustomValidity('Diese IBAN ist '+missing+' Zeichen zu kurz.');
+		} else if (ibanNoLetters.includes(country) && /[A-Z]/.test(target.value.substring(2))) {
+			// Zu viele Buchstaben (sollte nur Ländercode sein)
+			target.setCustomValidity('IBAN mit Ländercode '+country+' dürfen nach dem Ländercode keine weiteren Buchstaben enthalten.');
+} else if (iban2Letters.includes(country) && (/[0-9]/.test(target.value.substring(4,6)) || /[A-Z]/.test(target.value.substring(6)))) {
+			target.setCustomValidity('IBAN mit Ländercode '+country+' müssen nach Ländercode und Prüfziffer genau zwei Buchstaben enthalten.');
+		} else if (iban4Letters.includes(country) && (/[0-9]/.test(target.value.substring(4,8)) || /[A-Z]/.test(target.value.substring(8)))) {
+			target.setCustomValidity('IBAN mit Ländercode '+country+' müssen nach Ländercode und Prüfziffer genau vier Buchstaben enthalten.');
 	} else {
-		let checksum = target.value.substring(2) + '1314' + target.value.substring(0,2);
+			// Berechne Prüfsumme
+			let checksum = target.value.substring(4) + target.value.substring(0,4);
+			for (let i = 0; i < 26; i++) {
+				checksum = checksum.replaceAll(String.fromCharCode(65+i),(i+10).toString());
+			}
 		while (checksum.length>9) {
 			checksum = checksum.substring(0,9) % 97 + checksum.substring(9);
 		}
 		if (checksum % 97 == 1) {
+				// Alles OK
 			target.setCustomValidity('');
 		} else {
+				// Schlechte Prüfsumme
 			target.setCustomValidity('Dies ist keine gültige IBAN. Überprüfe deine Eingabe bitte auf Fehler.');
+			}
 		}
 	}
 }

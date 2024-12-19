@@ -2,8 +2,13 @@
 
 ## Unreleased
 
-### Changed
+### Added
+- Form validates IBAN length based on coutry code
+- Form validates correct pattern for some country codes
 
+### Changed
+- Form input for IBAN no longer assumes country code DE
+- PDF template no longer assumes country code DE
 - Gendered form header
 - Rewritten mialing instructions at bottom of form
 - Minor changes to mailing instruction layout

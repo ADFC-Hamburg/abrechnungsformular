@@ -166,7 +166,7 @@ class Abrechnung:
     """
     
     # Class constants
-    _IBANSPACES = range(18,0,-4)
+    _IBANSPACES = range(32,0,-4)
     _MODES_IBAN = (1,2,3)
     _MODES_SEPA = (2,3)
     _NAME = "Aktivenabrechnung"
@@ -393,21 +393,21 @@ class Abrechnung:
     def setaccountiban(self,value=""):
         """
         Legt die IBAN des Bankkontos fest.
-        Diese muss aus exakt 20 Ziffern bestehen (kein Ländercode).
+        Entfernt dabei alle Zeichen außer Buchstaben und Ziffern.
         """
-        value = str(value).replace(" ","")
-        if len(value) == 20 and value.isdigit():
-            self._payment["iban"] = str(value)
-        else:
-            self._payment["iban"] = ""
+        value = sub('[\\W_]+', '',value.upper())
+        if len(value) > 34:
+            value = value[:34]
+        self._payment["iban"] = str(value)
     
     def getaccountiban(self,spaces:bool = True) -> str:
         """Gibt die IBAN des Bankkontos zurück."""
         out = self._payment["iban"]
-        if spaces and len(out) > self._IBANSPACES[0]:
+        if spaces:
             # add spaces
             for i in self._IBANSPACES:
-                out = out[:i] + " " + out[i:]
+                if len(out) > i:
+                    out = out[:i] + " " + out[i:]
         return out
 
     def setibanmode(self,mode=None):
@@ -525,7 +525,7 @@ class HTMLPrinter:
                      (lambda obj: obj.cost, True),
                      (lambda obj: obj.total, False))
     _PAYMENT_FIELDS = (None,None,None,
-                       lambda obj: obj.iban, lambda obj: obj.accountname)
+                       lambda obj: obj.iban or 'DE', lambda obj: obj.accountname)
     _PAYMENT_BOXES = (lambda obj: obj.ibanmode == 1,
                       lambda obj: obj.ibanmode==1 and obj.ibanknown==True,
                       lambda obj: obj.ibanmode==1 and obj.ibanknown==False,
