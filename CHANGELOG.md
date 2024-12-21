@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Order of domain/subdomain of email address in instructions (form and template) swapped
+
 ## v1.6 - 2024-12-19
 
 ### Added
