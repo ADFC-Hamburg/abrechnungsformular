@@ -11,7 +11,7 @@ WORKDIR /abrechnungsformular
 
 # Install necessary packages
 RUN apt-get update
-RUN apt-get install -y fonts-croscore fonts-dejavu-core libgtk-3-0
+RUN apt-get install -y fonts-croscore fonts-dejavu-core libpango1.0-0
 
 # Cleanup cache and temporary files from apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*

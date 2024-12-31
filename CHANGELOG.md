@@ -2,12 +2,20 @@
 
 ## Unreleased
 
+### Added
+
+- Library libpango 1.0-0 is installed by itself (no longer as part of libgtk 3.0)
+
 ### Fixed
 
 - Order of domain/subdomain of email address in instructions (form and template) swapped
 - Positions treated like income after form reset
 - Wrong path to nologin shell script for user appuser
 - Fontconfig threw errors, lacked permissions to write to cache
+
+### Removed
+
+- Library libgtk 3.0 (was only used for libpango, which is now installed by itself)
 
 ## v1.6 - 2024-12-19
 
