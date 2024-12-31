@@ -7,7 +7,7 @@ const ibanNoLetters = ['AE','AT','BA','BE','BI','CR','CZ','DE','DJ','DK','EE','E
 const iban2Letters = ['FK','GE'];
 const iban4Letters = ['GB','IE','IQ','NI','NL','SV','VG'];
 
-var multiplier = [1,1,1,1,1,1,1];
+var multiplier = [-1,-1,-1,-1,-1,-1,-1];
 var multiPosition = [false,false,false,false,false,false,false];
 var processMem = 0;
 
@@ -559,15 +559,15 @@ function start() {
  */
 function restart() {
 	processMem=0;
-	multiplier = [1,1,1,1,1,1,1];
-	const negatives = document.querySelectorAll(".negative")
+	multiplier = [-1,-1,-1,-1,-1,-1,-1];
+	multiPosition = [false,false,false,false,false,false,false];
 
 	positionDisplayInitialize(1);
 	processDisplay(0);
 	document.getElementById("totalamount").innerHTML = "<aside>Das Formular wurde zurückgesetzt.</aside>";
 
-	for (const field of negatives) {
-		field.classList.remove ("negative");
+	for (let i = 1; i <= maxPos; i++) {
+		updatePosition(i);
 	}
 }
 

@@ -5,6 +5,7 @@
 ### Fixed
 
 - Order of domain/subdomain of email address in instructions (form and template) swapped
+- Positions treated like income after form reset
 
 ## v1.6 - 2024-12-19
 
