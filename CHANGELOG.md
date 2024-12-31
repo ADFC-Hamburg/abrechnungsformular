@@ -17,6 +17,7 @@
 
 - Flask (Python dependency) updated to version 3.1
 - Weasyprint (Python dependency) updated to version 63
+- Updated Aktivenabrechnung.pdf (blank form PDF file)
 
 ### Removed
 
