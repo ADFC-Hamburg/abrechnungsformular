@@ -13,6 +13,11 @@
 - Wrong path to nologin shell script for user appuser
 - Fontconfig threw errors, lacked permissions to write to cache
 
+### Changed
+
+- Flask (Python dependency) updated to version 3.1
+- Weasyprint (Python dependency) updated to version 63
+
 ### Removed
 
 - Library libgtk 3.0 (was only used for libpango, which is now installed by itself)
