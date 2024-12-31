@@ -7,6 +7,7 @@
 - Order of domain/subdomain of email address in instructions (form and template) swapped
 - Positions treated like income after form reset
 - Wrong path to nologin shell script for user appuser
+- Fontconfig threw errors, lacked permissions to write to cache
 
 ## v1.6 - 2024-12-19
 

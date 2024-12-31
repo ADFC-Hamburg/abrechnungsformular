@@ -20,6 +20,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY ./requirements.txt /abrechnungsformular/requirements.txt
 RUN pip3 install --upgrade pip && pip3 install --no-cache-dir --upgrade -r /abrechnungsformular/requirements.txt
 
+# Enable writing font cache files (stops fontconfig from throwing errors)
+RUN chmod a+w /var/cache/fontconfig/
+
 # Setup non-root user to run the app (security best practice)
 ARG UID=10001
 RUN adduser --disabled-password --gecos "" --home "/nonexistent" --shell "/usr/sbin/nologin" --no-create-home --uid "${UID}" appuser
