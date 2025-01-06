@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Replaced letter symbol "a" in template with ADFC logo 
+
 ## v1.7 - 2024-12-31
 
 ### Added
