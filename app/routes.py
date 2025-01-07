@@ -4,8 +4,11 @@ entsprechenden Inhalte anzeigt.
 """
 
 # Imports
-from flask import Blueprint, render_template, request, abort
-from flask_weasyprint import HTML, CSS, render_pdf
+from io import BytesIO
+
+from drafthorse.pdf import attach_xml
+from flask import Blueprint, render_template, request, abort, send_file
+from weasyprint import HTML, CSS
 
 from app import aktive, VERSION
 
@@ -45,6 +48,8 @@ def aktive_pdf():
         except:
             # Bad Request
             abort(400)
+        # Prepare electronic invoice as XML
+        xml = abrechnung.factur_x()
         # Prepare document as HTML
         printer = aktive.HTMLPrinter(AKTIVE_HTML)
         document = printer.html_compose(abrechnung)
@@ -54,9 +59,13 @@ def aktive_pdf():
         # Select a filename for the resulting file
         filename = abrechnung.suggest_filename()+'.pdf'
         # Create PDF from HTML and CSS
-        return render_pdf(HTML(string=document),
-                          stylesheets=[CSS(string=formatting)],
-                          download_filename=filename)
+        pdf = HTML(string=document).write_pdf(stylesheets=[CSS(string=formatting)])
+        # Attach electronic invoice
+        if xml:
+            pdf = attach_xml(pdf, xml)
+        # Return file
+        return send_file(BytesIO(pdf), mimetype='application/pdf',
+                         as_attachment=True, download_name=filename)
     else:
         # No query provided; use premade empty PDF instead
         return pages.send_static_file('blank/Aktivenabrechnung.pdf')

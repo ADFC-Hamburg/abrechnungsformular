@@ -302,6 +302,12 @@ class Abrechnung:
             # Add project date
             out += " "+str(self.getprojectdate())
         return out
+
+    def factur_x(self):
+        # Return test file (for now)
+        with open('static/test.xml','rb') as file:
+            xml = file.read()
+        return xml
     
     # Variable getters and setters
     def setusername(self,value:str = ""):

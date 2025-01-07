@@ -2,9 +2,17 @@
 
 ## Unreleased
 
+### Added
+
+- Add a template electronic invoice to generated PDF files
+
 ### Changed
 
 - Replaced letter symbol "a" in template with ADFC logo 
+
+### Removed
+
+- Python library flask-weasyprint
 
 ## v1.7 - 2024-12-31
 

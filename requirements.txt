@@ -2,6 +2,7 @@
 
 flask>=3.1.0,<3.2.0
 weasyprint>=63.1,<64.0
-flask_weasyprint>=1.1.0,<1.2.0
+#flask_weasyprint>=1.1.0,<1.2.0
 gunicorn>=23.0.0,<24.0.0
 babel>=2.16.0,<2.17.0
+drafthorse>=2.4.0,<2.5.0
