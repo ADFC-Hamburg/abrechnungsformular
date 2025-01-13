@@ -3,13 +3,18 @@ Modul für Klassen, die Aktivenabrechnungen repräsentieren oder
 selbige als Dokument ausgeben.
 """
 
-from datetime import date
+from datetime import date, datetime
+from decimal import Decimal
 from html import escape
 from re import sub
 
 from babel.dates import format_date
+from drafthorse.models.accounting import ApplicableTradeTax as DH_ApplicableTradeTax
+from drafthorse.models.document import Document as DH_Document
+from drafthorse.models.tradelines import LineItem as DH_LineItem
 
-from app import tools, VERSION
+
+from app import tools, VERSION, CONTACT
 
 
 class Position:
@@ -304,6 +309,44 @@ class Abrechnung:
         return out
 
     def factur_x(self):
+
+        doc = DH_Document()
+        doc.context.guideline_parameter.id = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
+        doc.header.id = "AKTIVE"+datetime.now().strftime("%Y%m%d%H%M%S")
+        doc.header.name = self._NAME.upper()
+        doc.header.type_code = "751" # Invoice information for accounting purposes
+        doc.header.issue_date_time = date.today()
+        doc.header.languages.add("de")
+
+        doc.trade.agreement.seller.name = CONTACT['Name']
+        doc.trade.agreement.seller.address.line_one = CONTACT['LineOne']
+        if 'LineTwo' in CONTACT.keys():
+            doc.trade.agreement.seller.address.line_two = CONTACT['LineTwo']
+        if 'LineThree' in CONTACT.keys():
+            doc.trade.agreement.seller.address.line_three = CONTACT['LineThree']
+        doc.trade.agreement.seller.address.postcode = CONTACT['PostCode']
+        doc.trade.agreement.seller.address.city_name = CONTACT['City']
+        #doc.trade.agreement.seller.address.country_subdivision = CONTACT['State']
+        doc.trade.agreement.seller.address.country_id = CONTACT['Country']
+
+        for index in range(self._POSITIONCOUNT):
+            position = self.positions[index]
+            if not position:
+                continue
+            li = DH_LineItem()
+            li.document.line_id = str(index)
+            li.product.name = position.getname()
+            li.agreement.net.amount = Decimal(position.getunitprice())
+            li.agreement.net.basis_quantity = (Decimal(position.getunitcount()), "H87")  # H87 == Item
+            li.delivery.billed_quantity = (Decimal(position.getunitcount()), "H87")  # H87 == Item
+            li.settlement.trade_tax.category_code = "K" # VAT exempt for intra community supply of goods
+            li.settlement.monetary_summation.total_amount = Decimal(position.getvalue())
+            doc.trade.items.add(li)
+
+        tax = DH_ApplicableTradeTax()
+        tax.category_code = "K" # VAT exempt for intra community supply of goods
+        doc.trade.settlement.trade_tax.add(tax)
+
         # Return test file (for now)
         with open('static/test.xml','rb') as file:
             xml = file.read()
