@@ -32,7 +32,7 @@ USER appuser
 COPY app/ /abrechnungsformular/app/
 COPY static/ /abrechnungsformular/static/
 COPY templates/ /abrechnungsformular/templates/
-COPY abrechnungsformular.py VERSION /abrechnungsformular/
+COPY abrechnungsformular.py VERSION CONTACT.json /abrechnungsformular/
 
 # Expose port 8000 for the Flask application
 EXPOSE 8000
