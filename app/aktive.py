@@ -105,9 +105,9 @@ class Position:
     
     def setunitprice(self,value=0.0):
         """Legt den Preis pro Einheit der Position fest."""
-        self._unitprice = float(value)
+        self._unitprice = Decimal(value)
     
-    def getunitprice(self) -> float:
+    def getunitprice(self) -> Decimal:
         """Gibt den Preis pro Einheit der Position zurück."""
         return self._unitprice
     
@@ -116,16 +116,16 @@ class Position:
         Legt den Gesamtpreis der Position fest.
         Einnahmen sind positiv, Ausgaben negativ.
         """
-        self._value = float(value)
+        self._value = Decimal(value)
     
-    def getvalue(self) -> float:
+    def getvalue(self) -> Decimal:
         """
         Gibt den Gesamtpreis der Position zurück.
         Bei vorhandendem Stückpreis wird der
         gespeicherte Gesamtpreis ignoriert.
         """
         if self._unitprice != 0:
-            return self._unitprice * self._unitcount
+            return Decimal(self._unitprice * self._unitcount)
         return self._value
     
     def setminusvalue(self,value=0.0):
@@ -133,21 +133,21 @@ class Position:
         Legt den Gesamtpreis der Position fest.
         Ausgaben sind positiv, Einnahmen negativ.
         """
-        self._value = float(value)*-1
+        self._value = Decimal(value*-1)
     
-    def getincome(self) -> float:
+    def getincome(self) -> Decimal:
         """
         Gibt die Gesamteinnahmen der Position zurück.
         Bei Ausgaben wird Null zurückgegeben.
         """
-        return max(0.0, self.getvalue())
+        return max(Decimal(0.0), self.getvalue())
     
-    def getcost(self) -> float:
+    def getcost(self) -> Decimal:
         """
         Gibt die Gesamtausgaben der Position zurück.
         Bei Einnahmen wird Null zurückgegeben.
         """
-        return max(0.0, self.getvalue()*-1)
+        return max(Decimal(0.0), self.getvalue()*-1)
     
     # Properties
     name = property(getname,setname,None,
@@ -187,7 +187,7 @@ class Abrechnung:
         
         self._user = {"name": "", "group": ""}
         self._project = {"name": "", "date": None}
-        self._donations = 0.0
+        self._donations = Decimal(0.0)
         self._payment = {"ibanmode": None, "sepamode": None,
                          "ibanknown": False, "iban": "", "name": ""}
     
@@ -252,13 +252,13 @@ class Abrechnung:
                         and query[pos+'cnt'] and query[pos+'ppu']:
                         # Position has amount and price per unit
                         self.positions[i].setunitcount(int(query[pos+'cnt']))
-                        amount = float(query[pos+'ppu'])
-                        amount *= float(query[pos+'type'])
+                        amount = Decimal(query[pos+'ppu'])
+                        amount *= Decimal(query[pos+'type'])
                         self.positions[i].setunitprice(amount)
                     elif pos in keys and query[pos]:
                         # Position has a set value
-                        amount = float(query[pos])
-                        amount *= float(query[pos+'type'])
+                        amount = Decimal(query[pos])
+                        amount *= Decimal(query[pos+'type'])
                         self.positions[i].setvalue(amount)
                     else:
                         # Position has no value; ignore name
@@ -400,32 +400,32 @@ class Abrechnung:
     
     def setdonations(self,value=0.0):
         """Legt den Betrag eingenommener Spenden fest."""
-        self._donations = float(value)
+        self._donations = Decimal(value)
         if self._donations < 0:
-            self._donations = 0.0
+            self._donations = Decimal(0.0)
     
-    def getdonations(self) -> float:
+    def getdonations(self) -> Decimal:
         """Gibt den Betrag eingenommener Spenden zurück."""
         return self._donations
     
-    def getincome(self) -> float:
+    def getincome(self) -> Decimal:
         """Gibt den Gesamtbetrag der Einnahmen zurück."""
-        out = 0.0
+        out = Decimal(0.0)
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].income
         out += self.getdonations()
         return out
 
-    def getcost(self) -> float:
+    def getcost(self) -> Decimal:
         """Gibt den Gesamtbetrag der Ausgaben zurück."""
-        out = 0.0
+        out = Decimal(0.0)
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].cost
         return out
     
-    def gettotal(self) -> float:
+    def gettotal(self) -> Decimal:
         """Gibt den Betrag der Einnahmen minus Ausgaben zurück."""
-        out = 0.0
+        out = Decimal(0.0)
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].value
         out += self.getdonations()
