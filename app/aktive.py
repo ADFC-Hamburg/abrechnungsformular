@@ -11,6 +11,8 @@ from re import sub
 from babel.dates import format_date
 from drafthorse.models.accounting import ApplicableTradeTax as DH_ApplicableTradeTax
 from drafthorse.models.document import Document as DH_Document
+from drafthorse.models.note import IncludedNote as DH_IncludedNote
+from drafthorse.models.party import TaxRegistration as DH_TaxRegistration
 from drafthorse.models.tradelines import LineItem as DH_LineItem
 
 
@@ -314,9 +316,15 @@ class Abrechnung:
         doc.context.guideline_parameter.id = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
         doc.header.id = "AKTIVE"+datetime.now().strftime("%Y%m%d%H%M%S")
         doc.header.name = self._NAME.upper()
-        doc.header.type_code = "751" # Invoice information for accounting purposes
+        doc.header.type_code = "389" # Self billed invoice
         doc.header.issue_date_time = date.today()
         doc.header.languages.add("de")
+
+        if self.getprojectname():
+            note = DH_IncludedNote()
+            note.content_code = 'Project'
+            note.content.add(self.getprojectname())
+            doc.header.notes.add(note)
 
         doc.trade.agreement.seller.name = CONTACT['Name']
         doc.trade.agreement.seller.address.line_one = CONTACT['LineOne']
@@ -329,6 +337,13 @@ class Abrechnung:
         #doc.trade.agreement.seller.address.country_subdivision = CONTACT['State']
         doc.trade.agreement.seller.address.country_id = CONTACT['Country']
 
+        tr = DH_TaxRegistration()
+        tr.id = (CONTACT['VAT-Nr.'],"VA")
+        doc.trade.agreement.seller.tax_registrations.add(tr)
+
+        doc.trade.agreement.buyer.name = self.getusername()
+        doc.trade.agreement.buyer.description = self.getusergroup()
+
         for index in range(self._POSITIONCOUNT):
             position = self.positions[index]
             if not position:
@@ -336,21 +351,64 @@ class Abrechnung:
             li = DH_LineItem()
             li.document.line_id = str(index)
             li.product.name = position.getname()
-            li.agreement.net.amount = Decimal(position.getunitprice())
-            li.agreement.net.basis_quantity = (Decimal(position.getunitcount()), "H87")  # H87 == Item
-            li.delivery.billed_quantity = (Decimal(position.getunitcount()), "H87")  # H87 == Item
+            li.agreement.net.amount = Decimal(abs(position.getunitprice()) or abs(position.getvalue()))
+            count = Decimal(position.getunitcount())
+            if position.getcost():
+                count = -count
+            li.agreement.net.basis_quantity = (count, "H87")  # H87 == Item
+            li.delivery.billed_quantity = (count, "H87")  # H87 == Item
             li.settlement.trade_tax.category_code = "K" # VAT exempt for intra community supply of goods
             li.settlement.monetary_summation.total_amount = Decimal(position.getvalue())
             doc.trade.items.add(li)
+
+        if self.getdonations():
+            li = DH_LineItem()
+            li.document.line_id = "DONATIONS"
+            li.product.name = "Donations"
+            li.settlement.trade_tax.category_code = "K" # VAT exempt for intra community supply of goods
+            li.settlement.monetary_summation.total_amount = Decimal(self.getdonations())
+            doc.trade.items.add(li)
+
+        """
+        if self.getibanmode() == 1 and self.gettotal < 0:
+            # Refund via bank transfer
+            pass
+        elif self.getibanmode() == 2 and self.gettotal > 0:
+            if self.getibanknown():
+                pass
+            else:
+                doc.trade.settlement.payment_means.type_code = "59" # SEPA direct debit
+        elif self.getibanmode() == 3 and self.gettotal > 0:
+            doc.trade.settlement.payment_means.type_code = "42" # Payment to bank account
+        else:
+            # Fallback if none of the above applies
+            doc.trade.settlement.payment_means.type_code = "ZZZ" # Mutually defined
+        """
+
+        doc.trade.settlement.payment_means.type_code = "ZZZ" # Mutually defined
 
         tax = DH_ApplicableTradeTax()
         tax.category_code = "K" # VAT exempt for intra community supply of goods
         doc.trade.settlement.trade_tax.add(tax)
 
+        doc.trade.settlement.currency_code = "EUR"
+        doc.trade.settlement.monetary_summation.line_total = Decimal(self.gettotal())
+        doc.trade.settlement.monetary_summation.charge_total = Decimal(
+            sum(position.getincome() for position in self.positions)
+            + self.getdonations() )
+        doc.trade.settlement.monetary_summation.allowance_total = Decimal(
+            sum(position.getcost() for position in self.positions) )
+        doc.trade.settlement.monetary_summation.tax_basis_total = Decimal(self.gettotal())
+        doc.trade.settlement.monetary_summation.tax_total = Decimal("0.00")
+        doc.trade.settlement.monetary_summation.grand_total = Decimal(self.gettotal())
+        doc.trade.settlement.monetary_summation.due_amount = Decimal(self.gettotal())
+
         # Return test file (for now)
         with open('static/test.xml','rb') as file:
             xml = file.read()
         return xml
+
+        #return doc.serialize(schema="FACTUR-X_EXTENDED")
     
     # Variable getters and setters
     def setusername(self,value:str = ""):
