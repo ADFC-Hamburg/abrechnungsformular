@@ -13,8 +13,9 @@ from weasyprint import HTML, CSS
 from app import aktive, VERSION
 
 # Constants
-AKTIVE_HTML = 'templates/documents/aktive_template.html'
-AKTIVE_CSS = 'templates/documents/aktive_template.css'
+PDF_TEMPLATE_FOLDER = 'templates/documents/'
+AKTIVE_HTML = PDF_TEMPLATE_FOLDER + 'aktive_template.html'
+AKTIVE_CSS = PDF_TEMPLATE_FOLDER + 'aktive_template.css'
 STATIC = 'pages.static'
 
 # Routes
@@ -53,13 +54,12 @@ def aktive_pdf():
         # Prepare document as HTML
         printer = aktive.HTMLPrinter(AKTIVE_HTML)
         document = printer.html_compose(abrechnung)
-        # Read in CSS file
-        with open(AKTIVE_CSS) as f:
-            formatting = f.read()
         # Select a filename for the resulting file
         filename = abrechnung.suggest_filename()+'.pdf'
         # Create PDF from HTML and CSS
-        pdf = HTML(string=document).write_pdf(stylesheets=[CSS(string=formatting)])
+        html = HTML(string=document,base_url=PDF_TEMPLATE_FOLDER)
+        css = CSS(filename=AKTIVE_CSS,base_url=PDF_TEMPLATE_FOLDER)
+        pdf = html.write_pdf(stylesheets=[css])
         # Attach electronic invoice
         if xml:
             pdf = attach_xml(pdf, xml)
