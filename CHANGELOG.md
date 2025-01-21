@@ -4,7 +4,7 @@
 
 ### Added
 
-- Add a template electronic invoice to generated PDF files
+- Add a Factur-X 1.0.06 (a.k.a. ZUGFeRD 2.2) compliant e-invoice to generated PDF files
 
 ### Changed
 
