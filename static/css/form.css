@@ -290,9 +290,9 @@ label.money::after {
 	content:	"€";
 	padding-left:	.25em;
 }
-.negative {
+/*.negative {
 	color:		red;
-}
+}*/
 .locked {
 	color:		lightgrey;
 }
@@ -379,9 +379,9 @@ label.money::after {
 
 		color:		black;
 	}
-	.negative {
+	/*.negative {
 		color:		darkred;
-	}
+	}*/
 	input[type="number"]:focus,
 	input[type="text"]:focus,
 	input[type="date"]:focus {

@@ -5,6 +5,7 @@
 ### Changed
 
 - Replaced letter symbol "a" in template with ADFC logo 
+- In the web form, money amounts in cost positions are no longer colored red
 
 ## v1.7 - 2024-12-31
 
