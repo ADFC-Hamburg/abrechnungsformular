@@ -61,8 +61,7 @@ def aktive_pdf():
         css = CSS(filename=AKTIVE_CSS,base_url=PDF_TEMPLATE_FOLDER)
         pdf = html.write_pdf(stylesheets=[css])
         # Attach electronic invoice
-        if xml:
-            pdf = attach_xml(pdf, xml)
+        pdf = attach_xml(pdf, xml)
         # Return file
         return send_file(BytesIO(pdf), mimetype='application/pdf',
                          as_attachment=True, download_name=filename)
