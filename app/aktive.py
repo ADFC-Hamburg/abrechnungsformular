@@ -336,6 +336,9 @@ class Abrechnung:
             note.subject_code = "ACD" # Reason
             doc.header.notes.add(note)
 
+        if self.getprojectname() == 'Testrechnung':
+            doc.context.test_indicator = True
+
         # Determine seller and buyer
         if self.gettotal() > 0:
             mode = 1
