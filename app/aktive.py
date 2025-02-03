@@ -326,6 +326,7 @@ class Abrechnung:
         doc.header.name = self._NAME.upper()
         doc.header.issue_date_time = date.today()
         doc.header.languages.add("de")
+        doc.header.type_code = "380" # Commercial invoice
 
         if self.getprojectname():
             note = DH_IncludedNote()
@@ -342,12 +343,10 @@ class Abrechnung:
         # Determine seller and buyer
         if self.gettotal() > 0:
             mode = 1
-            doc.header.type_code = "389" # Self billed invoice
             adfc = doc.trade.agreement.seller
             user = doc.trade.agreement.buyer
         else:
             mode = -1
-            doc.header.type_code = "380" # Commercial invoice
             adfc = doc.trade.agreement.buyer
             user = doc.trade.agreement.seller
 
