@@ -399,7 +399,7 @@ class Abrechnung:
 
         if self.getdonations():
             li = DH_LineItem()
-            li.document.line_id = "DONATION"
+            li.document.line_id = "SP"
             li.product.name = "Spenden"
             li.agreement.net.amount = Decimal(self.getdonations())
             li.agreement.net.basis_quantity = (Decimal(mode), "H87")  # H87 == Item
@@ -439,7 +439,7 @@ class Abrechnung:
                 else:
                     doc.trade.settlement.payment_means.information.add("Das vorliegende SEPA-Mandat ist veraltet.")
                 note = DH_IncludedNote()
-                note.content_code = "SPF"
+                note.content_code = "SEPA"
                 note.content.add("Bitte senden Sie mir ein SEPA-Mandatsformular zu.")
                 note.subject_code = "AAI" # General information
                 doc.header.notes.add(note)
