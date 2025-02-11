@@ -199,7 +199,7 @@ function positionDisplayInitialize(x) {
  * @param {number} x		Die fragliche Position
  * @param {boolean} show	Ob die Position angezeigt werden soll
  */
-function positionDisplay(x,show=true) { //Zeige oder verstecke Position x im HTML-Dokument
+function positionDisplay(x,show=true) {
 	document.getElementById("position"+x+"section").hidden = !(show);
 }
 
@@ -248,7 +248,7 @@ function calculate() {
  * 
  * @since	1.3
  * 
- * @returns {bool}	Ob ein Geldbetrag eingegeben wurde
+ * @returns {boolean}	Ob ein Geldbetrag eingegeben wurde
  */
 function anyAmountEntered() {
 	if (document.getElementById('donations').value != 0) {
