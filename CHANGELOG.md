@@ -9,8 +9,11 @@
 
 ### Changed
 
+- Weasyprint (Pyhton dependency) updated to version 64
+- Babel (Python dependency) updated to version 2.17
 - Replaced letter symbol "a" in template with ADFC logo
 - Reworked instructions for sending in the complete form
+- In the web form, money amounts in cost positions are no longer colored red
 
 ### Removed
 
