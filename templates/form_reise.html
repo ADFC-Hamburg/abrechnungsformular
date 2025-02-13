@@ -64,30 +64,34 @@
 		<fieldset>
 			<legend>Mahlzeiten</legend>
 			<section style="column-count:2; column-gap:3rem;">
+{% for i in range(1,11) %}
 				<div class="block">
-					<div class="select" id="day1">Tag 1:</div>
+					<div class="select" id="day{{ i }}">Tag {{ i }}:</div>
 					<div class="subselect">
-						<label class="option"><input type="checkbox" name="d1m1" id="day1breakfast" value="1">Frühstück</label>
-						<label class="option"><input type="checkbox" name="d1m2" id="day1lunch" value="1">Mittagessen</label>
-						<label class="option"><input type="checkbox" name="d1m3" id="day1dinner" value="1">Abendessen</label>
+						<label class="option"><input type="checkbox" name="d{{ i }}m1" id="day{{ i }}breakfast" value="1">Frühstück</label>
+						<label class="option"><input type="checkbox" name="d{{ i }}m2" id="day{{ i }}lunch" value="1">Mittagessen</label>
+						<label class="option"><input type="checkbox" name="d{{ i }}m3" id="day{{ i }}dinner" value="1">Abendessen</label>
 					</div>
 				</div>
+{% endfor %}
 			</section>
 			<section hidden>
 			</section>
 		</fieldset>
 		<fieldset>
 			<legend>Ausgaben</legend>
-			<section id="position1section">
+{% for i in range(1,13) %}
+			<section id="position{{ i }}section">
 				<div class="select">
-					<label class="field">Kostengrund: <input type="text" class="field" name="p1name" id="position1name" placeholder="Position 1" size=24></label>
-					<label class="field">Datum: <input type="date" name="p1date" id="position1date"></label>
-					<label class="field">Belegnummer: <input type="text" class="field" name="p1nr" id="position1number"></label>
+					<label class="field">Kostengrund: <input type="text" class="field" name="p{{ i }}name" id="position{{ i }}name" placeholder="Position {{ i }}" size=24></label>
+					<label class="field">Datum: <input type="date" name="p{{ i }}date" id="position{{ i }}date"></label>
+					<label class="field">Belegnummer: <input type="text" class="field" name="p{{ i }}nr" id="position{{ i }}number"></label>
 				</div>
 				<div class="subinput">
-					<label class="field money">Betrag: <input type="number" name="p1" id="position1amount" min="0" step="0.01" class="money"></label>
+					<label class="field money">Betrag: <input type="number" name="p{{ i }}" id="position{{ i }}amount" min="0" step="0.01" class="money"></label>
 				</div>
 			</section>
+{% endfor %}
 		</fieldset>
 		<fieldset>
 			<legend>Daten absenden</legend>
