@@ -293,12 +293,19 @@ label.money::after {
 /*.negative {
 	color:		red;
 }*/
+.block:not([hidden]) {
+	display:	inline-block;
+	width:		100%;
+}
 .locked {
 	color:		lightgrey;
 }
 .iban {
 	font-family:	monospace;
 	font-size:	120%;
+}
+.indent {
+	margin-left:	2.5em;
 }
 
 /*Widescreen Layout: Zwei Spalten ————————————

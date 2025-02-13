@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Reisekostenabrechnung</title>
+	<meta name="description" content="Abrechnungsformular des ADFC Hamburg" />
+	<meta name="author" content="Patrick Lübcke" />
+	<meta name="application-name" content="Abrechnungsformular" />
+	<meta name="theme-color" content="#24477c" />
+	<link rel="stylesheet" href="{{ url_for(static, filename='css/form.css') }}">
+	<link rel="icon" href="{{ url_for(static, filename='img/favicon.ico') }}" sizes="32x32">
+	<link rel="icon" href="{{ url_for(static, filename='img/icon.svg') }}" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="{{ url_for(static, filename='img/apple-touch-icon.png') }}">
+	<link rel="manifest" href="{{ url_for(static, filename='json/manifest.webmanifest') }}">
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Reise&shy;kosten&shy;abrechnung</h1>
+			<p>Hier findest du das Abrechnungs&shy;formular für Aktive und Helfer&ast;innen beim ADFC&nbsp;Hamburg.</p>
+		</div>
+	</header>
+	<form action="" method="get">
+		<header>
+			<fieldset>
+				<legend>Adresse</legend>
+				<label class="field">Name: <input type="text" name="uname" id="username" autocomplete="name" size=20 required></label>
+				<label class="field">Straße: <input type="text" name="ustreet" id="userstreet" autocomplete="street-adress" size=20 required></label>
+				<label class="field">Postleitzahl: <input type="text" name="uzip" id="userpostcode" autocomplete="postal-code" size=5 pattern="[0-9a-zA-Z -]+" title="Eine gültige Postleitzahl"></label>
+				<label class="field">Ort: <input type="text" name="ucity" id="usercity" autocomplete="address-level2" size=20 required></label>
+			</fieldset>
+			<fieldset>
+				<legend>Bankverbindung</legend>
+				<label class="field"><abbr title="Internationale Bankkontonummer">IBAN</abbr>: <input type="text" name="iban" id="processiban" size=22 placeholder="DE12345678901234567890" class="iban"></label>
+				<label class="field">Kontoinhaber: <input type="text" name="owner" id="processowner" autocomplete="name"></label>
+				<br>
+				<label class="option indent"> <input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem ADFC&nbsp;Hamburg bekannt.</label>
+			</fieldset>
+			<fieldset>
+				<legend>Angaben zur Reise</legend>
+				<section>
+					<div class="select">
+						<label class="field">Anlass: <input type="text" name="reason" id="reason" size=24 required></label>
+					</div>
+					<div class="subselect">
+						<label class="field">Beginn der Reise: <input type="date" name="begin" id="journeybegindate" required></label>
+						<label class="field">Ende der Reise: <input type="date" name="end" id="journeyenddate" required></label>
+					</div>
+				</section>
+				<section id="timesection">
+					<noscript class="select">
+						<aside>Nur bei eintägiger Reise auszufüllen</aside>
+					</noscript>
+					<div class="subselect">
+						<label class="field">Uhrzeit der Abreise: <input type="time" name="begintime" id="journeybegintime" step=60></label>
+						<label class="field">Uhrzeit der Rückkehr: <input type="time" name="endtime" id="journeyendtime" step=60></label>
+					</div>
+				</section>
+			</fieldset>
+		</header>
+		<fieldset>
+			<legend>Mahlzeiten</legend>
+			<section style="column-count:2; column-gap:3rem;">
+				<div class="block">
+					<div class="select" id="day1">Tag 1:</div>
+					<div class="subselect">
+						<label class="option"><input type="checkbox" name="d1m1" id="day1breakfast" value="1">Frühstück</label>
+						<label class="option"><input type="checkbox" name="d1m2" id="day1lunch" value="1">Mittagessen</label>
+						<label class="option"><input type="checkbox" name="d1m3" id="day1dinner" value="1">Abendessen</label>
+					</div>
+				</div>
+			</section>
+			<section hidden>
+			</section>
+		</fieldset>
+		<fieldset>
+			<legend>Ausgaben</legend>
+			<section id="position1section">
+				<div class="select">
+					<label class="field">Kostengrund: <input type="text" class="field" name="p1name" id="position1name" placeholder="Position 1" size=24></label>
+					<label class="field">Datum: <input type="date" name="p1date" id="position1date"></label>
+					<label class="field">Belegnummer: <input type="text" class="field" name="p1nr" id="position1number"></label>
+				</div>
+				<div class="subinput">
+					<label class="field money">Betrag: <input type="number" name="p1" id="position1amount" min="0" step="0.01" class="money"></label>
+				</div>
+			</section>
+		</fieldset>
+		<fieldset>
+			<legend>Daten absenden</legend>
+			<input type="submit" id="submit" value="Abrechnung erstellen">
+			<!--<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>-->
+			<input type="reset" id="reset" value="Formular zurücksetzen">
+			<!--<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
+			<b>Papierbelege schickst du bitte im Original</b> und mit der dazugehörigen Positionsnummer versehen <b>zusammen mit dem ausgedruckten, ausgefüllten und unterschriebenen Formular</b> an die Geschäftsstelle (<address>ADFC&nbsp;Hamburg, Koppel 34-36, 20099 Hamburg</address>) oder gibst es dort ab.</aside>-->
+		</fieldset>
+
+	</form>
+	<footer>
+		<nav>
+			<a href="https://hamburg.adfc.de/impressum">Impressum</a><a href="https://hamburg.adfc.de/datenschutz">Datenschutz</a>
+		</nav>
+		<div class="version">Abrechnungsformular v{{version}}</div>
+	</footer>
+</body>
+
+</html>
