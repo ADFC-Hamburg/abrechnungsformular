@@ -5,10 +5,12 @@
 ### Added
 
 - Add a Factur-X 1.0.06 (a.k.a. ZUGFeRD 2.2) compliant e-invoice to generated PDF files
+- Hint in signature box when signature is not required
 
 ### Changed
 
-- Replaced letter symbol "a" in template with ADFC logo 
+- Replaced letter symbol "a" in template with ADFC logo
+- Reworked instructions for sending in the complete form
 
 ### Removed
 
