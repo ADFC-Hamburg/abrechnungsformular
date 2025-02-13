@@ -1,0 +1,16 @@
+{
+	"Name":		"ADFC Landesverband Hamburg e.V.",
+	"LineOne":	"Koppel 34-36",
+	"PostCode":	"20099",
+	"City":		"Hamburg",
+	"State":	"Hamburg",
+	"Country":	"DE",
+
+	"Phone":	"+49 40-39 39 33",
+	"Mail":		"kontakt@hamburg.adfc.de",
+
+	"AccName":	"ADFC Hamburg",
+	"IBAN":		"DE80 4306 0967 2029 4456 00",
+	"BIC":		"GENODEM1GLS",
+	"VAT-Nr.":	"DE176665331"
+}

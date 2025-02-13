@@ -4,14 +4,18 @@ entsprechenden Inhalte anzeigt.
 """
 
 # Imports
-from flask import Blueprint, render_template, request, abort
-from flask_weasyprint import HTML, CSS, render_pdf
+from io import BytesIO
+
+from drafthorse.pdf import attach_xml
+from flask import Blueprint, render_template, request, abort, send_file
+from weasyprint import HTML, CSS
 
 from app import aktive, VERSION
 
 # Constants
-AKTIVE_HTML = 'templates/documents/aktive_template.html'
-AKTIVE_CSS = 'templates/documents/aktive_template.css'
+PDF_TEMPLATE_FOLDER = 'templates/documents/'
+AKTIVE_HTML = PDF_TEMPLATE_FOLDER + 'aktive_template.html'
+AKTIVE_CSS = PDF_TEMPLATE_FOLDER + 'aktive_template.css'
 STATIC = 'pages.static'
 
 # Routes
@@ -45,18 +49,22 @@ def aktive_pdf():
         except:
             # Bad Request
             abort(400)
+        # Prepare electronic invoice as XML
+        xml = abrechnung.factur_x()
         # Prepare document as HTML
         printer = aktive.HTMLPrinter(AKTIVE_HTML)
         document = printer.html_compose(abrechnung)
-        # Read in CSS file
-        with open(AKTIVE_CSS) as f:
-            formatting = f.read()
         # Select a filename for the resulting file
         filename = abrechnung.suggest_filename()+'.pdf'
         # Create PDF from HTML and CSS
-        return render_pdf(HTML(string=document),
-                          stylesheets=[CSS(string=formatting)],
-                          download_filename=filename)
+        html = HTML(string=document,base_url=PDF_TEMPLATE_FOLDER)
+        css = CSS(filename=AKTIVE_CSS,base_url=PDF_TEMPLATE_FOLDER)
+        pdf = html.write_pdf(stylesheets=[css])
+        # Attach electronic invoice
+        pdf = attach_xml(pdf, xml)
+        # Return file
+        return send_file(BytesIO(pdf), mimetype='application/pdf',
+                         as_attachment=True, download_name=filename)
     else:
         # No query provided; use premade empty PDF instead
         return pages.send_static_file('blank/Aktivenabrechnung.pdf')

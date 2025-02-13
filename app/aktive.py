@@ -3,13 +3,21 @@ Modul für Klassen, die Aktivenabrechnungen repräsentieren oder
 selbige als Dokument ausgeben.
 """
 
-from datetime import date
+from datetime import date, datetime
+from decimal import Decimal
 from html import escape
 from re import sub
 
 from babel.dates import format_date
+from drafthorse.models.accounting import ApplicableTradeTax as DH_ApplicableTradeTax
+from drafthorse.models.document import Document as DH_Document
+from drafthorse.models.note import IncludedNote as DH_IncludedNote
+from drafthorse.models.party import TaxRegistration as DH_TaxRegistration
+from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms
+from drafthorse.models.tradelines import LineItem as DH_LineItem
 
-from app import tools, VERSION
+
+from app import tools, VERSION, CONTACT
 
 
 class Position:
@@ -100,9 +108,9 @@ class Position:
     
     def setunitprice(self,value=0.0):
         """Legt den Preis pro Einheit der Position fest."""
-        self._unitprice = float(value)
+        self._unitprice = Decimal(value)
     
-    def getunitprice(self) -> float:
+    def getunitprice(self) -> Decimal:
         """Gibt den Preis pro Einheit der Position zurück."""
         return self._unitprice
     
@@ -111,16 +119,16 @@ class Position:
         Legt den Gesamtpreis der Position fest.
         Einnahmen sind positiv, Ausgaben negativ.
         """
-        self._value = float(value)
+        self._value = Decimal(value)
     
-    def getvalue(self) -> float:
+    def getvalue(self) -> Decimal:
         """
         Gibt den Gesamtpreis der Position zurück.
         Bei vorhandendem Stückpreis wird der
         gespeicherte Gesamtpreis ignoriert.
         """
         if self._unitprice != 0:
-            return self._unitprice * self._unitcount
+            return Decimal(self._unitprice * self._unitcount)
         return self._value
     
     def setminusvalue(self,value=0.0):
@@ -128,21 +136,21 @@ class Position:
         Legt den Gesamtpreis der Position fest.
         Ausgaben sind positiv, Einnahmen negativ.
         """
-        self._value = float(value)*-1
+        self._value = Decimal(value*-1)
     
-    def getincome(self) -> float:
+    def getincome(self) -> Decimal:
         """
         Gibt die Gesamteinnahmen der Position zurück.
         Bei Ausgaben wird Null zurückgegeben.
         """
-        return max(0.0, self.getvalue())
+        return max(Decimal(0.0), self.getvalue())
     
-    def getcost(self) -> float:
+    def getcost(self) -> Decimal:
         """
         Gibt die Gesamtausgaben der Position zurück.
         Bei Einnahmen wird Null zurückgegeben.
         """
-        return max(0.0, self.getvalue()*-1)
+        return max(Decimal(0.0), self.getvalue()*-1)
     
     # Properties
     name = property(getname,setname,None,
@@ -182,7 +190,7 @@ class Abrechnung:
         
         self._user = {"name": "", "group": ""}
         self._project = {"name": "", "date": None}
-        self._donations = 0.0
+        self._donations = Decimal(0.0)
         self._payment = {"ibanmode": None, "sepamode": None,
                          "ibanknown": False, "iban": "", "name": ""}
     
@@ -247,13 +255,13 @@ class Abrechnung:
                         and query[pos+'cnt'] and query[pos+'ppu']:
                         # Position has amount and price per unit
                         self.positions[i].setunitcount(int(query[pos+'cnt']))
-                        amount = float(query[pos+'ppu'])
-                        amount *= float(query[pos+'type'])
+                        amount = Decimal(query[pos+'ppu'])
+                        amount *= Decimal(query[pos+'type'])
                         self.positions[i].setunitprice(amount)
                     elif pos in keys and query[pos]:
                         # Position has a set value
-                        amount = float(query[pos])
-                        amount *= float(query[pos+'type'])
+                        amount = Decimal(query[pos])
+                        amount *= Decimal(query[pos+'type'])
                         self.positions[i].setvalue(amount)
                     else:
                         # Position has no value; ignore name
@@ -302,6 +310,173 @@ class Abrechnung:
             # Add project date
             out += " "+str(self.getprojectdate())
         return out
+
+    def factur_x(self) -> bytes:
+        """
+        Erstellt aus der Abrechnung eine E-Rechnung,
+        die dem Standard Factur-X Extended (auch bekannt als
+        ZUGFeRD Extended) entspricht. Diese wird als binäre
+        XML-Datei zurückgegeben.
+        """
+
+        # General information
+        doc = DH_Document()
+        doc.context.guideline_parameter.id = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
+        doc.header.id = "AKTIVE"+datetime.now().strftime("%Y%m%d%H%M%S")
+        doc.header.name = self._NAME.upper()
+        doc.header.issue_date_time = date.today()
+        doc.header.languages.add("de")
+        doc.header.type_code = "380" # Commercial invoice
+
+        if self.getprojectname():
+            note = DH_IncludedNote()
+            note.content_code = 'PROJECT'
+            datestring = format_date(self.getprojectdate(),
+                                     format="long",locale="de_DE")
+            note.content.add(self.getprojectname()+" ("+datestring+")")
+            note.subject_code = "ACD" # Reason
+            doc.header.notes.add(note)
+
+        if self.getprojectname() == 'Testrechnung':
+            doc.context.test_indicator = True
+
+        # Determine seller and buyer
+        if self.gettotal() > 0:
+            mode = 1
+            adfc = doc.trade.agreement.seller
+            user = doc.trade.agreement.buyer
+        else:
+            mode = -1
+            adfc = doc.trade.agreement.buyer
+            user = doc.trade.agreement.seller
+
+        # Seller information
+        adfc.name = CONTACT['Name']
+        adfc.address.line_one = CONTACT['LineOne']
+        if 'LineTwo' in CONTACT.keys():
+            adfc.address.line_two = CONTACT['LineTwo']
+        if 'LineThree' in CONTACT.keys():
+            adfc.address.line_three = CONTACT['LineThree']
+        adfc.address.postcode = CONTACT['PostCode']
+        adfc.address.city_name = CONTACT['City']
+        #adfc.address.country_subdivision = CONTACT['State']
+        adfc.address.country_id = CONTACT['Country']
+
+        tr = DH_TaxRegistration()
+        tr.id = ("VA",CONTACT['VAT-Nr.']) # FC == Tax number, VA == VAT Number
+        adfc.tax_registrations.add(tr)
+        user.tax_registrations.add(tr)
+
+        # Buyer information
+        user.name = self.getusername()
+        user.description = self.getusergroup()
+        user.address.line_one = "c/o " + CONTACT['Name']
+        user.address.line_two = CONTACT['LineOne']
+        if 'LineTwo' in CONTACT.keys():
+            user.address.line_three = CONTACT['LineTwo']
+        user.address.postcode = CONTACT['PostCode']
+        user.address.city_name = CONTACT['City']
+        #user.address.country_subdivision = CONTACT['State']
+        user.address.country_id = CONTACT['Country']
+
+        # Positions
+        for index in range(self._POSITIONCOUNT):
+            position = self.positions[index]
+            if not position:
+                continue
+            li = DH_LineItem()
+            li.document.line_id = str(index+1)
+            li.product.name = position.getname()
+            li.agreement.net.amount = Decimal(abs(position.getunitprice()) or abs(position.getvalue()))
+            count = Decimal(position.getunitcount() * mode)
+            if position.getcost():
+                count = -count
+            li.agreement.net.basis_quantity = (count, "H87")  # H87 == Item
+            li.delivery.billed_quantity = (count, "H87")  # H87 == Item
+            li.settlement.trade_tax.type_code = "VAT"
+            li.settlement.trade_tax.category_code = 'E' # Exempt from tax
+            li.settlement.trade_tax.rate_applicable_percent = Decimal("0.00")
+            li.settlement.monetary_summation.total_amount = Decimal(position.getvalue() * mode)
+            doc.trade.items.add(li)
+
+        if self.getdonations():
+            li = DH_LineItem()
+            li.document.line_id = "SP"
+            li.product.name = "Spenden"
+            li.agreement.net.amount = Decimal(self.getdonations())
+            li.agreement.net.basis_quantity = (Decimal(mode), "H87")  # H87 == Item
+            li.delivery.billed_quantity = (Decimal(mode), "H87")  # H87 == Item
+            li.settlement.trade_tax.type_code = "VAT"
+            li.settlement.trade_tax.category_code = 'E' # Exempt from tax
+            li.settlement.trade_tax.rate_applicable_percent = Decimal("0.00")
+            li.settlement.monetary_summation.total_amount = Decimal(self.getdonations() * mode)
+            doc.trade.items.add(li)
+        
+        # Payment information
+        if mode == 1:
+            doc.trade.settlement.payment_means.payee_account.account_name = CONTACT['AccName']
+            doc.trade.settlement.payment_means.payee_account.iban = CONTACT['IBAN']
+            doc.trade.settlement.payment_means.payee_institution.bic = CONTACT['BIC']
+        else:
+            doc.trade.settlement.payment_means.payer_account.iban = CONTACT['IBAN']
+        
+        term = DH_PaymentTerms()
+
+        if self.getibanmode() == 1 and self.gettotal() < 0:
+            # Refund via bank transfer
+            doc.trade.settlement.payment_means.type_code = "42" # Payment to bank account
+            term.description = "Wir überweisen den Abrechnungsbetrag auf dein Konto."
+            if self.getibanknown():
+                doc.trade.settlement.payment_means.information.add("Meine Bankverbindung ist dem ADFC Hamburg bekannt.")
+            else:
+                doc.trade.settlement.payment_means.payee_account.iban = self.getaccountiban()
+                if self.getaccountname():
+                    doc.trade.settlement.payment_means.payee_account.account_name = self.getaccountname()
+        elif self.getibanmode() == 2 and self.gettotal() > 0:
+            doc.trade.settlement.payment_means.type_code = "59" # SEPA direct debit
+            term.description = "Wir ziehen den Abrechnungsbetrag per SEPA-Lastschrift ein."
+            if self.getsepamode() in (2,3):
+                if self.getsepamode() == 2:
+                    doc.trade.settlement.payment_means.information.add("Ein SEPA-Mandat liegt noch nicht vor.")
+                else:
+                    doc.trade.settlement.payment_means.information.add("Das vorliegende SEPA-Mandat ist veraltet.")
+                note = DH_IncludedNote()
+                note.content_code = "SEPA"
+                note.content.add("Bitte senden Sie mir ein SEPA-Mandatsformular zu.")
+                note.subject_code = "AAI" # General information
+                doc.header.notes.add(note)
+        elif self.getibanmode() == 3 and self.gettotal() > 0:
+            term.description = "Du überweist den Abrechnungsbetrag selbst."
+            doc.trade.settlement.payment_means.type_code = "42" # Payment to bank account
+        else:
+            # Fallback if none of the above applies
+            doc.trade.settlement.payment_means.type_code = "ZZZ" # Mutually defined
+        
+        doc.trade.settlement.terms.add(term)
+
+        # Tax
+        total = Decimal(abs(self.gettotal()))
+
+        trade_tax = DH_ApplicableTradeTax()
+        trade_tax.calculated_amount = Decimal("0.00")
+        trade_tax.basis_amount = total
+        trade_tax.type_code = "VAT"
+        trade_tax.category_code = 'E' # Exempt from tax
+        trade_tax.exemption_reason = "Vereinsinterne Abrechnung"
+        trade_tax.rate_applicable_percent = Decimal("0.00")
+        doc.trade.settlement.trade_tax.add(trade_tax)
+
+        # Total
+        doc.trade.settlement.currency_code = "EUR"
+        doc.trade.settlement.monetary_summation.line_total = total
+        doc.trade.settlement.monetary_summation.charge_total = Decimal("0.00")
+        doc.trade.settlement.monetary_summation.allowance_total = Decimal("0.00")
+        doc.trade.settlement.monetary_summation.tax_basis_total = total
+        doc.trade.settlement.monetary_summation.tax_total = (Decimal("0.00"),"EUR")
+        doc.trade.settlement.monetary_summation.grand_total = total
+        doc.trade.settlement.monetary_summation.due_amount = total
+
+        return doc.serialize(schema="FACTUR-X_EXTENDED")
     
     # Variable getters and setters
     def setusername(self,value:str = ""):
@@ -351,32 +526,32 @@ class Abrechnung:
     
     def setdonations(self,value=0.0):
         """Legt den Betrag eingenommener Spenden fest."""
-        self._donations = float(value)
+        self._donations = Decimal(value)
         if self._donations < 0:
-            self._donations = 0.0
+            self._donations = Decimal(0.0)
     
-    def getdonations(self) -> float:
+    def getdonations(self) -> Decimal:
         """Gibt den Betrag eingenommener Spenden zurück."""
         return self._donations
     
-    def getincome(self) -> float:
+    def getincome(self) -> Decimal:
         """Gibt den Gesamtbetrag der Einnahmen zurück."""
-        out = 0.0
+        out = Decimal(0.0)
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].income
         out += self.getdonations()
         return out
 
-    def getcost(self) -> float:
+    def getcost(self) -> Decimal:
         """Gibt den Gesamtbetrag der Ausgaben zurück."""
-        out = 0.0
+        out = Decimal(0.0)
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].cost
         return out
     
-    def gettotal(self) -> float:
+    def gettotal(self) -> Decimal:
         """Gibt den Betrag der Einnahmen minus Ausgaben zurück."""
-        out = 0.0
+        out = Decimal(0.0)
         for i in range(self._POSITIONCOUNT):
             out += self.positions[i].value
         out += self.getdonations()

@@ -2,12 +2,22 @@
 
 ## Unreleased
 
+### Added
+
+- Add a Factur-X 1.0.06 (a.k.a. ZUGFeRD 2.2) compliant e-invoice to generated PDF files
+- Hint in signature box when signature is not required
+
 ### Changed
 
 - Weasyprint (Pyhton dependency) updated to version 64
 - Babel (Python dependency) updated to version 2.17
-- Replaced letter symbol "a" in template with ADFC logo 
+- Replaced letter symbol "a" in template with ADFC logo
+- Reworked instructions for sending in the complete form
 - In the web form, money amounts in cost positions are no longer colored red
+
+### Removed
+
+- Python library flask-weasyprint
 
 ## v1.7 - 2024-12-31
 
