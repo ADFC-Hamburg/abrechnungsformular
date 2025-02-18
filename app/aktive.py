@@ -96,11 +96,11 @@ class Position:
     def setunitcount(self,value:int = 1):
         """
         Legt die Mengenzahl der Position fest.
-        Kann nicht kleiner als 1 sein; wird automatisch korrigiert.
+        Kann nicht kleiner als 1 sein.
         """
+        if value < 1:
+            raise tools.BelowMinimumException
         self._unitcount = int(value)
-        if self._unitcount < 1:
-            self._unitcount = 1
     
     def getunitcount(self) -> int:
         """Gibt die Mengenzahl der Position zurück."""
@@ -108,6 +108,8 @@ class Position:
     
     def setunitprice(self,value=0.0):
         """Legt den Preis pro Einheit der Position fest."""
+        if not Decimal(value) % Decimal('0.01') == 0:
+            raise tools.DecimalsException
         self._unitprice = Decimal(value)
     
     def getunitprice(self) -> Decimal:
@@ -119,6 +121,8 @@ class Position:
         Legt den Gesamtpreis der Position fest.
         Einnahmen sind positiv, Ausgaben negativ.
         """
+        if not Decimal(value) % Decimal('0.01') == 0:
+            raise tools.DecimalsException
         self._value = Decimal(value)
     
     def getvalue(self) -> Decimal:
@@ -136,6 +140,8 @@ class Position:
         Legt den Gesamtpreis der Position fest.
         Ausgaben sind positiv, Einnahmen negativ.
         """
+        if not Decimal(value) % Decimal('0.01') == 0:
+            raise tools.DecimalsException
         self._value = Decimal(value*-1)
     
     def getincome(self) -> Decimal:
@@ -477,7 +483,7 @@ class Abrechnung:
         doc.trade.settlement.monetary_summation.due_amount = total
 
         return doc.serialize(schema="FACTUR-X_EXTENDED")
-    
+
     # Variable getters and setters
     def setusername(self,value:str = ""):
         """Legt den Namen des Aktiven fest."""
@@ -503,7 +509,7 @@ class Abrechnung:
         """Gibt den Namen des Projekts zurück."""
         return self._project["name"]
     
-    def setprojectdate(self,value=None):
+    def setprojectdate(self,value:str|date|None = None):
         """
         Legt das Datum der Abrechnung fest.
 
@@ -512,13 +518,10 @@ class Abrechnung:
         """
         if type(value) == date:
             self._project["date"] = value
-        else:
-            try:
-                temp = str(value).split("-")
-                self._project["date"] = date(
-                    int(temp[0]), int(temp[1]), int(temp[2]))
-            except:
-                self._project["date"] = None
+        elif value:
+            temp = str(value).split("-")
+            self._project["date"] = date(
+                int(temp[0]), int(temp[1]), int(temp[2]))
     
     def getprojectdate(self) -> date|None:
         """Gibt das Datum der Abrechnung zurück."""
@@ -526,9 +529,11 @@ class Abrechnung:
     
     def setdonations(self,value=0.0):
         """Legt den Betrag eingenommener Spenden fest."""
+        if Decimal(value) < 0:
+            raise tools.BelowMinimumException
+        if not Decimal(value) % Decimal('0.01') == 0:
+            raise tools.DecimalsException
         self._donations = Decimal(value)
-        if self._donations < 0:
-            self._donations = Decimal(0.0)
     
     def getdonations(self) -> Decimal:
         """Gibt den Betrag eingenommener Spenden zurück."""
@@ -589,17 +594,17 @@ class Abrechnung:
         if mode and int(mode) in self._MODES_IBAN:
             self._payment["ibanmode"] = int(mode)
         else:
-            self._payment["ibanmode"] = None
+            raise tools.IllegalValueException
     
     def getibanmode(self) -> int|None:
         return self._payment["ibanmode"]
     
-    def setsepamode(self,mode=None):
+    def setsepamode(self,mode):
         if mode and int(mode) in self._MODES_SEPA:
             self._payment["sepamode"] = int(mode)
         else:
-            self._payment["sepamode"] = None
-    
+            raise tools.IllegalValueException
+
     def getsepamode(self) -> int|None:
         return self._payment["sepamode"]
 

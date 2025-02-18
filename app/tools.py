@@ -5,6 +5,15 @@ der Aktivenabrechnung zum Einsatz kommen.
 
 from babel.numbers import format_currency
 
+class BelowMinimumException(Exception):
+    pass
+
+class DecimalsException(Exception):
+    pass
+
+class IllegalValueException(Exception):
+    pass
+
 def cell(value = "", classes="") -> str:
     """
     Gibt eine Tabellenzelle im HTML-Format (td-Tag) zurück.
