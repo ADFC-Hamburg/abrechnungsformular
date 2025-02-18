@@ -144,6 +144,7 @@ function processMode(setting) {
 	if (setting == 3) { processMem = 3; }
 	for (let i = 0; i < 3; i++) {
 		button[i].disabled = disable;
+		button[i].required = !(disable);
 		button[i].parentElement.classList.toggle ("locked",disable);
 	}
 }
