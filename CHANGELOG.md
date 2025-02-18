@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Form never requires SEPA mandate info to submit
+- Position treated as cost after form reset
+
 ## v1.8 - 2025-02-13
 
 ### Added
@@ -9,7 +16,7 @@
 
 ### Changed
 
-- Weasyprint (Pyhton dependency) updated to version 64
+- Weasyprint (Python dependency) updated to version 64
 - Babel (Python dependency) updated to version 2.17
 - Replaced letter symbol "a" in template with ADFC logo
 - Reworked instructions for sending in the complete form
