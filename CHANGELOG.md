@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Server-side verification of submitted form
+
 ### Fixed
 
 - Form never requires SEPA mandate info to submit
