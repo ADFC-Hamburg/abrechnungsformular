@@ -615,8 +615,9 @@ positionSetting(i,true,false);
 			// Ein Feld in Position i ist bereits ausgefüllt
 			positionDisplayInitialize(i+1);
 			break;
+		} else if (i==1) {
+			positionDisplayInitialize(1);
 		}
-		positionDisplayInitialize(1);
 	}
 }
 
