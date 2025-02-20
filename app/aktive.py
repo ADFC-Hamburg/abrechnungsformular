@@ -46,10 +46,10 @@ class Position:
         return tools.euro(self.getvalue())
     
     def __repr__(self):
-        return (f"Position(name='{self.getname()}',"
-               +f"unitcount={self.getunitcount()},"
-               +f"unitprice={self.getunitprice()},"
-               +f"value={self.getvalue()})")
+        return (f"{self.__class__.__name__}(name={repr(self.getname())},"
+               +f"unitcount={repr(self.getunitcount())},"
+               +f"unitprice={repr(self.getunitprice())},"
+               +f"value={repr(self.getvalue())})")
     
     def __bool__(self):
         return bool(self._name != ""
@@ -679,6 +679,8 @@ class Abrechnung:
             temp = str(value).split("-")
             self._project["date"] = date(
                 int(temp[0]), int(temp[1]), int(temp[2]))
+        else:
+            self._project["date"] = None
     
     def getprojectdate(self) -> date|None:
         """Gibt das Datum der Abrechnung zurück."""
