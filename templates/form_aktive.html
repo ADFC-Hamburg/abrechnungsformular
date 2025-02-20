@@ -28,13 +28,17 @@
 		<!--Name und Bereich-->
 		<fieldset>
 			<legend>Persönliche Angaben</legend>
-			<label class="field">Dein Name: <input type="text" name="uname" id="username" autocomplete="name" required></label>
-			<label class="field">Dein Arbeitsbereich: <input type="text" name="dept" id="userdepartment" autocomplete="on" required></label>
+			<section>
+				<label class="field">Dein Name: <input type="text" name="uname" id="username" autocomplete="name" required></label>
+				<label class="field">Dein Arbeitsbereich: <input type="text" name="dept" id="userdepartment" autocomplete="on" required></label>
+			</section>
 		</fieldset>
 		<!--Projekt--><fieldset class="right">
 			<legend>Angaben zur Aktion oder zum Projekt</legend>
-			<label class="field">Name der Aktion: <input type="text" name="pname" id="projectname" required></label>
-			<label class="field">Datum der Aktion: <input type="date" name="pdate" id="projectdate" required></label>
+			<section>
+				<label class="field">Name der Aktion: <input type="text" name="pname" id="projectname" required></label>
+				<label class="field">Datum der Aktion: <input type="date" name="pdate" id="projectdate" required></label>
+			</section>
 		</fieldset>
 		</header>
 		<!--Geldbeträge-->
@@ -211,12 +215,14 @@
 		<!--Absenden-->
 		<fieldset class="right">
 			<legend>Daten absenden</legend>
-			<input type="submit" id="submit" value="Abrechnung erstellen">
-			<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
-			<input type="reset" id="reset" value="Formular zurücksetzen">
-			<aside>Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
-			Vergiss dabei nicht, <b>sämtliche Belege</b> an die E&#8209;Mail anzuhängen. Kassen&shy;bons oder andere Papier&shy;belege schickst du als Scan oder notfalls als Foto ein, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.<br />
-			Wenn eine Digitalisierung der Belege nicht möglich ist, sende die Abrechnung bitte dennoch per E&#8209;Mail ein. Sende die Belege <b>im Original</b> mit der jeweiligen Positions&shy;nummer versehen, zusammen mit einer Notiz zum Datum der Abrechnung, an unsere Geschäfts&shy;stelle (<address>ADFC Hamburg, Koppel 34-36, 20099 Hamburg</address>) oder gib sie dort ab.</aside>
+			<section>
+				<input type="submit" id="submit" value="Abrechnung erstellen">
+				<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
+				<input type="reset" id="reset" value="Formular zurücksetzen">
+				<aside>Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
+				Vergiss dabei nicht, <b>sämtliche Belege</b> an die E&#8209;Mail anzuhängen. Kassen&shy;bons oder andere Papier&shy;belege schickst du als Scan oder notfalls als Foto ein, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.<br />
+				Wenn eine Digitalisierung der Belege nicht möglich ist, sende die Abrechnung bitte dennoch per E&#8209;Mail ein. Sende die Belege <b>im Original</b> mit der jeweiligen Positions&shy;nummer versehen, zusammen mit einer Notiz zum Datum der Abrechnung, an unsere Geschäfts&shy;stelle (<address>ADFC Hamburg, Koppel 34-36, 20099 Hamburg</address>) oder gib sie dort ab.</aside>
+			</section>
 		</fieldset>
 	</form>
 	<footer>

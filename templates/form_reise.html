@@ -27,17 +27,21 @@
 		<header>
 			<fieldset>
 				<legend>Adresse</legend>
-				<label class="field">Name: <input type="text" name="uname" id="username" autocomplete="name" size=20 required></label>
-				<label class="field">Straße: <input type="text" name="ustreet" id="userstreet" autocomplete="street-adress" size=20 required></label>
-				<label class="field">Postleitzahl: <input type="text" name="uzip" id="userpostcode" autocomplete="postal-code" size=5 pattern="[0-9a-zA-Z -]+" title="Eine gültige Postleitzahl"></label>
-				<label class="field">Ort: <input type="text" name="ucity" id="usercity" autocomplete="address-level2" size=20 required></label>
+				<section>
+					<label class="field">Name: <input type="text" name="uname" id="username" autocomplete="name" size=20 required></label>
+					<label class="field">Straße: <input type="text" name="ustreet" id="userstreet" autocomplete="street-adress" size=20 required></label>
+					<label class="field">Postleitzahl: <input type="text" name="uzip" id="userpostcode" autocomplete="postal-code" size=5 pattern="[0-9a-zA-Z -]+" title="Eine gültige Postleitzahl"></label>
+					<label class="field">Ort: <input type="text" name="ucity" id="usercity" autocomplete="address-level2" size=20 required></label>
+				</section>
 			</fieldset>
 			<fieldset>
 				<legend>Bankverbindung</legend>
-				<label class="field"><abbr title="Internationale Bankkontonummer">IBAN</abbr>: <input type="text" name="iban" id="processiban" size=22 placeholder="DE12345678901234567890" class="iban"></label>
-				<label class="field">Kontoinhaber: <input type="text" name="owner" id="processowner" autocomplete="name"></label>
-				<br>
-				<label class="option indent"> <input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem ADFC&nbsp;Hamburg bekannt.</label>
+				<section>
+					<label class="field"><abbr title="Internationale Bankkontonummer">IBAN</abbr>: <input type="text" name="iban" id="processiban" size=22 placeholder="DE12345678901234567890" class="iban"></label>
+					<label class="field">Kontoinhaber: <input type="text" name="owner" id="processowner" autocomplete="name"></label>
+					<br>
+					<label class="option indent"> <input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem ADFC&nbsp;Hamburg bekannt.</label>
+				</section>
 			</fieldset>
 			<fieldset>
 				<legend>Angaben zur Reise</legend>
@@ -98,11 +102,13 @@
 		</fieldset>
 		<fieldset>
 			<legend>Daten absenden</legend>
-			<input type="submit" id="submit" value="Abrechnung erstellen">
-			<!--<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>-->
-			<input type="reset" id="reset" value="Formular zurücksetzen">
-			<!--<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
-			<b>Papierbelege schickst du bitte im Original</b> und mit der dazugehörigen Positionsnummer versehen <b>zusammen mit dem ausgedruckten, ausgefüllten und unterschriebenen Formular</b> an die Geschäftsstelle (<address>ADFC&nbsp;Hamburg, Koppel 34-36, 20099 Hamburg</address>) oder gibst es dort ab.</aside>-->
+			<section>
+				<input type="submit" id="submit" value="Abrechnung erstellen">
+				<!--<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>-->
+				<input type="reset" id="reset" value="Formular zurücksetzen">
+				<!--<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
+				<b>Papierbelege schickst du bitte im Original</b> und mit der dazugehörigen Positionsnummer versehen <b>zusammen mit dem ausgedruckten, ausgefüllten und unterschriebenen Formular</b> an die Geschäftsstelle (<address>ADFC&nbsp;Hamburg, Koppel 34-36, 20099 Hamburg</address>) oder gibst es dort ab.</aside>-->
+			</section>
 		</fieldset>
 
 	</form>

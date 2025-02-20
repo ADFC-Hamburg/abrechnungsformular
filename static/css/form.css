@@ -133,7 +133,7 @@ fieldset section + section {
 	padding-top:	0.625em;
 }
 fieldset section:last-child {
-	padding-bottom:	0;
+	padding-bottom:	0.625em;
 }
 fieldset section::after {
 	content:	"";
