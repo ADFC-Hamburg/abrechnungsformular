@@ -136,7 +136,7 @@ function timeDisplay(show) {
 
 /**
  * Vergleiche die Datumsangaben zum Anfang und zum Ende der Reise und
- * zeige oder verstecke die Angebefelder zur Uhrzeit entscprechend.
+ * zeige oder verstecke die Angebefelder zur Uhrzeit entsprechend.
  * 
  * @since	2.0
  */
@@ -231,7 +231,6 @@ function start() {
 	// Gib HTML-Elementen auslösbare Ereignisse
 
 	// Ereignisse für Zahlungsfelder
-
 	document.getElementById("processuserknown").addEventListener('input',function(){ ibanLock(this.checked); });
 
 	// Ereignisse für Datumsfelder
