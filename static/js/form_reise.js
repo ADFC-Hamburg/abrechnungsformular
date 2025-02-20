@@ -38,6 +38,31 @@ function dateDisplayInitialize(x) {
 }
 
 /**
+ * Sperre oder entsperre Eingabefelder zu Bankdaten (IBAN und Inhaber)
+ * und mache eine Angabe notwendig oder nicht notwendig.
+ * 
+ * Zum Aufruf durch die Checkbox, die wählt,
+ * ob die IBAN dem ADFC schon bekannt ist.
+ * 
+ * @since	2.0
+ * 
+ * @param {boolean} check	Ob Eingabefelder gesperrt sein sollen
+ */
+function ibanLock(check) {
+	const field = [document.getElementById("processiban"), document.getElementById("processowner")];
+	field[0].disabled = check;
+	field[1].disabled = check;
+	field[0].required = !(check);
+	field[1].required = !(check);
+	if (check) {
+		field[0].parentElement.classList.add ("locked");
+		field[1].parentElement.classList.add ("locked");
+	} else {
+		field[0].parentElement.classList.remove ("locked");
+		field[1].parentElement.classList.remove ("locked");
+}	}
+
+/**
  * Berechne die Dauer der Reise in Tagen und zeige die entsprechende
  * Anzahl an Auswahlfeldern an.
  * 
@@ -205,6 +230,10 @@ function start() {
 
 	// Gib HTML-Elementen auslösbare Ereignisse
 
+	// Ereignisse für Zahlungsfelder
+
+	document.getElementById("processuserknown").addEventListener('input',function(){ ibanLock(this.checked); });
+
 	// Ereignisse für Datumsfelder
 	document.getElementById("journeybegindate").addEventListener('change',updateMinDate);
 	document.getElementById("journeybegindate").addEventListener('change',timeDisplayCheck);
@@ -243,6 +272,7 @@ function start() {
  */
 function restart() {
 	dateDisplayInitialize(0);
+	ibanLock(false);
 	positionDisplayInitialize(1);
 	timeDisplay(false);
 	updateDateRange(earliestdate.toISOString().split("T")[0],new Date().toISOString().split("T")[0]);
@@ -269,6 +299,7 @@ function display() {
 		}
 	}
 	timeDisplayCheck();
+	ibanLock(document.getElementById("processuserknown").checked);
 	listDates();
 	updateMinDate();
 	updateMaxDate();
