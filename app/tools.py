@@ -5,6 +5,15 @@ der Aktivenabrechnung zum Einsatz kommen.
 
 from babel.numbers import format_currency
 
+class BelowMinimumException(Exception):
+    pass
+
+class DecimalsException(Exception):
+    pass
+
+class IllegalValueException(Exception):
+    pass
+
 def cell(value = "", classes="") -> str:
     """
     Gibt eine Tabellenzelle im HTML-Format (td-Tag) zurück.
@@ -25,3 +34,22 @@ def euro(value = 0, empty = False) -> str:
     if empty and value == 0:
         return ""
     return format_currency(value,"EUR",locale="de_DE")
+
+def uppercase_first(text:str) -> str:
+    """
+    Gibt den angegebenen String mit dem ersten Buchstaben
+    als Großbuchstaben zurück.
+    """
+    return text[0].upper() + text[1:]
+
+def write_list_de(list:list[str]) -> str:
+    """
+    Gibt alle Einträge der angegebenen Liste als einen String zurück,
+    getrennt durch Kommas und einem "und".
+    """
+    text = ''
+    if len(list) > 1:
+        text = ', '.join(list[:-1]) + ' und '
+    if list:
+        text += list[-1]
+    return text

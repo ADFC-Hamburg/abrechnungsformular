@@ -15,7 +15,7 @@ from drafthorse.models.note import IncludedNote as DH_IncludedNote
 from drafthorse.models.party import TaxRegistration as DH_TaxRegistration
 from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms
 from drafthorse.models.tradelines import LineItem as DH_LineItem
-
+from schwifty import IBAN, exceptions
 
 from app import tools, VERSION, CONTACT
 
@@ -46,10 +46,10 @@ class Position:
         return tools.euro(self.getvalue())
     
     def __repr__(self):
-        return (f"Position(name='{self.getname()}',"
-               +f"unitcount={self.getunitcount()},"
-               +f"unitprice={self.getunitprice()},"
-               +f"value={self.getvalue()})")
+        return (f"{self.__class__.__name__}(name={repr(self.getname())},"
+               +f"unitcount={repr(self.getunitcount())},"
+               +f"unitprice={repr(self.getunitprice())},"
+               +f"value={repr(self.getvalue())})")
     
     def __bool__(self):
         return bool(self._name != ""
@@ -83,6 +83,10 @@ class Position:
         out.append( tools.cell( tools.euro(self.getcost(),True) ) )
         
         return "\t"*indent+joiner.join(out)
+    
+    def complete(self) -> bool:
+        """Gibt zurück, ob Name und Wert vorhanden sind."""
+        return bool(self.getname() and self.getvalue())
 
     # Variable getters and setters
     def setname(self,value:str = ""):
@@ -96,11 +100,11 @@ class Position:
     def setunitcount(self,value:int = 1):
         """
         Legt die Mengenzahl der Position fest.
-        Kann nicht kleiner als 1 sein; wird automatisch korrigiert.
+        Kann nicht kleiner als 1 sein.
         """
+        if value < 1:
+            raise tools.BelowMinimumException
         self._unitcount = int(value)
-        if self._unitcount < 1:
-            self._unitcount = 1
     
     def getunitcount(self) -> int:
         """Gibt die Mengenzahl der Position zurück."""
@@ -108,6 +112,8 @@ class Position:
     
     def setunitprice(self,value=0.0):
         """Legt den Preis pro Einheit der Position fest."""
+        if not Decimal(value) % Decimal('0.01') == 0:
+            raise tools.DecimalsException
         self._unitprice = Decimal(value)
     
     def getunitprice(self) -> Decimal:
@@ -119,6 +125,8 @@ class Position:
         Legt den Gesamtpreis der Position fest.
         Einnahmen sind positiv, Ausgaben negativ.
         """
+        if not Decimal(value) % Decimal('0.01') == 0:
+            raise tools.DecimalsException
         self._value = Decimal(value)
     
     def getvalue(self) -> Decimal:
@@ -136,6 +144,8 @@ class Position:
         Legt den Gesamtpreis der Position fest.
         Ausgaben sind positiv, Einnahmen negativ.
         """
+        if not Decimal(value) % Decimal('0.01') == 0:
+            raise tools.DecimalsException
         self._value = Decimal(value*-1)
     
     def getincome(self) -> Decimal:
@@ -174,12 +184,26 @@ class Abrechnung:
     """
     
     # Class constants
-    _IBANSPACES = range(32,0,-4)
     _MODES_IBAN = (1,2,3)
-    _MODES_SEPA = (2,3)
+    _MODES_SEPA = (1,2,3)
     _NAME = "Aktivenabrechnung"
     _POSITIONCOUNT = 7
-    
+    _POSITION_NAMES = ('erste','zweite','dritte','vierte',
+                       'fünfte','sechste','siebte')
+    _FIELD_NAMES = {'uname':'dein Name','group':'deine Arbeitsgruppe',
+                    'pname':'der Name des Projekts oder der Aktion',
+                    'pdate':'das Datum des Projekts oder der Aktion',
+                    'dono':'die Summe der eingenommenen Spenden',
+                    'iban':'deine IBAN','owner':'der Name des Kontoinhabers',
+                    'prtype':'die Art der Zahlungsabwicklung',
+                    'prsepa':'der Stand des SEPA-Mandats'}
+    _FIELD_ERRORS = {'pos':'Mindestend eine Position oder die Summe'
+                     +' der Spenden muss ausgefüllt sein.',
+                     'length':'Die IBAN muss die korrekte Länge haben'
+                     +' (22 Zeichen bei einer deutschen IBAN).',
+                     'checksum':'Die IBAN muss gültig sein.'
+                     +' (Wahrscheinlich liegt ein Tippfehler vor.)'}
+
     # Dunder methods
     def __init__(self):
         """
@@ -192,7 +216,8 @@ class Abrechnung:
         self._project = {"name": "", "date": None}
         self._donations = Decimal(0.0)
         self._payment = {"ibanmode": None, "sepamode": None,
-                         "ibanknown": False, "iban": "", "name": ""}
+                         "ibanknown": False, "iban": IBAN("",allow_invalid=True),
+                         "name": ""}
     
     def __str__(self):
         """
@@ -219,12 +244,14 @@ class Abrechnung:
         for i in range(amount):
             out.append(Position())
         return tuple(out)
-    
+
     # Methods for input
-    def evaluate_query(self,query:dict):
+    def evaluate_query(self,query:dict) -> str:
         """
         Liest Parameter aus einem HTML-Query in Form eines Dictionary
         ein und setzt alle Variablen auf den entsprechenden Wert.
+
+        Gibt außerdem eine Aufzählung aller Fehler als String zurück.
 
         Erkennt die folgenden Schlüssel:
         uname, dept, pname, pdate, p1name, p1type, p1cnt, p1ppu, p1,
@@ -235,6 +262,20 @@ class Abrechnung:
         """
         if query:
             keys = tuple(query.keys())
+            missing = []
+            erronous = []
+            erronous_positions = []
+            incomplete_positions = []
+            below_minimum = []
+            not_currency = []
+            dono_error = None
+            errormessage = []
+
+            def check_missing(value,name:str):
+                """Check if a value exists. If it does not, add an entry
+                to the list of missing values."""
+                if not value:
+                    missing.append(name)
             
             # User name and -group, project name and date
             if 'uname' in keys:
@@ -244,39 +285,79 @@ class Abrechnung:
             if 'pname' in keys:
                 self.setprojectname(query['pname'])
             if 'pdate' in keys:
-                self.setprojectdate(query['pdate'])
+                try:
+                    self.setprojectdate(query['pdate'])
+                except:
+                    erronous.append(self._FIELD_NAMES['pdate'])
+            
+            check_missing(self.getusername(),self._FIELD_NAMES['uname'])
+            check_missing(self.getusergroup(),self._FIELD_NAMES['group'])
+            check_missing(self.getprojectname(),self._FIELD_NAMES['pname'])
+            check_missing(self.getprojectdate(),self._FIELD_NAMES['pdate'])
             
             # Position values
             for i in range(self._POSITIONCOUNT):
                 pos = 'p'+str(i+1)
-                if pos+'type' in keys and query[pos+'type'] in {'1','-1'}:
+                if pos+'type' in keys and not query[pos+'type'] in {'0',''}:
+                    if not query[pos+'type'] in {'1','-1'}:
+                        erronous_positions.append(self._POSITION_NAMES[i])
+                        continue
                     # Position is set to income or cost
-                    if pos+'cnt' in keys and pos+'ppu' in keys\
+                    try:
+                        if pos+'cnt' in keys and pos+'ppu' in keys\
                         and query[pos+'cnt'] and query[pos+'ppu']:
-                        # Position has amount and price per unit
-                        self.positions[i].setunitcount(int(query[pos+'cnt']))
-                        amount = Decimal(query[pos+'ppu'])
-                        amount *= Decimal(query[pos+'type'])
-                        self.positions[i].setunitprice(amount)
-                    elif pos in keys and query[pos]:
-                        # Position has a set value
-                        amount = Decimal(query[pos])
-                        amount *= Decimal(query[pos+'type'])
-                        self.positions[i].setvalue(amount)
-                    else:
-                        # Position has no value; ignore name
+                            # Position has amount and price per unit
+                            self.positions[i].setunitcount(int(query[pos+'cnt']))
+                            amount = Decimal(query[pos+'ppu'])
+                            if amount < 0:
+                                raise tools.BelowMinimumException
+                            amount *= Decimal(query[pos+'type'])
+                            self.positions[i].setunitprice(amount)
+                        elif pos in keys and query[pos]:
+                            # Position has a set value
+                            amount = Decimal(query[pos])
+                            if amount < 0:
+                                raise tools.BelowMinimumException
+                            amount *= Decimal(query[pos+'type'])
+                            self.positions[i].setvalue(amount)
+                    except tools.BelowMinimumException:
+                        below_minimum.append(self._POSITION_NAMES[i])
+                        continue
+                    except tools.DecimalsException:
+                        not_currency.append(self._POSITION_NAMES[i])
+                        continue
+                    except:
+                        erronous_positions.append(self._POSITION_NAMES[i])
                         continue
                     if pos+'name' in keys:
                         # Set position name
                         self.positions[i].setname(query[pos+'name'])
+                    if self.positions[i] and not self.positions[i].complete():
+                        incomplete_positions.append(self._POSITION_NAMES[i])
             
             # Donation value
             if 'dono' in keys and query['dono']:
-                self.setdonations(query['dono'])
+                try:
+                    self.setdonations(query['dono'])
+                except tools.BelowMinimumException:
+                    dono_error = tools.BelowMinimumException
+                except tools.DecimalsException:
+                    dono_error = tools.DecimalsException
+                except:
+                    erronous.append(self._FIELD_NAMES['dono'])
+            
+            # Error if no position filled in
+            if not self and not erronous_positions and not incomplete_positions\
+            and not below_minimum and not not_currency\
+            and not self._FIELD_NAMES['dono'] in erronous:
+                errormessage.append(self._FIELD_ERRORS['pos'])
             
             # Payment information
             if 'prtype' in keys and query['prtype']:
-                self.setibanmode(query['prtype'])
+                try:
+                    self.setibanmode(query['prtype'])
+                except:
+                    erronous.append(self._FIELD_NAMES['prtype'])
                 if query['prtype'] == '1':
                     # Payment mode: Transfer to user
                     if 'known' in keys and query['known'] == '1':
@@ -285,15 +366,97 @@ class Abrechnung:
                     else:
                         # Payment info not known
                         self.setibanknown(False)
-                        if 'iban' in keys:
-                            self.setaccountiban(query['iban'])
-                        if 'owner' in keys:
+                        if 'iban' in keys and query['iban']:
+                            try:
+                                self.setaccountiban(query['iban'])
+                            except exceptions.InvalidChecksumDigits:
+                                errormessage.append(self._FIELD_ERRORS['checksum'])
+                            except exceptions.InvalidLength:
+                                errormessage.append(self._FIELD_ERRORS['length'])
+                            except exceptions.InvalidStructure:
+                                erronous.append(self._FIELD_NAMES['iban'])
+                        else:
+                            missing.append(self._FIELD_NAMES['iban'])
+                        if 'owner' in keys and query['owner']:
                             self.setaccountname(query['owner'])
-                if query['prtype'] == '2':
+                        else:
+                            missing.append(self._FIELD_NAMES['owner'])
+                elif query['prtype'] == '2':
                     # Payment mode: debit from user
                     if 'prsepa' in keys and query['prsepa']:
                         self.setsepamode(query['prsepa'])
-    
+                    else:
+                        missing.append(self._FIELD_NAMES['prsepa'])
+                if (self.getibanmode() == 1 and self.gettotal() >= 0)\
+                or (self.getibanmode() in (2,3) and self.gettotal() <= 0):
+                    erronous.append(self._FIELD_NAMES['prtype'])
+            elif self.gettotal() != 0:
+                missing.append(self._FIELD_NAMES['prtype'])
+            
+            # Finalize error message
+            missing = [item for item in missing if item not in erronous]
+            errorstart = []
+            if missing:
+                message = tools.write_list_de(missing)
+                if len(missing) > 1:
+                    message += ' müssen'
+                else:
+                    message += ' muss'
+                message += ' mit angegeben werden.'
+                errorstart.append(tools.uppercase_first(message))
+            if incomplete_positions:
+                message = 'Die ' + tools.write_list_de(incomplete_positions)
+                message += ' Position muss vollständig ausgefüllt sein.'
+                errorstart.append(message)
+            if below_minimum or dono_error is tools.BelowMinimumException:
+                message = ""
+                if dono_error is tools.BelowMinimumException:
+                    message = self._FIELD_NAMES['dono']
+                    if below_minimum:
+                        message += ' sowie '
+                if below_minimum:
+                    message += 'die ' + tools.write_list_de(below_minimum)
+                    message += ' Position'
+                if below_minimum and dono_error is tools.BelowMinimumException:
+                    message += ' dürfen'
+                else:
+                    message += ' darf'
+                message += ' keine negativen Werte enthalten.'
+                errorstart.append(tools.uppercase_first(message))
+            if not_currency or dono_error is tools.DecimalsException:
+                message = ""
+                if dono_error is tools.DecimalsException:
+                    message = self._FIELD_NAMES['dono']
+                    if not_currency:
+                        message += ' sowie '
+                if not_currency:
+                    message += 'die ' + tools.write_list_de(not_currency)
+                    message += ' Position'
+                if not_currency and dono_error is tools.DecimalsException:
+                    message += ' müssen'
+                else:
+                    message += ' muss'
+                message += ' ganze Centbeträge enthalten.'
+                errorstart.append(tools.uppercase_first(message))
+            if erronous or erronous_positions:
+                message = ""
+                if erronous:
+                    message = tools.write_list_de(erronous)
+                    if erronous_positions:
+                        message += ' sowie '
+                if erronous_positions:
+                    message += 'die ' + tools.write_list_de(erronous_positions)
+                    message += ' Position'
+                if len(erronous) > 1 or (erronous and erronous_positions):
+                    message += ' müssen'
+                else:
+                    message += ' muss'
+                message += ' korrekt ausgefüllt werden.'
+                errorstart.append(tools.uppercase_first(message))
+
+            errormessage = errorstart + errormessage
+            return '\n'.join(errormessage)
+
     # Methods for output
     def suggest_filename(self) -> str:
         """
@@ -477,7 +640,7 @@ class Abrechnung:
         doc.trade.settlement.monetary_summation.due_amount = total
 
         return doc.serialize(schema="FACTUR-X_EXTENDED")
-    
+
     # Variable getters and setters
     def setusername(self,value:str = ""):
         """Legt den Namen des Aktiven fest."""
@@ -503,7 +666,7 @@ class Abrechnung:
         """Gibt den Namen des Projekts zurück."""
         return self._project["name"]
     
-    def setprojectdate(self,value=None):
+    def setprojectdate(self,value:str|date|None = None):
         """
         Legt das Datum der Abrechnung fest.
 
@@ -512,13 +675,12 @@ class Abrechnung:
         """
         if type(value) == date:
             self._project["date"] = value
+        elif value:
+            temp = str(value).split("-")
+            self._project["date"] = date(
+                int(temp[0]), int(temp[1]), int(temp[2]))
         else:
-            try:
-                temp = str(value).split("-")
-                self._project["date"] = date(
-                    int(temp[0]), int(temp[1]), int(temp[2]))
-            except:
-                self._project["date"] = None
+            self._project["date"] = None
     
     def getprojectdate(self) -> date|None:
         """Gibt das Datum der Abrechnung zurück."""
@@ -526,9 +688,11 @@ class Abrechnung:
     
     def setdonations(self,value=0.0):
         """Legt den Betrag eingenommener Spenden fest."""
+        if Decimal(value) < 0:
+            raise tools.BelowMinimumException
+        if not Decimal(value) % Decimal('0.01') == 0:
+            raise tools.DecimalsException
         self._donations = Decimal(value)
-        if self._donations < 0:
-            self._donations = Decimal(0.0)
     
     def getdonations(self) -> Decimal:
         """Gibt den Betrag eingenommener Spenden zurück."""
@@ -565,41 +729,35 @@ class Abrechnung:
         """Gibt den Namen des Kontoinhabers zurück."""
         return self._payment["name"]
     
-    def setaccountiban(self,value=""):
+    def setaccountiban(self,value):
         """
-        Legt die IBAN des Bankkontos fest.
-        Entfernt dabei alle Zeichen außer Buchstaben und Ziffern.
+        Verifiziert die angegebene IBAN
+        und legt sie als Überweisungskonto fest.
         """
-        value = sub('[\\W_]+', '',value.upper())
-        if len(value) > 34:
-            value = value[:34]
-        self._payment["iban"] = str(value)
+        if value:
+            self._payment["iban"] = IBAN(str(value))
+        else:
+            self._payment["iban"] = IBAN('', allow_invalid = True)
     
     def getaccountiban(self,spaces:bool = True) -> str:
         """Gibt die IBAN des Bankkontos zurück."""
-        out = self._payment["iban"]
-        if spaces:
-            # add spaces
-            for i in self._IBANSPACES:
-                if len(out) > i:
-                    out = out[:i] + " " + out[i:]
-        return out
+        return self._payment["iban"].formatted
 
     def setibanmode(self,mode=None):
         if mode and int(mode) in self._MODES_IBAN:
             self._payment["ibanmode"] = int(mode)
         else:
-            self._payment["ibanmode"] = None
+            raise tools.IllegalValueException
     
     def getibanmode(self) -> int|None:
         return self._payment["ibanmode"]
     
-    def setsepamode(self,mode=None):
+    def setsepamode(self,mode):
         if mode and int(mode) in self._MODES_SEPA:
             self._payment["sepamode"] = int(mode)
         else:
-            self._payment["sepamode"] = None
-    
+            raise tools.IllegalValueException
+
     def getsepamode(self) -> int|None:
         return self._payment["sepamode"]
 

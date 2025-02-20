@@ -50,12 +50,10 @@ def aktive_pdf():
     if request.method == 'GET' and request.args:
         # Query provided; create new PDF
         abrechnung = aktive.Abrechnung()
-        try:
-            # Get data from query string
-            abrechnung.evaluate_query(request.args.to_dict())
-        except:
-            # Bad Request
-            abort(400)
+        # Get data from query string
+        errormessage = abrechnung.evaluate_query(request.args.to_dict())
+        if errormessage:
+            abort(400, errormessage)
         # Prepare electronic invoice as XML
         xml = abrechnung.factur_x()
         # Prepare document as HTML

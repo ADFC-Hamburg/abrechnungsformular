@@ -144,6 +144,7 @@ function processMode(setting) {
 	if (setting == 3) { processMem = 3; }
 	for (let i = 0; i < 3; i++) {
 		button[i].disabled = disable;
+		button[i].required = !(disable);
 		button[i].parentElement.classList.toggle ("locked",disable);
 	}
 }
@@ -581,9 +582,10 @@ function restart() {
  */
 function display() {
 	for (let i = 1; i <= maxPos; i++) {
-		const button = [document.getElementById("position"+i+"plus").checked, document.getElementById("position"+i+"minus").checked];
-		// Überprüfe, wo bereits zwischen Einnahme und Ausgabe gewählt wurde
-		if (button[1]) {
+				// Überprüfe, wo bereits zwischen Einnahme und Ausgabe gewählt wurde
+		if (document.getElementById("position"+i+"plus").checked) {
+positionSetting(i,true,false);
+		} else {
 			positionSetting(i,false,false);
 		}
 
@@ -613,8 +615,9 @@ function display() {
 			// Ein Feld in Position i ist bereits ausgefüllt
 			positionDisplayInitialize(i+1);
 			break;
+		} else if (i==1) {
+			positionDisplayInitialize(1);
 		}
-		positionDisplayInitialize(1);
 	}
 }
 
