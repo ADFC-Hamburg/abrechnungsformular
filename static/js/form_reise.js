@@ -125,6 +125,72 @@ function timeDisplayCheck() {
 	}
 }
 
+// Funktionen zur Begrenzung von Eingabewerten
+
+/**
+ * Gleiche das früheste erlaubte Datum der meisten Datumsfelder dem
+ * Datum des Anfangs der Reise an.
+ * 
+ * Sollte dieses Datum noch nicht eingegeben worden sein, nutze
+ * stattdessen einen Standartwert.
+ * 
+ * @since	2.0
+ */
+function updateMinDate() {
+	let value = document.getElementById("journeybegindate").value;
+	if (value == "") {
+		value = earliestdate.toISOString().split("T")[0];
+	}
+	updateDateRange(value,null);
+}
+
+/**
+ * Gleiche das späteste erlaubte Datum der meisten Datumsfelder dem
+ * Datum des Endes der Reise an.
+ * 
+ * Sollte dieses Datum noch nicht eingegeben worden sein, nutze
+ * stattdessen das heutige Datum.
+ * 
+ * @since	2.0
+ */
+function updateMaxDate() {
+	let value = document.getElementById("journeyenddate").value;
+	if (value == "") {
+		value = new Date().toISOString().split("T")[0];
+	}
+	updateDateRange(null,value);
+}
+
+/**
+ * Begrenze den erlaubten Bereich aller Datumsfelder auf den
+ * per Parameter angegebenen Mindest- und Höchstwert. (Ausgenommen sind
+ * der Höchstwert für das Ende der Reise und der Mindestwert für den
+ * Anfang der Reise.)
+ * 
+ * Wird ein Parameter nicht angegeben, wird der entsprechende Wert
+ * nicht angepasst, sondern bleibt bestehen, wie gehabt.
+ * 
+ * @since	2.0
+ * 
+ * @param {(string|null)} [min=null]	Das früheste erlaubte Datum. Bei null bleibt das bisherige Datum bestehen.
+ * 
+ * @param {(string|null)} [max=null]	Das späteste erlaubte Datum. Bei null bleibt das bisherige Datum bestehen.
+ */
+function updateDateRange(min=null,max=null) {
+	if (!(min === null)) {
+		document.getElementById("journeyenddate").min = min;
+		for (let i = 0; i < maxPos; i++) {
+			document.getElementById("position"+(i+1)+"date").min = min;
+		}
+	}
+	if (!(max === null)) {
+		document.getElementById("journeybegindate").max = max;
+		for (let i = 0; i < maxPos; i++) {
+			document.getElementById("position"+(i+1)+"date").max = max;
+		}
+	}
+}
+
 // Funktionen zum grundlegenden Ablauf
 
 /**
@@ -133,11 +199,17 @@ function timeDisplayCheck() {
  * @since	2.0
  */
 function start() {
+	// Setze spätestes und frühestes erlaubtes Datum
+	document.getElementById("journeyenddate").max = new Date().toISOString().split("T")[0];
+	document.getElementById("journeybegindate").min = earliestdate.toISOString().split("T")[0];
+
 	// Gib HTML-Elementen auslösbare Ereignisse
 
 	// Ereignisse für Datumsfelder
+	document.getElementById("journeybegindate").addEventListener('change',updateMinDate);
 	document.getElementById("journeybegindate").addEventListener('change',timeDisplayCheck);
 	document.getElementById("journeybegindate").addEventListener('change',listDates);
+	document.getElementById("journeyenddate").addEventListener('change',updateMaxDate);
 	document.getElementById("journeyenddate").addEventListener('change',timeDisplayCheck);
 	document.getElementById("journeyenddate").addEventListener('change',listDates);
 
@@ -173,6 +245,7 @@ function restart() {
 	dateDisplayInitialize(0);
 	positionDisplayInitialize(1);
 	timeDisplay(false);
+	updateDateRange(earliestdate.toISOString().split("T")[0],new Date().toISOString().split("T")[0]);
 }
 
 /**
@@ -195,7 +268,10 @@ function display() {
 			positionDisplayInitialize(1);
 		}
 	}
+	timeDisplayCheck();
 	listDates();
+	updateMinDate();
+	updateMaxDate();
 }
 
 // Beim Starten dieses Scripts
