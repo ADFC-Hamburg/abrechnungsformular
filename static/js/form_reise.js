@@ -1,3 +1,4 @@
+const moneyform = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }); // wird genutzt, um Geldbeträge zu formatieren
 const daylength = 86400000 // Millisekunden pro Tag
 const maxDates = 10; // Maximale Anzahl an Tagen für Angabe der Mahlzeiten im HTML-Dokument
 const maxPos = 12; // Maximale Anzahl an Positionen im HTML-Dokument
@@ -216,6 +217,22 @@ function updateDateRange(min=null,max=null) {
 	}
 }
 
+// Funktionen zur Berechnung und Anzeige von Werten
+
+	function calculatePositions() {
+		total = 0.0;
+		for (let i = 1; i <= maxPos; i++) {
+			const amount = document.getElementById("position"+i+"amount").value;
+			if (amount>0) {
+				total += +amount;
+			}
+		}
+		if (total) {
+			document.getElementById("positiontotal").innerHTML = moneyform.format(total);
+		}
+		document.getElementById("positionnotes").hidden = !(!!total);
+	}
+
 // Funktionen zum grundlegenden Ablauf
 
 /**
@@ -246,6 +263,8 @@ function start() {
 		const id = "position"+(i+1);
 		const displayFields = ["name","number","date","amount"];
 
+		document.getElementById(id+"amount").addEventListener('input',calculatePositions);
+
 		if (i < maxPos-1) {
 			// Anzeige weiterer Positionen bei Eingabe
 			for (let j = 0; j < displayFields.length; j++) {
@@ -275,6 +294,8 @@ function restart() {
 	positionDisplayInitialize(1);
 	timeDisplay(false);
 	updateDateRange(earliestdate.toISOString().split("T")[0],new Date().toISOString().split("T")[0]);
+
+	document.getElementById("positionnotes").hidden = true;
 }
 
 /**
@@ -297,6 +318,7 @@ function display() {
 			positionDisplayInitialize(1);
 		}
 	}
+	calculatePositions();
 	timeDisplayCheck();
 	ibanLock(document.getElementById("processuserknown").checked);
 	listDates();
