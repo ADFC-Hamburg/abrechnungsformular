@@ -154,16 +154,33 @@ function start() {
 		}
 	}
 
+	// Ereignisse für Schaltflächen
+	/*document.getElementById("submit").addEventListener('click',validateForm);*/
+	document.getElementById("reset").addEventListener('click',restart);
+
 	// Ereignis beim Anzeigen der Seite
 	window.addEventListener("pageshow", display);
 }
 
 /**
+ * Setze manche Variablen und Klassen zurück.
+ * 
+ * Zum Aufruf durch die Reset-Schaltfläche.
+ * 
+ * @since	1.3
+ */
+function restart() {
+	dateDisplayInitialize(0);
+	positionDisplayInitialize(1);
+	timeDisplay(false);
+}
+
+/**
  * Überprüft, welche Elemente bereits ausgefüllt sind und bereite
  * Variablen und die Anzeige von Feldern entsprechend vor.
-  *
+ * 
  * Zum Aufruf durch ein pageshow-Ereignis.
-* 
+ * 
  * @since	2.0
  */
 function display() {
@@ -174,10 +191,10 @@ function display() {
 			// Ein Feld in Position i ist bereits ausgefüllt
 			positionDisplayInitialize(i+1);
 			break;
-} else if (i==1) {
+		} else if (i==1) {
 			positionDisplayInitialize(1);
 		}
-			}
+	}
 	listDates();
 }
 
