@@ -5,7 +5,9 @@ selbige als Dokument ausgeben.
 
 from datetime import date
 from decimal import Decimal
+from html import escape
 
+from babel.dates import format_date
 from app import tools
 
 
@@ -43,6 +45,31 @@ class Position:
 
     def __bool__(self) -> str:
         return bool(self.getvalue())
+    
+    # Methods for output
+    def htmlcells(self,indent:int = 0) -> str:
+        """
+        Gibt vier Zellen im HTML-Format aus.
+        Jede Zelle hat eine eigene Zeile.
+
+        Die Reihenfolge lautet:
+        Datum, Beleg-Nr., Kostengrund, Betrag
+        """
+        out = []
+
+        joiner = "\n" + "\t"*indent
+
+        out.append( tools.cell( format_date(self.getdate(),locale="de_DE") ) )
+        out.append( tools.cell( escape(self.getreceiptnumber()) ) )
+        out.append( tools.cell( escape(self.getreason()) ) )
+        out.append( tools.cell( tools.euro(self.getvalue()) ) )
+
+        return "\t"*indent + joiner.join(out)
+
+    def check_complete(self) -> bool:
+        """Gibt zurück, ob alle Felder ausgefüllt sind."""
+        return bool(self.getvalue() and self.getdate()
+                    and self.getreason() and self.getreceiptnumber())
 
     # Variable getters and setters
     def setreceiptnumber(self,value:str):
