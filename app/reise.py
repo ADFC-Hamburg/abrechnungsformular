@@ -15,7 +15,7 @@ class Position:
     """
 
     # Dunder methods
-    def __init__(self,receipt_nr:str = "",reason:str = "",
+    def __init__(self,receiptnumber:str = "",reason:str = "",
                  date:date|None = None,value=Decimal('0.00')):
         """
         Initialisiert ein Objekt der Klasse Position.
@@ -27,21 +27,21 @@ class Position:
         value: Ausgegebenes Geld
         """
         self.setreason(reason)
-        self.setreceiptnumber(receipt_nr)
+        self.setreceiptnumber(receiptnumber)
         self.setdate(date)
         self.setvalue(value)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return tools.euro(self.getvalue())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str (f"{self.__class__.__name__}"
-                   +f"(receipt={repr(self.getreceiptnumber())},"
+                   +f"(receiptnumber={repr(self.getreceiptnumber())},"
                    +f"reason={repr(self.getreason())},"
                    +f"date={repr(self.getdate())},"
                    +f"value={repr(self.getvalue())})")
 
-    def __bool__(self):
+    def __bool__(self) -> str:
         return bool(self.getvalue())
 
     # Variable getters and setters
@@ -100,3 +100,6 @@ class Position:
                     "Das Datum der Position.")
     value = property(getvalue,setvalue,None,
                      "Der Geldwert der Position.")
+    complete = property(check_complete,None,None,
+                        "Ob sämtliche Felder ausgefüllt sind.")
+
