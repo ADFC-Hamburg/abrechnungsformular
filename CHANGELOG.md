@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## v1.10 - 2025-01-25
+
+### Changed
+
+- Improved form initialization routine
 
 ### Fixed
 
