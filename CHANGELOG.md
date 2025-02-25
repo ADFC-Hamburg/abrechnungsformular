@@ -14,8 +14,8 @@
 
 ### Fixed
 
-- Form never requires SEPA mandate info to submit
-- Position treated as cost after form reset
+- Form can now require SEPA mandate info to submit
+- Positions set to income no longer treated as income after form reset
 
 ## v1.8 - 2025-02-13
 
@@ -44,10 +44,10 @@
 
 ### Fixed
 
-- Order of domain/subdomain of email address in instructions (form and template) swapped
-- Positions treated like income after form reset
-- Wrong path to nologin shell script for user appuser
-- Fontconfig threw errors, lacked permissions to write to cache
+- Order of domain/subdomain of email address in instructions (form and template) corrected
+- Positions set to income no longer treated as income after form reset
+- Path to nologin shell script for user appuser fixed
+- Fontconfig no longer throws errors due to lacking permissions to write to cache
 
 ### Changed
 
@@ -104,7 +104,7 @@
 
 ### Fixed
 
-- Date input, once confirmed invalid, cannot successfully validate
+- Previously invalid Date input can now successfully validate
 
 ## v1.3 - 2024-12-03
 
@@ -124,8 +124,8 @@
 
 ### Fixed
 
-- Positions set to cost still treated like cost after form reset
-- Form did not properly handle already filled fields when accessing via browser's back or forward
+- Positions set to cost no longer treated as cost after form reset
+- Form now properly handles already filled fields when accessing via browser's back or forward
 
 ## v1.2 - 2024-11-26
 
@@ -143,8 +143,8 @@
 
 ### Fixed
 
-- Could not submit form with invalid IBAN entered even when IBAN field was hidden
-- Money total did not update when position was switched between income and expense
+- Can now submit form with invalid IBAN entered while IBAN field is hidden/disabled
+- Money total now updates when position is switched between income and cost
 
 ## v1.1 - 2024-11-21
 
