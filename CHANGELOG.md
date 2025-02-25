@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Can no longer submit form without payment option selected
+
 ## v1.9 - 2025-02-18
 
 ### Added

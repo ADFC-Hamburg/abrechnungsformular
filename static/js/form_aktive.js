@@ -125,6 +125,10 @@ function processDisplay(mode=0) {
 	field[1].hidden = hide[0];
 	field[2].hidden = hide[1];
 	field[3].hidden = hide[1];
+	button[0].disabled = hide[0];
+	button[1].disabled = hide[1];
+	button[2].disabled = hide[1];
+
 }
 
 /**
@@ -261,6 +265,20 @@ function anyAmountEntered() {
 		}
 	}
 	return false;
+}
+
+/**
+ * Überprüft, ob eine Zahlungsoption ausgewählt ist oder nicht benötigt wird.
+ * 
+ * @since	1.10
+ * 
+ * @returns {boolean}
+ */
+function paymentSelected() {
+	const button = [document.getElementById("processtouser"), document.getElementById("processsepa"), document.getElementById("processbyuser")];
+	const payment_selected = (button[0].checked || button[1].checked || button[2].checked);
+	const payment_disabled = (button[0].disabled && button[1].disabled && button[2].disabled);
+	return (payment_selected || payment_disabled)
 }
 
 /**
@@ -468,9 +486,11 @@ function validateForm() {
 		}
 	}
 
-	// Ist mindestens ein Betrag angegeben?
+	// Sind mindestens ein Betrag und eine Zahlungsoption angegeben?
 	if (!(anyAmountEntered())) {
 		document.getElementById("submit").setCustomValidity('Bitte trage mindestens eine Position oder Spende in das Formular ein.');
+	} else if (!(paymentSelected())) {
+		document.getElementById("submit").setCustomValidity('Bitte wähle eine Zahlungsoption aus.');
 	} else {
 		document.getElementById("submit").setCustomValidity('');
 	}
