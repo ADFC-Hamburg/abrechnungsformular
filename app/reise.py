@@ -7,6 +7,8 @@ from datetime import date
 from decimal import Decimal
 from html import escape
 
+from schwifty import IBAN, exceptions
+
 from babel.dates import format_date
 from app import tools
 
@@ -130,3 +132,158 @@ class Position:
     complete = property(check_complete,None,None,
                         "Ob sämtliche Felder ausgefüllt sind.")
 
+
+class Abrechnung():
+    """
+    Beschreibt eine Reisekostenabrechnung für den ADFC Hamburg.
+    """
+
+    # Class constants
+    POSITIONCOUNT = 12
+    MAXDATES = 10
+
+    # Dunder methods
+    def __init__(self):
+        """
+        Initialisiert ein Objekt der Klasse Abrechnung.
+        """
+
+        self.positions = self._create_positions(self.POSITIONCOUNT)
+
+        self._user_name = self._user_street = self._user_postcode\
+            = self._user_city = self._payment_name = self._cause = ""
+        self._payment_iban = IBAN("",allow_invalid=True)
+        self._date_begin = self._date_end = None
+    
+    # Part of initialization
+    def _create_positions(self,amount:int) -> tuple[Position]:
+        """
+        Gibt einen Tupel aus neuen Positionen zurück.
+        """
+        out = []
+        for i in range(amount):
+            out.append(Position())
+        return tuple(out)
+    
+    # Variable getters and setters
+    def setusername(self,value:str = ""):
+        """Legt den Namen des Aktiven fest."""
+        self._user_name = str(value).strip()
+    
+    def getusername(self) -> str:
+        """Gibt den Namen des Aktiven zurück."""
+        return self._user_name
+    
+    def setuserstreet(self,value:str = ""):
+        """Legt die Straße und Hausnummer des Aktiven fest."""
+        self._user_street = str(value).strip()
+    
+    def getuserstreet(self) -> str:
+        """Gibt die Straße und Hausnummer des Aktiven zurück."""
+        return self._user_street
+
+    def setuserpostcode(self,value:str = ""):
+        """Legt die Postleitzahl des Aktiven fest."""
+        self._user_postcode = str(value).strip()
+    
+    def getuserpostcode(self) -> str:
+        """Gibt die Postleitzahl des Aktiven zurück."""
+        return self._user_postcode
+
+    def setusercity(self,value:str = ""):
+        """Legt die Stadt des Aktiven fest."""
+        self._user_city = str(value).strip()
+    
+    def getusercity(self) -> str:
+        """Gibt die Stadt des Aktiven zurück."""
+        return self._user_city
+
+    def setaccountname(self,value:str = ""):
+        """Legt den Namen des Kontoinhabers fest."""
+        self._payment_name = str(value).strip()
+    
+    def getaccountname(self) -> str:
+        """Gibt den Namen des Kontoinhabers zurück."""
+        return self._payment_name
+
+    def setaccountiban(self,value):
+        """
+        Verifiziert die angegebene IBAN
+        und legt sie als Überweisungskonto fest.
+        """
+        if value:
+            self._payment_iban = IBAN(str(value))
+        else:
+            self._payment_iban = IBAN('', allow_invalid = True)
+    
+    def getaccountiban(self,spaces:bool = True) -> str:
+        """Gibt die IBAN des Bankkontos zurück."""
+        return self._payment_iban.formatted
+
+    def setcause(self,value:str = ""):
+        """Legt den Grund für die Reise fest."""
+        self._cause = str(value).strip()
+    
+    def getcause(self) -> str:
+        """Gibt den Grund für die Reise zurück."""
+        return self._cause
+
+    def setbegindate(self,value:str|date|None = None):
+        """
+        Legt das Datum des Beginns der Reise fest.
+
+        Akzepiert Datums-Objekte oder
+        Strings im Format (year-month-day)
+        """
+        if type(value) == date:
+            self._date_begin = value
+        elif value:
+            temp = str(value).split("-")
+            self._date_begin = date(
+                int(temp[0]), int(temp[1]), int(temp[2]))
+        else:
+            self._date_begin = None
+    
+    def getbegindate(self) -> date|None:
+        """Gibt das Datum des Beginns der Reise zurück."""
+        return self._date_begin
+
+    def setenddate(self,value:str|date|None = None):
+        """
+        Legt das Datum des Endes der Reise fest.
+
+        Akzepiert Datums-Objekte oder
+        Strings im Format (year-month-day)
+        """
+        if type(value) == date:
+            self._date_end = value
+        elif value:
+            temp = str(value).split("-")
+            self._date_end = date(
+                int(temp[0]), int(temp[1]), int(temp[2]))
+        else:
+            self._date_end = None
+    
+    def getenddate(self) -> date|None:
+        """Gibt das Datum des Endes der Reise zurück."""
+        return self._date_end
+    
+    # Properties
+    username = property(getusername,setusername,None,
+                        "Der Name des Aktiven.")
+    userstreet = property(getuserstreet,setuserstreet,None,
+                          "Die Straße und Hausnummer des Aktiven.")
+    userpostcode = property(getuserpostcode,setuserpostcode,None,
+                          "Die Postleitzahl des Aktiven.")
+    usercity = property(getusercity,setusercity,None,
+                          "Die Heimatstadt des Aktiven.")
+    accountname = property(getaccountname,setaccountname,None,
+                           "Der Inhaber des Überweisungskontos.")
+    iban = property(getaccountiban,setaccountiban,None,
+                    "Die IBAN des Überweisungskontos.")
+    cause = property(getcause,setcause,None,
+                     "Der Grund für die Reise.")
+    begindate = property(getbegindate,setbegindate,None,
+                         "Das Datum, an dem die Reis begann.")
+    enddate = property(getenddate,setenddate,None,
+                       "Das Datum, an dem die Reise endete.")
