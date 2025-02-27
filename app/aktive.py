@@ -184,10 +184,11 @@ class Abrechnung:
     """
     
     # Class constants
+    POSITIONCOUNT = 7
+
     _MODES_IBAN = (1,2,3)
     _MODES_SEPA = (1,2,3)
     _NAME = "Aktivenabrechnung"
-    _POSITIONCOUNT = 7
     _POSITION_NAMES = ('erste','zweite','dritte','vierte',
                        'fünfte','sechste','siebte')
     _FIELD_NAMES = {'uname':'dein Name','group':'deine Arbeitsgruppe',
@@ -210,7 +211,7 @@ class Abrechnung:
         Initialisiert ein Objekt der Klasse Abrechnung.
         """
         
-        self.positions = self._create_positions(self._POSITIONCOUNT)
+        self.positions = self._create_positions(self.POSITIONCOUNT)
         
         self._user = {"name": "", "group": ""}
         self._project = {"name": "", "date": None}
@@ -296,7 +297,7 @@ class Abrechnung:
             check_missing(self.getprojectdate(),self._FIELD_NAMES['pdate'])
             
             # Position values
-            for i in range(self._POSITIONCOUNT):
+            for i in range(self.POSITIONCOUNT):
                 pos = 'p'+str(i+1)
                 if pos+'type' in keys and not query[pos+'type'] in {'0',''}:
                     if not query[pos+'type'] in {'1','-1'}:
@@ -543,7 +544,7 @@ class Abrechnung:
         user.address.country_id = CONTACT['Country']
 
         # Positions
-        for index in range(self._POSITIONCOUNT):
+        for index in range(self.POSITIONCOUNT):
             position = self.positions[index]
             if not position:
                 continue
@@ -701,7 +702,7 @@ class Abrechnung:
     def getincome(self) -> Decimal:
         """Gibt den Gesamtbetrag der Einnahmen zurück."""
         out = Decimal(0.0)
-        for i in range(self._POSITIONCOUNT):
+        for i in range(self.POSITIONCOUNT):
             out += self.positions[i].income
         out += self.getdonations()
         return out
@@ -709,14 +710,14 @@ class Abrechnung:
     def getcost(self) -> Decimal:
         """Gibt den Gesamtbetrag der Ausgaben zurück."""
         out = Decimal(0.0)
-        for i in range(self._POSITIONCOUNT):
+        for i in range(self.POSITIONCOUNT):
             out += self.positions[i].cost
         return out
     
     def gettotal(self) -> Decimal:
         """Gibt den Betrag der Einnahmen minus Ausgaben zurück."""
         out = Decimal(0.0)
-        for i in range(self._POSITIONCOUNT):
+        for i in range(self.POSITIONCOUNT):
             out += self.positions[i].value
         out += self.getdonations()
         return out
@@ -817,7 +818,7 @@ class HTMLPrinter:
     # Class constants
     _CHECKBOXES = {False:"&#9744;",True:"&#9746;"}
     _PLACEHOLDER = "<!--PLACEHOLDER-->"
-    _POSITIONCOUNT = 7
+    _POSITIONCOUNT = Abrechnung.POSITIONCOUNT
     _SPLIT = "<!--SPLIT-->\n"
     
     # Dunder methods
