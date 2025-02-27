@@ -114,6 +114,8 @@ class Position:
         """Legt den Geldwert der Position fest."""
         if Decimal(value) < 0:
             raise tools.BelowMinimumException
+        elif not Decimal(value) % Decimal('0.01') == 0:
+            raise tools.DecimalsException
         self._value = Decimal(value)
     
     def getvalue(self) -> Decimal:
