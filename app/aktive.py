@@ -60,16 +60,14 @@ class Position:
     def htmlcells(self,indent:int = 0) -> str:
         """
         Gibt fünf Zellen im HTML-Format aus.
-        Jede Zelle hat eine eigene Zeile, außer indent ist negativ.
+        Jede Zelle hat eine eigene Zeile.
+
         Die Reihenfolge lautet:
         Name, Anzahl Einheiten, Kosten pro Einheit, Einnahmen, Ausgaben
         """
         out = []
         
-        if indent<0:
-            joiner=""
-        else:
-            joiner = "\n" + "\t"*indent
+        joiner = "\n" + "\t"*indent
         
         out.append( tools.cell( escape(self._name) ) )
         
