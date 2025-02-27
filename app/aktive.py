@@ -82,7 +82,7 @@ class Position:
         
         return "\t"*indent+joiner.join(out)
     
-    def complete(self) -> bool:
+    def check_complete(self) -> bool:
         """Gibt zurück, ob Name und Wert vorhanden sind."""
         return bool(self.getname() and self.getvalue())
 
@@ -173,6 +173,8 @@ class Position:
         "Die Einnahmen der Position; gibt bei Ausgaben 0 aus.")
     cost = property(getcost,setminusvalue,None,
         "Die Kosten der Position; gibt bei Einnahmen 0 aus.")
+    complete = property(check_complete,None,None,
+        "Ob Name und Wert vorhanden sind.")
 
 
 class Abrechnung:
@@ -217,13 +219,13 @@ class Abrechnung:
                          "ibanknown": False, "iban": IBAN("",allow_invalid=True),
                          "name": ""}
     
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Gibt den Abrechnungsbetrag zurück.
         """
         return tools.euro(self.gettotal())
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """
         Gibt True zurück, falls eine Position einen Wert hat
         oder eine Spendensumme angegeben wurde.
@@ -234,7 +236,7 @@ class Abrechnung:
         return bool(self.donations)
 
     # Part of initialization
-    def _create_positions(self,amount:int):
+    def _create_positions(self,amount:int) -> tuple[Position]:
         """
         Gibt einen Tupel aus neuen Positionen zurück.
         """
@@ -330,7 +332,7 @@ class Abrechnung:
                     if pos+'name' in keys:
                         # Set position name
                         self.positions[i].setname(query[pos+'name'])
-                    if self.positions[i] and not self.positions[i].complete():
+                    if self.positions[i] and not self.positions[i].complete:
                         incomplete_positions.append(self._POSITION_NAMES[i])
             
             # Donation value
@@ -827,13 +829,14 @@ class HTMLPrinter:
         Parameter:
         path - Der Dateipfad der HTML-Vorlage
         """
+        self._PATH = str(path)
         self._template = self._fetch_html(path)
     
-    def __str__(self):
+    def __str__(self) -> str:
         return self.html_compose()
     
-    def __repr__(self):
-        return __class__.__name__+"()"
+    def __repr__(self) -> str:
+        return f"{__class__.__name__}(path='{self._PATH}')"
     
     # Template loading
     def _fetch_html(self,path) -> tuple:
@@ -871,7 +874,7 @@ class HTMLPrinter:
                     lambda: "v"+VERSION)
 
     # Methods for template sections
-    def _fill_user(self,text:str,input:Abrechnung|None = None):
+    def _fill_user(self,text:str,input:Abrechnung|None = None) -> str:
         """
         Ersetzt Platzhalter im String text durch Felder in der
         Abrechnung input. Falls kein input vorhanden ist, entferne
@@ -899,7 +902,7 @@ class HTMLPrinter:
 
         return "".join(segments)
     
-    def _fill_positions(self,text:str,input:Abrechnung|None = None):
+    def _fill_positions(self,text:str,input:Abrechnung|None = None) -> str:
         """
         Gibt HTML-Tabellenreihen mit 8 Spalten aus und fügt
         gegebenenfalls Positionsdaten mit ein.
@@ -934,7 +937,7 @@ class HTMLPrinter:
         
         return "".join(output)
 
-    def _fill_total(self,text:str,input:Abrechnung|None = None):
+    def _fill_total(self,text:str,input:Abrechnung|None = None) -> str:
         """
         Ersetzt Platzhalter im String text durch Felder in der
         Abrechnung input. Falls kein input vorhanden ist, entferne
@@ -956,7 +959,7 @@ class HTMLPrinter:
 
         return "".join(segments)
     
-    def _fill_payment(self,text:str,input:Abrechnung|None = None):
+    def _fill_payment(self,text:str,input:Abrechnung|None = None) -> str:
         """
         Ersetzt Platzhalter im String text durch Felder und Checkboxen
         in der Abrechnung input. Falls kein input vorhanden ist,
@@ -994,7 +997,7 @@ class HTMLPrinter:
 
         return "".join(segments)
     
-    def _fill_date(self,text:str,input:Abrechnung|None = None):
+    def _fill_date(self,text:str,input:Abrechnung|None = None) -> str:
         """
         Ersetzt Platzhalter im String durch Datum und Versionsnummer.
 
@@ -1016,7 +1019,7 @@ class HTMLPrinter:
                  ("DATE", _fill_date))
     
     # Callable methods
-    def html_compose(self,input:Abrechnung|None = None):
+    def html_compose(self,input:Abrechnung|None = None) -> str:
         """
         Füllt die HTML-Vorlage mit Angaben aus einer Abrechnung aus.
         
