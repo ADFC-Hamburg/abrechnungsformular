@@ -47,7 +47,7 @@ class Position:
 
     def __bool__(self) -> str:
         return bool(self.getvalue())
-    
+
     # Methods for output
     def htmlcells(self,indent:int = 0) -> str:
         """
@@ -85,15 +85,15 @@ class Position:
     def setreason(self,value:str):
         """Legt den Kostengrund fest."""
         self._reason = str(value).strip()
-    
+
     def getreason(self) -> str:
         """Gibt den Kostengrund zurück."""
         return self._reason
-    
+
     def setdate(self,value:str|date|None):
         """
         Legt das Datum der Position fest.
-        
+
         Akzeptiert Datums-Objekte oder
         Strings im Format (year-month-day)
         """
@@ -105,11 +105,11 @@ class Position:
                 int(temp[0]), int(temp[1]), int(temp[2]))
         else:
             self._date = None
-    
+
     def getdate(self) -> date|None:
         """Gibt das Datum der Position zurück."""
         return self._date
-    
+
     def setvalue(self,value):
         """Legt den Geldwert der Position fest."""
         if Decimal(value) < 0:
@@ -117,7 +117,7 @@ class Position:
         elif not Decimal(value) % Decimal('0.01') == 0:
             raise tools.DecimalsException
         self._value = Decimal(value)
-    
+
     def getvalue(self) -> Decimal:
         """Gibt den Geldwert der Position zurück."""
         return self._value
@@ -156,7 +156,7 @@ class Abrechnung():
             = self._user_city = self._payment_name = self._cause = ""
         self._payment_iban = IBAN("",allow_invalid=True)
         self._date_begin = self._date_end = None
-    
+
     # Part of initialization
     def _create_positions(self,amount:int) -> tuple[Position]:
         """
@@ -166,20 +166,20 @@ class Abrechnung():
         for i in range(amount):
             out.append(Position())
         return tuple(out)
-    
+
     # Variable getters and setters
     def setusername(self,value:str = ""):
         """Legt den Namen des Aktiven fest."""
         self._user_name = str(value).strip()
-    
+
     def getusername(self) -> str:
         """Gibt den Namen des Aktiven zurück."""
         return self._user_name
-    
+
     def setuserstreet(self,value:str = ""):
         """Legt die Straße und Hausnummer des Aktiven fest."""
         self._user_street = str(value).strip()
-    
+
     def getuserstreet(self) -> str:
         """Gibt die Straße und Hausnummer des Aktiven zurück."""
         return self._user_street
@@ -187,7 +187,7 @@ class Abrechnung():
     def setuserpostcode(self,value:str = ""):
         """Legt die Postleitzahl des Aktiven fest."""
         self._user_postcode = str(value).strip()
-    
+
     def getuserpostcode(self) -> str:
         """Gibt die Postleitzahl des Aktiven zurück."""
         return self._user_postcode
@@ -195,7 +195,7 @@ class Abrechnung():
     def setusercity(self,value:str = ""):
         """Legt die Stadt des Aktiven fest."""
         self._user_city = str(value).strip()
-    
+
     def getusercity(self) -> str:
         """Gibt die Stadt des Aktiven zurück."""
         return self._user_city
@@ -203,7 +203,7 @@ class Abrechnung():
     def setaccountname(self,value:str = ""):
         """Legt den Namen des Kontoinhabers fest."""
         self._payment_name = str(value).strip()
-    
+
     def getaccountname(self) -> str:
         """Gibt den Namen des Kontoinhabers zurück."""
         return self._payment_name
@@ -217,7 +217,7 @@ class Abrechnung():
             self._payment_iban = IBAN(str(value))
         else:
             self._payment_iban = IBAN('', allow_invalid = True)
-    
+
     def getaccountiban(self,spaces:bool = True) -> str:
         """Gibt die IBAN des Bankkontos zurück."""
         return self._payment_iban.formatted
@@ -225,7 +225,7 @@ class Abrechnung():
     def setcause(self,value:str = ""):
         """Legt den Grund für die Reise fest."""
         self._cause = str(value).strip()
-    
+
     def getcause(self) -> str:
         """Gibt den Grund für die Reise zurück."""
         return self._cause
@@ -245,7 +245,7 @@ class Abrechnung():
                 int(temp[0]), int(temp[1]), int(temp[2]))
         else:
             self._date_begin = None
-    
+
     def getbegindate(self) -> date|None:
         """Gibt das Datum des Beginns der Reise zurück."""
         return self._date_begin
@@ -265,11 +265,11 @@ class Abrechnung():
                 int(temp[0]), int(temp[1]), int(temp[2]))
         else:
             self._date_end = None
-    
+
     def getenddate(self) -> date|None:
         """Gibt das Datum des Endes der Reise zurück."""
         return self._date_end
-    
+
     # Properties
     username = property(getusername,setusername,None,
                         "Der Name des Aktiven.")
