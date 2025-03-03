@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Jinja (Python dependency) specifically part of requirements (was already included as part of flask)
+
+### Changed
+
+- Form template now handled via jinja
+
+### Removed
+
+- Class aktive.HTMLPrinter removed (functionality folded into class aktive.Abrechnung)
+
 ## v1.10 - 2025-01-25
 
 ### Changed

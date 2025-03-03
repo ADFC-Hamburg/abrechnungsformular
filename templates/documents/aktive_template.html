@@ -25,34 +25,31 @@
 
 <main>
 	<div class="angaben">
-<!--SPLIT-->
-<!--USERDATA-->
 		<h1>Absender</h1>
 		<table>
 			<tr>
 				<td>Name:</td>
-				<td><!--PLACEHOLDER--></td>
+				<td>{{ abrechnung.getusername() }}</td>
 			</tr>
 			<tr>
 				<td>Arbeitsbereich:</td>
-				<td><!--PLACEHOLDER--></td>
+				<td>{{ abrechnung.getusergroup() }}</td>
 			</tr>
 		</table>
 		<h1>Angaben zur Aktion</h1>
 		<table>
 			<tr>
 				<td>Aktion&nbsp;/&nbsp;Projekt:</td>
-				<td><!--PLACEHOLDER--></td>
+				<td>{{ abrechnung.getprojectname() }}</td>
 			</tr>
 			<tr>
 				<td>Datum:</td>
-				<td><!--PLACEHOLDER--></td>
+				<td>{{ format_date(abrechnung.getprojectdate(),format='long',locale='de_DE') if abrechnung else '' }}</td>
 			</tr>
 		</table>
-<!--SPLIT-->
 	</div>
 	<adress>
-		ADFC Landesverband Hamburg e. V.<br />Buchhaltung<br />Koppel 34-36<br />20099 Hamburg
+		{{ address['Name'] }}<br />Buchhaltung<br />{{ address['LineOne'] }}<br />{{ address['PostCode'] }} {{ address['City'] }}
 	</adress>
 	<div class="abrechnung">
 		<h1><strong>Aktivenabrechnung</strong> — Einnahmen und Ausgaben</h1>
@@ -78,77 +75,77 @@
 				</tr>
 			</thead>
 			<tbody>
-<!--SPLIT-->
-<!--POSITIONS-->
-<!--SPLIT-->
-<!--TOTAL-->
+{% for i in range(abrechnung.POSITIONCOUNT) %}
+				<tr>
+					<td>{{ i+1 }}</td>
+{{ abrechnung.positions[i].htmlcells(indent=5) }}
+					<td></td>
+					<td></td>
+				</tr>
+{% endfor %}
 			</tbody>
 			<tfoot>
 				<tr>
 					<td colspan=4>+&nbsp;Spenden</td>
-					<td><!--PLACEHOLDER--></td><td class="lock"></td>
+					<td>{{ euro(abrechnung.getdonations()) if abrechnung.getdonations() else '' }}</td><td class="lock"></td>
 					<td></td>
 					<td></td>
 				</tr>
 				<tr>
 					<td colspan=4>=&nbsp;Summe</td>
-					<td><!--PLACEHOLDER--></td>
-					<td><!--PLACEHOLDER--></td>
+					<td>{{ euro(abrechnung.getincome()) if abrechnung.getincome() else '' }}</td>
+					<td>{{ euro(abrechnung.getcost()) if abrechnung.getcost() else '' }}</td>
 					<td></td>
 					<td class="hide"></td>
 				</tr>
 				<tr>
 					<td colspan=4>= Summe Einnahmen &minus; Summe Ausgaben = Abrechnungsbetrag</td>
-					<td colspan=2><!--PLACEHOLDER--></td>
+					<td colspan=2>{{ euro(abrechnung.gettotal()) if abrechnung else '' }}</td>
 					<td></td>
 					<td class="hide"></td>
 				</tr>
 			</tfoot>
 		</table>
-<!--SPLIT-->
-<!--PAYMENT-->
 		<h1>Zahlungsabwicklung</h1>
 		<table class="abwicklung">
 			<tr>
-				<td class="check"><!--PLACEHOLDER--></td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 1) }}</td>
 				<td colspan=2>Bitte &uuml;berweist den Abrechnungsbetrag auf mein Konto.</td>
 			</tr>
 			<tr>
 				<td></td>
-				<td class="check"><!--PLACEHOLDER--></td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 1 and abrechnung.ibanknown) }}</td>
 				<td>Meine Bankverbindung ist dem ADFC Hamburg bekannt.</td>
 			</tr>
 			<tr>
 				<td></td>
-				<td class="check"><!--PLACEHOLDER--></td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 1 and not abrechnung.ibanknown) }}</td>
 				<td><table class="subtable"><tr>
 					<td>IBAN:</td>
-					<td><!--PLACEHOLDER--></td>
+					<td>{{ abrechnung.iban or "DE" }}</td>
 					<td>Kontoinhaber:</td>
-					<td><!--PLACEHOLDER--></td>
+					<td>{{ abrechnung.accountname }}</td>
 				</tr></table></td>
 			</tr>
 			<tr>
-				<td class="check"><!--PLACEHOLDER--></td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 2) }}</td>
 				<td colspan=2>Bitte nutzt für die Abbuchung des Betrages das euch erteilte SEPA-Lastschriftmandat.</td>
 			</tr>
 			<tr>
 				<td></td>
-				<td class="check"><!--PLACEHOLDER--></td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 2 and abrechnung.sepamode == 2) }}</td>
 				<td>Bitte sendet mir das Formular für die erstmalige Erteilung des SEPA-Mandats zu.</td>
 			</tr>
 			<tr>
 				<td></td>
-				<td class="check"><!--PLACEHOLDER--></td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 2 and abrechnung.sepamode == 3) }}</td>
 				<td>Bitte sendet mir ein neues SEPA-Mandatsformular zu, da sich meine Bankverbindung geändert hat.</td>
 			</tr>
 			<tr>
-				<td class="check"><!--PLACEHOLDER--></td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 3) }}</td>
 				<td colspan=2>Ich überweise den Abrechnungsbetrag innerhalb von 10 Tagen auf das Konto des ADFC Hamburg mit der IBAN:&#9;DE80 4306 0967 2029 4456 00</td>
 			</tr>
 		</table>
-<!--SPLIT-->
-<!--DATE-->
 		<table class="bottomtable">
 			<tr>
 				<th colspan=2>Unterschrift</th>
@@ -157,21 +154,21 @@
 			</tr>
 			<tr>
 				<td>Datum:</td>
-				<td><!--PLACEHOLDER--></td>
+				<td>{% if abrechnung %}{{ today }}{% endif %}</td>
 				<td class="inbetween"></td>
 				<td class="check">&#9744;</td>
 				<td>Überweisung angew.:</td>
 			</tr>
 			<tr>
 				<td>Unterschrift:</td>
-				<td class="signature">(Bei digitaler Einreichung nicht notwendig.)</td>
+				<td class="signature">{% if abrechnung %}(Bei digitaler Einreichung nicht notwendig.){% endif %}</td>
 				<td class="inbetween"></td>
 				<td class="check">&#9744;</td>
 				<td>Lastschrift eingezogen:</td>
 			</tr>
 			<tr>
 				<td class="hide"></td>
-				<td class="version hide"><!--PLACEHOLDER--></td>
+				<td class="version hide">{% if abrechnung %}v{{ version }}{% endif %}</td>
 				<td class="inbetween" ></td>
 				<td></td>
 				<td>Konto-Auszug:</td>
