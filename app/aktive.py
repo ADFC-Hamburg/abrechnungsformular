@@ -195,7 +195,8 @@ class Abrechnung:
                     'pname':'der Name des Projekts oder der Aktion',
                     'pdate':'das Datum des Projekts oder der Aktion',
                     'dono':'die Summe der eingenommenen Spenden',
-                    'iban':'deine IBAN','owner':'der Name des Kontoinhabers',
+                    'iban':'deine IBAN',
+                    'owner':'der Name des Kontoinhabers/der Kontoinhaberin',
                     'prtype':'die Art der Zahlungsabwicklung',
                     'prsepa':'der Stand des SEPA-Mandats'}
     _FIELD_ERRORS = {'pos':'Mindestend eine Position oder die Summe'
@@ -655,19 +656,19 @@ class Abrechnung:
 
     # Variable getters and setters
     def setusername(self,value:str = ""):
-        """Legt den Namen des Aktiven fest."""
+        """Legt den Namen des/der Aktiven fest."""
         self._user["name"] = str(value).strip()
     
     def getusername(self) -> str:
-        """Gibt den Namen des Aktiven zurück."""
+        """Gibt den Namen des/der Aktiven zurück."""
         return self._user["name"]
     
     def setusergroup(self,value:str = ""):
-        """Legt die Gruppe des Aktiven fest."""
+        """Legt die Gruppe des/der Aktiven fest."""
         self._user["group"] = str(value).strip()
     
     def getusergroup(self) -> str:
-        """Gibt die Gruppe des Aktiven zurück."""
+        """Gibt die Gruppe des/der Aktiven zurück."""
         return self._user["group"]
     
     def setprojectname(self,value:str = ""):
@@ -781,9 +782,9 @@ class Abrechnung:
 
     # Properties
     username = property(getusername,setusername,None,
-                        "Der Name des Aktiven.")
+                        "Der Name des/der Aktiven.")
     usergroup = property(getusergroup,setusergroup,None,
-                         "Der Arbeitsbereich des Aktiven.")
+                         "Der Arbeitsbereich des/der Aktiven.")
     projectname = property(getprojectname,setprojectname,None,
                            "Der Name der Aktion oder des Projekts.")
     projectdate = property(getprojectdate,setprojectdate,None,
@@ -797,7 +798,7 @@ class Abrechnung:
     total = property(gettotal,None,None,
                      "Gesamtwert Einnahmen minus Ausgaben, in Euro.")
     accountname = property(getaccountname,setaccountname,None,
-                           "Der Name des Bankkontoimhabers.")
+                           "Name des Inhabers/der Inhaberin des Bankkontos.")
     iban = property(getaccountiban,setaccountiban,None,
                     "Die IBAN (ohne einleitendes DE) des Bankkontos.")
     accountiban = iban
