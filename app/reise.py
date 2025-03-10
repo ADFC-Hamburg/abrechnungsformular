@@ -152,8 +152,8 @@ class Abrechnung():
 
         self.positions = self._create_positions(self.POSITIONCOUNT)
 
-        self._user_name = self._user_street = self._user_postcode\
-            = self._user_city = self._payment_name = self._cause = ""
+        self._user_name = self._user_group\
+            = self._payment_name = self._cause = ""
         self._payment_iban = IBAN("",allow_invalid=True)
         self._date_begin = self._date_end = None
 
@@ -176,29 +176,13 @@ class Abrechnung():
         """Gibt den Namen des Aktiven zurück."""
         return self._user_name
 
-    def setuserstreet(self,value:str = ""):
-        """Legt die Straße und Hausnummer des Aktiven fest."""
-        self._user_street = str(value).strip()
+    def setusergroup(self,value:str = ""):
+        """Legt die Arbeitsgruppe des Aktiven fest."""
+        self._user_group = str(value).strip()
 
-    def getuserstreet(self) -> str:
-        """Gibt die Straße und Hausnummer des Aktiven zurück."""
-        return self._user_street
-
-    def setuserpostcode(self,value:str = ""):
-        """Legt die Postleitzahl des Aktiven fest."""
-        self._user_postcode = str(value).strip()
-
-    def getuserpostcode(self) -> str:
-        """Gibt die Postleitzahl des Aktiven zurück."""
-        return self._user_postcode
-
-    def setusercity(self,value:str = ""):
-        """Legt die Stadt des Aktiven fest."""
-        self._user_city = str(value).strip()
-
-    def getusercity(self) -> str:
-        """Gibt die Stadt des Aktiven zurück."""
-        return self._user_city
+    def getusergroup(self) -> str:
+        """Gibt die Arbeitsgruppe des Aktiven zurück."""
+        return self._user_group
 
     def setaccountname(self,value:str = ""):
         """Legt den Namen des Kontoinhabers fest."""
@@ -273,12 +257,8 @@ class Abrechnung():
     # Properties
     username = property(getusername,setusername,None,
                         "Der Name des Aktiven.")
-    userstreet = property(getuserstreet,setuserstreet,None,
-                          "Die Straße und Hausnummer des Aktiven.")
-    userpostcode = property(getuserpostcode,setuserpostcode,None,
-                          "Die Postleitzahl des Aktiven.")
-    usercity = property(getusercity,setusercity,None,
-                          "Die Heimatstadt des Aktiven.")
+    usergroup = property(getusergroup,setusergroup,None,
+                          "Die Arbeitsgruppe des Aktiven.")
     accountname = property(getaccountname,setaccountname,None,
                            "Der Inhaber des Überweisungskontos.")
     iban = property(getaccountiban,setaccountiban,None,
