@@ -4,6 +4,8 @@ const maxDates = 10; // Maximale Anzahl an Tagen für Angabe der Mahlzeiten im H
 const maxPos = 12; // Maximale Anzahl an Positionen im HTML-Dokument
 const earliestdate = new Date ("1989-11-27");
 
+var days = 0;
+
 // Funktionen zur Sichtbarkeit/Verwendbarkeit von HTML-Elementen
 
 /**
@@ -22,20 +24,32 @@ function dateDisplay(x,show=true) {
 }
 
 /**
- * Zeige Auswahlfelder für die ersten x Tage und verstecke den Rest.
+ * Zeige Auswahlfelder für die ersten x Tage und verstecke den Rest;
+ * bei keinen oder zu vielen Tagen zeige einen Eingabehinweis.
  * 
  * @since	2.0
  * 
  * @param {number} x	Die letzte anzuzeigende Position
  */
 function dateDisplayInitialize(x) {
+	let inRange = (x <= maxDates);
 	for (let i = 1; i <= maxDates; i++) {
 		if (i<=x) {
-			dateDisplay(i);
+			dateDisplay(i,inRange);
 		} else {
 			dateDisplay(i,false);
 		}
 	}
+
+	let display = (Boolean(x) && inRange);
+	if (x==0) {
+		document.getElementById("mealhint").innerHTML = "Gib zunächst den Zeitraum der Reise ein.";
+	} else if (!(inRange)) {
+		document.getElementById("mealhint").innerHTML = "Es können höchstens "+String(maxDates)+" Reisetage abgerechnet werden.";
+	}
+	document.getElementById("mealhint").hidden = display;
+	document.getElementById("mealdays").hidden = !(display);
+	document.getElementById("mealinstruct").hidden = !(display);
 }
 
 /**
@@ -74,14 +88,17 @@ function listDates() {
 	if (values[0] && values[1]) {
 		const start = new Date(values[0]);
 		const end = new Date(values[1]);
-		const days = Math.min(Math.round((end.getTime() - start.getTime()) / daylength) + 1, maxDates);
-		dateDisplayInitialize(Math.min(days,maxDates));
-		for (let i = 1; i <= Math.min(days,maxDates); i++) {
-			const labeldate = new Date(start.getTime()+(i-1)*daylength);
-			const labeltext = labeldate.toLocaleDateString('de-DE',{weekday:'long',month:'long',day:'numeric'});
-			document.getElementById("day"+i).innerHTML = labeltext+':';
+		days = Math.round((end.getTime() - start.getTime()) / daylength) + 1;
+		dateDisplayInitialize(days);
+		if (days <= maxDates){
+			for (let i = 1; i <= Math.min(days,maxDates); i++) {
+				const labeldate = new Date(start.getTime()+(i-1)*daylength);
+				const labeltext = labeldate.toLocaleDateString('de-DE',{weekday:'long',month:'long',day:'numeric'});
+				document.getElementById("day"+i).innerHTML = labeltext+':';
+			}
 		}
 	} else {
+		days = 0;
 		dateDisplayInitialize(0);
 	}
 }
