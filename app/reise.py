@@ -273,6 +273,8 @@ class Abrechnung():
     # Class constants
     POSITIONCOUNT = 12
     MAXDATES = 10
+    CAR_RATE_PER_KM = Decimal(REISE_RATE['PKWproKM'])
+    CAR_MAXRATE = Decimal(REISE_RATE['PKWMaximum'])
 
     # Dunder methods
     def __init__(self):
@@ -286,6 +288,7 @@ class Abrechnung():
             = self._payment_name = self._cause = ""
         self._payment_iban = IBAN("",allow_invalid=True)
         self._date_begin = self._date_end = None
+        self._car_distance = Decimal('0')
 
     # Part of initialization
     def _create_positions(self,amount:int) -> tuple[Position]:
@@ -384,6 +387,31 @@ class Abrechnung():
         """Gibt das Datum des Endes der Reise zurück."""
         return self._date_end
 
+    def setcardistance(self,value):
+        """
+        Legt die Wegstrecke fest, die während der Dienstreise
+        mit einem privaten PKW zurückgelegt wurde.
+        """
+        distance = Decimal(value)
+        if distance < 0:
+            raise tools.BelowMinimumException
+        else:
+            self._car_distance = distance
+
+    def getcardistance(self) -> Decimal:
+        """
+        Gibt die Wegstrecke zurück, die während der Dienstreise
+        mit einem privaten PKW zurückgelegt wurde.
+        """
+        return self._car_distance
+    
+    def getmileage(self) -> Decimal:
+        """
+        Gibt die Höhe der Wegstreckenentschädigung für Fahrten
+        im privaten PKW zurück.
+        """
+        return self.CAR_MAXRATE.min(self.CAR_RATE_PER_KM * self._car_distance)
+
     # Properties
     username = property(getusername,setusername,None,
                         "Der Name des Aktiven.")
@@ -399,3 +427,5 @@ class Abrechnung():
                          "Das Datum, an dem die Reis begann.")
     enddate = property(getenddate,setenddate,None,
                        "Das Datum, an dem die Reise endete.")
+    cardistance = property(getcardistance,setcardistance,None,
+                           "Die mit dem PKW zurückgelegte Wegstrecke.")
