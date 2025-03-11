@@ -14,3 +14,5 @@ def _fetch_version(path:str) -> str:
 VERSION = _fetch_version('VERSION')
 #: Die Kontaktdaten des Vereins.
 CONTACT = _fetch_json('CONTACT.json')
+#: Die Geldsätze für Reisekostenabrechnungen.
+REISE_RATE = _fetch_json('REISE_PAUSCHALE.json')

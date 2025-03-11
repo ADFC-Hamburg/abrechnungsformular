@@ -3,14 +3,14 @@ Modul für Klassen, die Reisekostenabrechnungen repräsentieren oder
 selbige als Dokument ausgeben.
 """
 
-from datetime import date
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from html import escape
 
+from babel.dates import format_date
 from schwifty import IBAN, exceptions
 
-from babel.dates import format_date
-from app import tools
+from . import tools, REISE_RATE
 
 
 class Position:
@@ -133,6 +133,136 @@ class Position:
                      "Der Geldwert der Position.")
     complete = property(check_complete,None,None,
                         "Ob sämtliche Felder ausgefüllt sind.")
+
+
+class Day:
+    """
+    Beschreibt die Abrechnung des Tagesgeldes für einen einzelnen Tag
+    in einer Reisekostenabrechnung.
+    """
+
+    # Class constants
+    ALLOWANCE_FULL = Decimal(REISE_RATE['Tagessatz']['GanzerTag'])
+    ALLOWANCE_REDUCED = Decimal(REISE_RATE['Tagessatz']['AnAbreise'])
+    MEAL_DEDUCTION = (ALLOWANCE_FULL*Decimal('0.2'),
+                      ALLOWANCE_FULL*Decimal('0.4'),
+                      ALLOWANCE_FULL*Decimal('0.4'))
+    MEALS = 3
+
+    # Dunder methods
+    def __init__(self):
+        """Initialisiert ein Objekt der Klasse Day."""
+
+        self._breakfast = self._lunch = self._dinner = False
+
+    def __getitem__(self,key:int) -> bool:
+        return self.getmeal(key)
+
+    def __setitem__(self,key:int,newvalue:bool):
+        self.setmeal(key,newvalue)
+
+    def __len__(self) -> int:
+        return self.MEALS
+
+    # Variable getters and setters
+    def setmeal(self,index:int,check:bool):
+        """Legt fest, ob eine Mahlzeit bereitgestellt wurde."""
+        match int(index):
+            case 0:
+                self._breakfast = bool(check)
+            case 1:
+                self._lunch = bool(check)
+            case 2:
+                self._dinner = bool(check)
+            case _:
+                raise IndexError(f"{self.__class__.__name__} index out of range")
+
+    def getmeal(self,index:int) -> bool:
+        """Gibt zurück, ob eine Mahlzeit bereitgestellt wurde."""
+        match int(index):
+            case 0:
+                return self._breakfast
+            case 1:
+                return self._lunch
+            case 2:
+                return self._dinner
+            case _:
+                raise IndexError(f"{self.__class__.__name__} index out of range")
+
+    def getmealcost(self) -> Decimal:
+        """
+        Gibt zurück, wie viel Tagesgeld durch bereitgestellte Verpflegung
+        gekürzt wird. Der Tagessatz wird dabei nicht berücksichtigt.
+        """
+        cost = Decimal(0)
+        for i in range(self.MEALS):
+            if self[i]:
+                cost += self.MEAL_DEDUCTION[i]
+        return cost
+    
+    def getallowance(self,reduced:bool = False) -> Decimal:
+        """
+        Gibt den Tagessatz ohne Kürzungen durch Verpflegung zurück.
+
+        Argumente:
+        reduced:    Ob der reduzierte Tagessatz greift.
+        """
+        allowance = self.ALLOWANCE_REDUCED if reduced else self.ALLOWANCE_FULL
+        return allowance
+
+    def getbenefits(self,reduced:bool = False) -> Decimal:
+        """
+        Gibt den Tagessatz mit Kürzungen durch Verpflegung zurück.
+
+        Argumente:
+        reduced:    Ob der reduzierte Tagessatz greift.
+        """
+
+        total = self.getallowance(reduced) - self.getmealcost()
+        return total.max(Decimal(0))
+
+
+class SingleDay(Day):
+    """
+    Bescheibt die Abrechnung des Tagesgeldes für eine 
+    Reisekostenabrechnung für eine Tagesreise.
+    """
+
+    # Class constants
+    ALLOWANCE_REDUCED = Decimal(REISE_RATE['Tagessatz']['Einzeltag'])
+    THRESHOLD = timedelta(hours=8)
+
+    # Dunder methods
+    def __init__(self):
+        """Initialisiert ein Objekt der Klasse SingleDay."""
+        self._timedelta = timedelta()
+        super().__init__()
+    
+    # Variable getters and setters
+    def settimedelta(self,begin:datetime,end:datetime):
+        """
+        Berechnet die Dauer der Tagesreise.
+
+        Argumente:
+        begin:  Datum und Uhrzeit des Beginns der Reise.
+        end:    Datum und Uhrzeit des Endes der Reise.
+        """
+        result = end - begin
+        if result < 0:
+            raise tools.BelowMinimumException
+        else:
+            self._timedelta = result
+
+    def getallowance(self) -> Decimal:
+        """
+        Gibt den Tagessatz ohne Kürzungen durch Verpflegung zurück.
+        Liegt die Länge der Reise unter dem Grenzwert, beträgt der
+        Tagessatz 0.
+        """
+        if self.THRESHOLD > self._timedelta:
+            return Decimal('0')
+        else:
+            return super().getallowance(reduced=True)
 
 
 class Abrechnung():
