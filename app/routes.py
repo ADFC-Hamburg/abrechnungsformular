@@ -35,7 +35,8 @@ def reise():
     """
     Zeigt das Formular zur Erstellung einer Reisekostenabrechnung an
     """
-    return render_template('form_reise.html', static=STATIC, version=VERSION)
+    return render_template('form_reise.html', static=STATIC, version=VERSION,
+                           address=CONTACT)
 
 @pages.route('/abrechnung', methods=['GET'])
 def aktive_pdf():
