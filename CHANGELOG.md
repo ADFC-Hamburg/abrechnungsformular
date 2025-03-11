@@ -8,7 +8,9 @@
 
 ### Changed
 
-- Form template now handled via jinja
+- Template for PDF now handled via jinja
+- Web form gets mail and link addresses from contact file
+- Gendering in PDF template
 
 ### Removed
 
@@ -22,18 +24,18 @@
 
 ### Fixed
 
-- Can no longer submit form without payment option selected
+- Can no longer submit web form without payment option selected
 
 ## v1.9 - 2025-02-18
 
 ### Added
 
-- Server-side verification of submitted form
+- Server-side verification of submitted web form
 
 ### Fixed
 
 - Form can now require SEPA mandate info to submit
-- Positions set to income no longer treated as income after form reset
+- Positions set to income no longer treated as income after web form reset
 
 ## v1.8 - 2025-02-13
 
@@ -46,8 +48,8 @@
 
 - Weasyprint (Python dependency) updated to version 64
 - Babel (Python dependency) updated to version 2.17
-- Replaced letter symbol "a" in template with ADFC logo
-- Reworked instructions for sending in the complete form
+- Replaced letter symbol "a" in template for PDF with ADFC logo
+- Reworked instructions for sending in the finished document
 - In the web form, money amounts in cost positions are no longer colored red
 
 ### Removed
@@ -62,8 +64,8 @@
 
 ### Fixed
 
-- Order of domain/subdomain of email address in instructions (form and template) corrected
-- Positions set to income no longer treated as income after form reset
+- Order of domain/subdomain of email address in instructions (web form and template) corrected
+- Positions set to income no longer treated as income after web form reset
 - Path to nologin shell script for user appuser fixed
 - Fontconfig no longer throws errors due to lacking permissions to write to cache
 
@@ -80,15 +82,15 @@
 ## v1.6 - 2024-12-19
 
 ### Added
-- Form validates IBAN length based on coutry code
-- Form validates correct pattern for some country codes
-- Contact/data protection links and version at bottom of form
+- Web form validates IBAN length based on coutry code
+- Web form validates correct pattern for some country codes
+- Contact/data protection links and version at bottom of web form
 
 ### Changed
-- Form input for IBAN no longer assumes country code DE
+- Web form input for IBAN no longer assumes country code DE
 - PDF template no longer assumes country code DE
-- Gendered form header
-- Rewritten mialing instructions at bottom of form
+- Gendered web form header
+- Rewritten mialing instructions at bottom of web form
 - Minor changes to mailing instruction layout
 - Swapped radio buttons income and expense; expense made default
 - Rewritten instruction box in PDF document
@@ -99,17 +101,17 @@
 ## v1.5 - 2024-12-10
 
 ### Added
-- Invalid form inputs are highlighted
-- Form validates IBAN input via checksum
+- Invalid web form inputs are highlighted
+- Web form validates IBAN input via checksum
 
 ### Changed
-- Form button size on small screens
+- Web form button size on small screens
 
 ## v1.4 - 2024-12-05
 
 ### Added
 
-- Form validates text inputs
+- Web form validates text inputs
 - Error message for bad input (i.e. letters) in number input field
 
 ### Changed
@@ -129,39 +131,39 @@
 ### Added
 
 - Web App Manifest
-- Form validates number and date inputs
-- Form validates that no position is filled in partially
-- Form validates that at least one position or donation is filled in
+- Web form validates number and date inputs
+- Web form validates that no position is filled in partially
+- Web form validates that at least one position or donation is filled in
 
 ### Changed
 
 - Changed labels "Mengenpreis" to "Einzelpreis"
 - Fields are now embedded in labels
 - Multiline labels for radio buttons and checkboxes now indent properly
-- Moved form events from HTML tags to JavaScript listeners
+- Moved web form events from HTML tags to JavaScript listeners
 
 ### Fixed
 
-- Positions set to cost no longer treated as cost after form reset
-- Form now properly handles already filled fields when accessing via browser's back or forward
+- Positions set to cost no longer treated as cost after web form reset
+- Web form now properly handles already filled fields when accessing via browser's back or forward
 
 ## v1.2 - 2024-11-26
 
 ### Added
 
-- Button to download blank PDF file added to form
+- Button to download blank PDF file added to web form
 - Date field restricts entering dates beyond the present day
 
 ### Changed
 
-- Reset button in form labeled and colored red
-- Logo in form now handled via CSS
-- Minor changes to form header layout
+- Reset button in web form labeled and colored red
+- Logo in web form now handled via CSS
+- Minor changes to web form header layout
 - Invoice has '1' in unit count if valid position does not have a price per unit
 
 ### Fixed
 
-- Can now submit form with invalid IBAN entered while IBAN field is hidden/disabled
+- Can now submit web form with invalid IBAN entered while IBAN field is hidden/disabled
 - Money total now updates when position is switched between income and cost
 
 ## v1.1 - 2024-11-21
@@ -172,15 +174,15 @@
 
 ### Changed
 
-- Input fields for unit prices in form now have red text when position is set to expense
+- Input fields for unit prices in web form now have red text when position is set to expense
 - Changed email adress for sending in documents
-- Positions in form now automatically switch between multi-unit and single-unit
+- Positions in web form now automatically switch between multi-unit and single-unit
 - Providing version number is now handled by app module itself
 
 ### Removed
 
-- Checkboxes in form to manually activate multi-unit positions
-- Disabled revealing script-only elements in form (no longer needed)
+- Checkboxes in web form to manually activate multi-unit positions
+- Disabled revealing script-only elements in web form (no longer needed)
 
 ## v1.0 - 2024-11-19
 
