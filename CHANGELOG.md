@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.11 - 2025-03-11
 
 ### Added
 
@@ -16,7 +16,7 @@
 
 - Class aktive.HTMLPrinter removed (functionality folded into class aktive.Abrechnung)
 
-## v1.10 - 2025-01-25
+## v1.10 - 2025-02-25
 
 ### Changed
 
