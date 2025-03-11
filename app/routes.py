@@ -10,7 +10,7 @@ from drafthorse.pdf import attach_xml
 from flask import Blueprint, render_template, request, abort, send_file
 from weasyprint import HTML
 
-from . import aktive, PATHS, VERSION
+from . import aktive, PATHS, CONTACT, VERSION
 
 # Constants
 STATIC = 'pages.static'
@@ -27,7 +27,8 @@ def index():
     """
     Zeigt das Formular zur Erstellung einer Aktivenabrechnung an
     """
-    return render_template('form_aktive.html', static=STATIC, version=VERSION)
+    return render_template('form_aktive.html', static=STATIC, version=VERSION,
+                           address=CONTACT)
 
 @pages.route('/abrechnung', methods=['GET'])
 def aktive_pdf():

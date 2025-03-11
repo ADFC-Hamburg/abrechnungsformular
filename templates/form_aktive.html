@@ -216,12 +216,12 @@
 			<input type="reset" id="reset" value="Formular zurücksetzen">
 			<aside>Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
 			Vergiss dabei nicht, <b>sämtliche Belege</b> an die E&#8209;Mail anzuhängen. Kassen&shy;bons oder andere Papier&shy;belege schickst du als Scan oder notfalls als Foto ein, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.<br />
-			Wenn eine Digitalisierung der Belege nicht möglich ist, sende die Abrechnung bitte dennoch per E&#8209;Mail ein. Sende die Belege <b>im Original</b> mit der jeweiligen Positions&shy;nummer versehen, zusammen mit einer Notiz zum Datum der Abrechnung, an unsere Geschäfts&shy;stelle (<address>ADFC Hamburg, Koppel 34-36, 20099 Hamburg</address>) oder gib sie dort ab.</aside>
+			Wenn eine Digitalisierung der Belege nicht möglich ist, sende die Abrechnung bitte dennoch per E&#8209;Mail ein. Sende die Belege <b>im Original</b> mit der jeweiligen Positions&shy;nummer versehen, zusammen mit einer Notiz zum Datum der Abrechnung, an unsere Geschäfts&shy;stelle <address>({{ address["NameShort"] }}, {{ address["LineOne"] }}, {{ address["PostCode"] }} {{ address["City"] }})</address> oder gib sie dort ab.</aside>
 		</fieldset>
 	</form>
 	<footer>
 		<nav>
-			<a href="https://hamburg.adfc.de/impressum">Impressum</a><a href="https://hamburg.adfc.de/datenschutz">Datenschutz</a>
+			<a href="{{ address['WebLegal'] }}">Impressum</a><a href="{{ address['WebPrivacy'] }}">Datenschutz</a>
 		</nav>
 		<div class="version">Abrechnungsformular v{{version}}</div>
 	</footer>
