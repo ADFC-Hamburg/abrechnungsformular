@@ -4,6 +4,11 @@ der Aktivenabrechnung zum Einsatz kommen.
 """
 
 from babel.numbers import format_currency
+from babel.dates import format_date
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+from . import CONTACT, PATHS, VERSION
+
 
 class BelowMinimumException(Exception):
     pass
@@ -13,6 +18,7 @@ class DecimalsException(Exception):
 
 class IllegalValueException(Exception):
     pass
+
 
 def cell(value = "", classes="") -> str:
     """
@@ -25,6 +31,15 @@ def cell(value = "", classes="") -> str:
         out += f" class=\"{str(classes)}\""
     out += f">{str(value)}</td>"
     return out
+
+def checkbox(checked) -> str:
+    """
+    Gibt eine Checkbox als HTML-Zeichen zurück.
+
+    Parameter:
+    checked     Ob die Checkbox ein Häckchen haben soll.
+    """
+    return "&#9746;" if bool(checked) else "&#9744;"
 
 def euro(value = 0, empty = False) -> str:
     """
@@ -53,3 +68,8 @@ def write_list_de(list:list[str]) -> str:
     if list:
         text += list[-1]
     return text
+
+
+pdf_environment = Environment(loader=FileSystemLoader(PATHS.PDF_TEMPLATE_FOLDER))
+pdf_environment.globals.update(address=CONTACT,checkbox=checkbox,euro=euro,
+                               format_date=format_date,version=VERSION)

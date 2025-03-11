@@ -17,7 +17,7 @@ from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms
 from drafthorse.models.tradelines import LineItem as DH_LineItem
 from schwifty import IBAN, exceptions
 
-from app import tools, VERSION, CONTACT
+from . import tools, CONTACT, PATHS
 
 
 class Position:
@@ -60,16 +60,14 @@ class Position:
     def htmlcells(self,indent:int = 0) -> str:
         """
         Gibt fünf Zellen im HTML-Format aus.
-        Jede Zelle hat eine eigene Zeile, außer indent ist negativ.
+        Jede Zelle hat eine eigene Zeile.
+
         Die Reihenfolge lautet:
         Name, Anzahl Einheiten, Kosten pro Einheit, Einnahmen, Ausgaben
         """
         out = []
         
-        if indent<0:
-            joiner=""
-        else:
-            joiner = "\n" + "\t"*indent
+        joiner = "\n" + "\t"*indent
         
         out.append( tools.cell( escape(self._name) ) )
         
@@ -84,7 +82,7 @@ class Position:
         
         return "\t"*indent+joiner.join(out)
     
-    def complete(self) -> bool:
+    def check_complete(self) -> bool:
         """Gibt zurück, ob Name und Wert vorhanden sind."""
         return bool(self.getname() and self.getvalue())
 
@@ -175,6 +173,8 @@ class Position:
         "Die Einnahmen der Position; gibt bei Ausgaben 0 aus.")
     cost = property(getcost,setminusvalue,None,
         "Die Kosten der Position; gibt bei Einnahmen 0 aus.")
+    complete = property(check_complete,None,None,
+        "Ob Name und Wert vorhanden sind.")
 
 
 class Abrechnung:
@@ -184,17 +184,19 @@ class Abrechnung:
     """
     
     # Class constants
+    POSITIONCOUNT = 7
+
     _MODES_IBAN = (1,2,3)
     _MODES_SEPA = (1,2,3)
     _NAME = "Aktivenabrechnung"
-    _POSITIONCOUNT = 7
     _POSITION_NAMES = ('erste','zweite','dritte','vierte',
                        'fünfte','sechste','siebte')
     _FIELD_NAMES = {'uname':'dein Name','group':'deine Arbeitsgruppe',
                     'pname':'der Name des Projekts oder der Aktion',
                     'pdate':'das Datum des Projekts oder der Aktion',
                     'dono':'die Summe der eingenommenen Spenden',
-                    'iban':'deine IBAN','owner':'der Name des Kontoinhabers',
+                    'iban':'deine IBAN',
+                    'owner':'der Name des Kontoinhabers/der Kontoinhaberin',
                     'prtype':'die Art der Zahlungsabwicklung',
                     'prsepa':'der Stand des SEPA-Mandats'}
     _FIELD_ERRORS = {'pos':'Mindestend eine Position oder die Summe'
@@ -210,7 +212,7 @@ class Abrechnung:
         Initialisiert ein Objekt der Klasse Abrechnung.
         """
         
-        self.positions = self._create_positions(self._POSITIONCOUNT)
+        self.positions = self._create_positions(self.POSITIONCOUNT)
         
         self._user = {"name": "", "group": ""}
         self._project = {"name": "", "date": None}
@@ -219,13 +221,13 @@ class Abrechnung:
                          "ibanknown": False, "iban": IBAN("",allow_invalid=True),
                          "name": ""}
     
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Gibt den Abrechnungsbetrag zurück.
         """
         return tools.euro(self.gettotal())
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """
         Gibt True zurück, falls eine Position einen Wert hat
         oder eine Spendensumme angegeben wurde.
@@ -236,7 +238,7 @@ class Abrechnung:
         return bool(self.donations)
 
     # Part of initialization
-    def _create_positions(self,amount:int):
+    def _create_positions(self,amount:int) -> tuple[Position]:
         """
         Gibt einen Tupel aus neuen Positionen zurück.
         """
@@ -296,7 +298,7 @@ class Abrechnung:
             check_missing(self.getprojectdate(),self._FIELD_NAMES['pdate'])
             
             # Position values
-            for i in range(self._POSITIONCOUNT):
+            for i in range(self.POSITIONCOUNT):
                 pos = 'p'+str(i+1)
                 if pos+'type' in keys and not query[pos+'type'] in {'0',''}:
                     if not query[pos+'type'] in {'1','-1'}:
@@ -332,7 +334,7 @@ class Abrechnung:
                     if pos+'name' in keys:
                         # Set position name
                         self.positions[i].setname(query[pos+'name'])
-                    if self.positions[i] and not self.positions[i].complete():
+                    if self.positions[i] and not self.positions[i].complete:
                         incomplete_positions.append(self._POSITION_NAMES[i])
             
             # Donation value
@@ -474,6 +476,17 @@ class Abrechnung:
             out += " "+str(self.getprojectdate())
         return out
 
+    def html_compose(self) -> str:
+        """
+        Liest eine HTML-Vorlage ein und erstellt dann aus dieser
+        fertig ausgefüllte Abrechnungsformulare im HTML-Format.
+        """
+
+        template = tools.pdf_environment.get_template(PATHS.AKTIVE_HTML)
+        today = format_date(date.today(),format='long',locale='de_DE')
+
+        return template.render(abrechnung=self,today=today)
+
     def factur_x(self) -> bytes:
         """
         Erstellt aus der Abrechnung eine E-Rechnung,
@@ -543,7 +556,7 @@ class Abrechnung:
         user.address.country_id = CONTACT['Country']
 
         # Positions
-        for index in range(self._POSITIONCOUNT):
+        for index in range(self.POSITIONCOUNT):
             position = self.positions[index]
             if not position:
                 continue
@@ -643,19 +656,19 @@ class Abrechnung:
 
     # Variable getters and setters
     def setusername(self,value:str = ""):
-        """Legt den Namen des Aktiven fest."""
+        """Legt den Namen des/der Aktiven fest."""
         self._user["name"] = str(value).strip()
     
     def getusername(self) -> str:
-        """Gibt den Namen des Aktiven zurück."""
+        """Gibt den Namen des/der Aktiven zurück."""
         return self._user["name"]
     
     def setusergroup(self,value:str = ""):
-        """Legt die Gruppe des Aktiven fest."""
+        """Legt die Gruppe des/der Aktiven fest."""
         self._user["group"] = str(value).strip()
     
     def getusergroup(self) -> str:
-        """Gibt die Gruppe des Aktiven zurück."""
+        """Gibt die Gruppe des/der Aktiven zurück."""
         return self._user["group"]
     
     def setprojectname(self,value:str = ""):
@@ -701,7 +714,7 @@ class Abrechnung:
     def getincome(self) -> Decimal:
         """Gibt den Gesamtbetrag der Einnahmen zurück."""
         out = Decimal(0.0)
-        for i in range(self._POSITIONCOUNT):
+        for i in range(self.POSITIONCOUNT):
             out += self.positions[i].income
         out += self.getdonations()
         return out
@@ -709,14 +722,14 @@ class Abrechnung:
     def getcost(self) -> Decimal:
         """Gibt den Gesamtbetrag der Ausgaben zurück."""
         out = Decimal(0.0)
-        for i in range(self._POSITIONCOUNT):
+        for i in range(self.POSITIONCOUNT):
             out += self.positions[i].cost
         return out
     
     def gettotal(self) -> Decimal:
         """Gibt den Betrag der Einnahmen minus Ausgaben zurück."""
         out = Decimal(0.0)
-        for i in range(self._POSITIONCOUNT):
+        for i in range(self.POSITIONCOUNT):
             out += self.positions[i].value
         out += self.getdonations()
         return out
@@ -769,9 +782,9 @@ class Abrechnung:
 
     # Properties
     username = property(getusername,setusername,None,
-                        "Der Name des Aktiven.")
+                        "Der Name des/der Aktiven.")
     usergroup = property(getusergroup,setusergroup,None,
-                         "Der Arbeitsbereich des Aktiven.")
+                         "Der Arbeitsbereich des/der Aktiven.")
     projectname = property(getprojectname,setprojectname,None,
                            "Der Name der Aktion oder des Projekts.")
     projectdate = property(getprojectdate,setprojectdate,None,
@@ -785,7 +798,7 @@ class Abrechnung:
     total = property(gettotal,None,None,
                      "Gesamtwert Einnahmen minus Ausgaben, in Euro.")
     accountname = property(getaccountname,setaccountname,None,
-                           "Der Name des Bankkontoimhabers.")
+                           "Name des Inhabers/der Inhaberin des Bankkontos.")
     iban = property(getaccountiban,setaccountiban,None,
                     "Die IBAN (ohne einleitendes DE) des Bankkontos.")
     accountiban = iban
@@ -805,240 +818,3 @@ class Abrechnung:
                         """)
     ibanknown = property(getibanknown,setibanknown,None,
                          "Ob die IBAN dem ADFC schon vorliegt.")
-
-
-class HTMLPrinter:
-    """
-    Ein Objekt, welches eine HTML-Vorlage einliest
-    und dann aus dieser und Objekten der Klasse Abrechnung
-    fertig ausgefüllte Abrechnungsformulare im HTML-Format erstellt.
-    """
-    
-    # Class constants
-    _CHECKBOXES = {False:"&#9744;",True:"&#9746;"}
-    _PLACEHOLDER = "<!--PLACEHOLDER-->"
-    _POSITIONCOUNT = 7
-    _SPLIT = "<!--SPLIT-->\n"
-    
-    # Dunder methods
-    def __init__(self,path):
-        """
-        Initialisiert ein Objekt der Klasse HTMLPrinter.
-        Im Rahmen dessen wird eine HTML-Datei als Template geladen.
-
-        Parameter:
-        path - Der Dateipfad der HTML-Vorlage
-        """
-        self._template = self._fetch_html(path)
-    
-    def __str__(self):
-        return self.html_compose()
-    
-    def __repr__(self):
-        return __class__.__name__+"()"
-    
-    # Template loading
-    def _fetch_html(self,path) -> tuple:
-        """
-        Öffnet das HTML-Template, teilt den Inhalt in Sektionen auf
-        und gibt das Ergebnis als Tupel zurück.
-        """
-        with open(path) as f:
-            sections = f.read().split(self._SPLIT)
-        out = []
-        for i in sections:
-            out.append (i)
-        return tuple(out)
-    
-    # Order of fields in sections of the document
-    _USER_FIELDS = (lambda obj: obj.username, lambda obj: obj.usergroup,
-                    lambda obj: obj.projectname, lambda obj: obj.projectdate)
-    _TOTAL_FIELDS = ((lambda obj: obj.donations, True),
-                     (lambda obj: obj.income, True),
-                     (lambda obj: obj.cost, True),
-                     (lambda obj: obj.total, False))
-    _PAYMENT_FIELDS = (None,None,None,
-                       lambda obj: obj.iban or 'DE', lambda obj: obj.accountname)
-    _PAYMENT_BOXES = (lambda obj: obj.ibanmode == 1,
-                      lambda obj: obj.ibanmode==1 and obj.ibanknown==True,
-                      lambda obj: obj.ibanmode==1 and obj.ibanknown==False,
-                      None,
-                      None,
-                      lambda obj: obj.ibanmode == 2,
-                      lambda obj: obj.ibanmode==2 and obj.sepamode==2,
-                      lambda obj: obj.ibanmode==2 and obj.sepamode==3,
-                      lambda obj: obj.ibanmode == 3)
-    _DATE_FIELDS = (lambda: format_date(date.today(), format="long",
-                                          locale="de_DE"),
-                    lambda: "v"+VERSION)
-
-    # Methods for template sections
-    def _fill_user(self,text:str,input:Abrechnung|None = None):
-        """
-        Ersetzt Platzhalter im String text durch Felder in der
-        Abrechnung input. Falls kein input vorhanden ist, entferne
-        die Platzhalter einfach.
-
-        Platzhalter werden gemäß der Konstante _USER_FIELDS ersetzt.
-        """
-        segments = text.split(self._PLACEHOLDER)
-
-        if type(input) == Abrechnung:
-            # input is Abrechnung; replace all placeholders
-            for index in range(len(segments)):
-                if index < len(self._USER_FIELDS):
-                    # Replace with what? Use _USER_FIELDS
-                    data = self._USER_FIELDS[index](input)
-                    if type(data) == date:
-                        # This is a date; apply german format
-                        data = format_date(data, format="long", locale="de_DE")
-                    elif data == None:
-                        data = ""
-                    else:
-                        # Remove HTML special characters
-                        data = escape(str(data))
-                    segments[index] += data
-
-        return "".join(segments)
-    
-    def _fill_positions(self,text:str,input:Abrechnung|None = None):
-        """
-        Gibt HTML-Tabellenreihen mit 8 Spalten aus und fügt
-        gegebenenfalls Positionsdaten mit ein.
-
-        Spalte 1: Index (1 bis 7)
-        Spalten 2-6: Siehe Positions.htmlcells()
-        Spalten 7,8: leer
-        """
-        # text should be empty and will be ignored
-        TAB = "\t"
-        NL = "\n"
-        output = []
-
-        for index in range(self._POSITIONCOUNT):
-            # One table row for each potential position
-            line=""
-            line += TAB*4+"<tr>"+NL
-            line += TAB*5+tools.cell(str(index+1))+NL
-
-            if (type(input) == Abrechnung and index < len(input.positions)):
-
-                # Position exists, use htmlcells
-                line += input.positions[index].htmlcells(indent=5)+NL
-                line += TAB*5+tools.cell()*2+NL
-            
-            else:
-                # No position, empty cells
-                line += TAB*5+tools.cell()*7+NL
-            
-            line += TAB*4+"</tr>"+NL
-            output.append(line)
-        
-        return "".join(output)
-
-    def _fill_total(self,text:str,input:Abrechnung|None = None):
-        """
-        Ersetzt Platzhalter im String text durch Felder in der
-        Abrechnung input. Falls kein input vorhanden ist, entferne
-        die Platzhalter einfach.
-
-        Platzhalter werden gemäß der Konstante _TOTAL_FIELDS ersetzt.
-        """
-        segments = text.split(self._PLACEHOLDER)
-
-        if type(input) == Abrechnung and input:
-            # input is non-empty Abrechnung; replace all placeholders
-            for index in range(len(segments)):
-                if index < len(self._TOTAL_FIELDS):
-                    # Replace with what? Use _TOTAL_FIELDS
-                    data = self._TOTAL_FIELDS[index][0](input)
-                    # Format as Euros
-                    data = tools.euro(data,self._TOTAL_FIELDS[index][1])
-                    segments[index] += data
-
-        return "".join(segments)
-    
-    def _fill_payment(self,text:str,input:Abrechnung|None = None):
-        """
-        Ersetzt Platzhalter im String text durch Felder und Checkboxen
-        in der Abrechnung input. Falls kein input vorhanden ist,
-        entferne die Platzhalter und füge leere Checkboxen ein.
-
-        Platzhalter werden gemäß der Konstante _PAYMENT_FIELDS ersetzt,
-        Checkboxen gemäß der Konstante _PAYMENT_CHECKBOXES eingesetzt.
-        """
-        segments = text.split(self._PLACEHOLDER)
-
-        if type(input) == Abrechnung:
-            # input is Abrechnung; replace all placeholders
-            for index in range(len(segments)):
-                if (index < len(self._PAYMENT_FIELDS)
-                    and self._PAYMENT_FIELDS[index] != None
-                    and input.ibanmode == 1 and input.ibanknown == False):
-                    # Place account IBAN and account name
-                    # according to _PAYMENT_FIELDS
-                    data = self._PAYMENT_FIELDS[index](input)
-                    segments[index] += escape(str(data))
-                if (index < len(self._PAYMENT_BOXES)
-                    and self._PAYMENT_BOXES[index] != None):
-                    # Insert a checkbox. Use _PAYMENT_BOXES to
-                    # determine whether it is checked or not.
-                    data = self._PAYMENT_BOXES[index](input)
-                    segments[index] += self._CHECKBOXES[data]
-        else:
-            # input is not Abrechnung; place empty checkboxes
-            for index in range(len(segments)):
-                if (index < len(self._PAYMENT_BOXES)
-                    and self._PAYMENT_BOXES[index] != None):
-                    # Insert a checkbox wherever
-                    # _PAYMENT_BOXES is not None.
-                    segments[index] += self._CHECKBOXES[False]
-
-        return "".join(segments)
-    
-    def _fill_date(self,text:str,input:Abrechnung|None = None):
-        """
-        Ersetzt Platzhalter im String durch Datum und Versionsnummer.
-
-        Platzhalter werden gemäß der Konstante _DATE_FIELDS ersetzt.
-        """
-        # input will be ignored
-        segments = text.split(self._PLACEHOLDER)
-        
-        # Replace all placeholders
-        for index in range(len(segments)):
-            if (index < len(self._DATE_FIELDS)):
-                segments[index] += self._DATE_FIELDS[index]()
-        
-        return "".join(segments)
-    
-    # Section keywords and corresponding methods
-    _SECTIONS = (("USERDATA", _fill_user), ("POSITIONS", _fill_positions),
-                 ("TOTAL", _fill_total), ("PAYMENT", _fill_payment),
-                 ("DATE", _fill_date))
-    
-    # Callable methods
-    def html_compose(self,input:Abrechnung|None = None):
-        """
-        Füllt die HTML-Vorlage mit Angaben aus einer Abrechnung aus.
-        
-        Argumente:
-        input: Ein Objekt der Klasse Abrechnung (optional)
-        """
-        
-        out = ""
-        
-        for section in self._template:
-            # Does this section start with a keyword?
-            for key in self._SECTIONS:
-                if section.startswith("<!--"+key[0]+"-->\n"):
-                    # Keyword found; use corresponding method
-                    out += key[1](self,
-                        text=section.removeprefix("<!--"+key[0]+"-->\n"),
-                        input=input)
-                    break
-            else:
-                # No keyword; use string as is
-                out += section
-        
-        return out

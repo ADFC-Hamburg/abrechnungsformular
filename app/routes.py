@@ -8,14 +8,11 @@ from io import BytesIO
 
 from drafthorse.pdf import attach_xml
 from flask import Blueprint, render_template, request, abort, send_file
-from weasyprint import HTML, CSS
+from weasyprint import HTML
 
-from app import aktive, VERSION
+from . import aktive, PATHS, CONTACT, VERSION
 
 # Constants
-PDF_TEMPLATE_FOLDER = 'templates/documents/'
-AKTIVE_HTML = PDF_TEMPLATE_FOLDER + 'aktive_template.html'
-AKTIVE_CSS = PDF_TEMPLATE_FOLDER + 'aktive_template.css'
 STATIC = 'pages.static'
 
 # Routes
@@ -30,7 +27,8 @@ def index():
     """
     Zeigt das Formular zur Erstellung einer Aktivenabrechnung an
     """
-    return render_template('form_aktive.html', static=STATIC, version=VERSION)
+    return render_template('form_aktive.html', static=STATIC, version=VERSION,
+                           address=CONTACT)
 
 @pages.route('/reisekosten')
 def reise():
@@ -57,14 +55,12 @@ def aktive_pdf():
         # Prepare electronic invoice as XML
         xml = abrechnung.factur_x()
         # Prepare document as HTML
-        printer = aktive.HTMLPrinter(AKTIVE_HTML)
-        document = printer.html_compose(abrechnung)
+        document = abrechnung.html_compose()
         # Select a filename for the resulting file
         filename = abrechnung.suggest_filename()+'.pdf'
-        # Create PDF from HTML and CSS
-        html = HTML(string=document,base_url=PDF_TEMPLATE_FOLDER)
-        css = CSS(filename=AKTIVE_CSS,base_url=PDF_TEMPLATE_FOLDER)
-        pdf = html.write_pdf(stylesheets=[css])
+        # Create PDF from HTML document
+        html = HTML(string=document,base_url=PATHS.PDF_TEMPLATE_FOLDER)
+        pdf = html.write_pdf()
         # Attach electronic invoice
         pdf = attach_xml(pdf, xml)
         # Return file

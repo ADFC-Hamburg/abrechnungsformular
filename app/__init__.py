@@ -1,5 +1,12 @@
 import json
 
+
+class PATHS():
+    PDF_TEMPLATE_FOLDER = 'templates/documents/'
+    AKTIVE_HTML = 'aktive_template.html'
+    AKTIVE_CSS = 'aktive_template.css'
+
+
 def _fetch_json(path:str):
     with open(path) as f:
         data = json.load(f)
