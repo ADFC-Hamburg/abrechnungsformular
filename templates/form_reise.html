@@ -111,7 +111,7 @@
 				<label class="option"><input type="checkbox" id="overnightcheck" name="night" value="1">Du hattest keine Ausgaben für Übernachtungen oder die Ausgaben lagen unter {{ rates['UebernachtMin'].replace('.',',') }}&nbsp;&euro; pro Tag.</label>
 			</section>
 			<section id="extrasummary" data-carmoneyperkm="{{ rates['PKWproKM'] }}" data-carmoneymax="{{ rates['PKWMaximum'] }}" data-moneypernight="{{ rates['UebernachtMin'] }}" hidden>
-				Dir werden <span id="extraamount"></span> erstattet.
+				<div class="subinput">Dir werden <span id="extraamount"></span> erstattet.</div>
 			</section>
 		</fieldset>
 		<fieldset>
