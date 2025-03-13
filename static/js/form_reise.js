@@ -91,6 +91,7 @@ function listDates() {
 		days = Math.round((end.getTime() - start.getTime()) / daylength) + 1;
 		dateDisplayInitialize(days);
 		if (days <= maxDates){
+// Labels für Verpflegungs-Checkboxen
 			for (let i = 1; i <= Math.min(days,maxDates); i++) {
 				const labeldate = new Date(start.getTime()+(i-1)*daylength);
 				const labeltext = labeldate.toLocaleDateString('de-DE',{weekday:'long',month:'long',day:'numeric'});
@@ -236,6 +237,12 @@ function updateDateRange(min=null,max=null) {
 
 // Funktionen zur Berechnung und Anzeige von Werten
 
+/**
+ * Berechne den Gesamtwert aller Positionen und zeige ihn an,
+ * falls er größer als Null ist.
+ * 
+ * @since	2.0
+ */
 	function calculatePositions() {
 		total = 0.0;
 		for (let i = 1; i <= maxPos; i++) {
@@ -244,6 +251,8 @@ function updateDateRange(min=null,max=null) {
 				total += +amount;
 			}
 		}
+
+	// Zeige Ergebnis an
 		if (total) {
 			document.getElementById("positiontotal").innerHTML = moneyform.format(total);
 		}
