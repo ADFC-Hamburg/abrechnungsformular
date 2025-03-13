@@ -4,7 +4,13 @@ const maxDates = 10; // Maximale Anzahl an Tagen für Angabe der Mahlzeiten im H
 const maxPos = 12; // Maximale Anzahl an Positionen im HTML-Dokument
 const earliestdate = new Date ("1989-11-27");
 
+const carMoneyPerKM = parseFloat(document.getElementById('extrasummary').dataset.carmoneyperkm);
+const carMoneyMax = parseFloat(document.getElementById('extrasummary').dataset.carmoneymax);
+const moneyPerNight = parseFloat(document.getElementById('extrasummary').dataset.moneypernight);
+
 var days = 0;
+var carmoney = 0;
+var sleepmoney = 0;
 
 // Funktionen zur Sichtbarkeit/Verwendbarkeit von HTML-Elementen
 
@@ -50,6 +56,7 @@ function dateDisplayInitialize(x) {
 	document.getElementById("mealhint").hidden = display;
 	document.getElementById("mealdays").hidden = !(display);
 	document.getElementById("mealinstruct").hidden = !(display);
+	document.getElementById("nightsection").hidden = !(inRange) || (x<2);
 }
 
 /**
@@ -79,7 +86,8 @@ function ibanLock(check) {
 
 /**
  * Berechne die Dauer der Reise in Tagen und zeige die entsprechende
- * Anzahl an Auswahlfeldern an.
+ * Anzahl an Auswahlfeldern an; berechne gegebenenfalls
+ * Übernachtungsgeld neu.
  * 
  * @since	2.0
  */
@@ -91,7 +99,7 @@ function listDates() {
 		days = Math.round((end.getTime() - start.getTime()) / daylength) + 1;
 		dateDisplayInitialize(days);
 		if (days <= maxDates){
-// Labels für Verpflegungs-Checkboxen
+			// Labels für Verpflegungs-Checkboxen
 			for (let i = 1; i <= Math.min(days,maxDates); i++) {
 				const labeldate = new Date(start.getTime()+(i-1)*daylength);
 				const labeltext = labeldate.toLocaleDateString('de-DE',{weekday:'long',month:'long',day:'numeric'});
@@ -101,6 +109,10 @@ function listDates() {
 	} else {
 		days = 0;
 		dateDisplayInitialize(0);
+	}
+	// Übernachtungsgeld neu berechnen
+	if (document.getElementById("overnightcheck").checked) {
+		calculateExtra();
 	}
 }
 
@@ -243,21 +255,59 @@ function updateDateRange(min=null,max=null) {
  * 
  * @since	2.0
  */
-	function calculatePositions() {
-		total = 0.0;
-		for (let i = 1; i <= maxPos; i++) {
-			const amount = document.getElementById("position"+i+"amount").value;
-			if (amount>0) {
-				total += +amount;
-			}
+function calculatePositions() {
+	total = 0.0;
+	for (let i = 1; i <= maxPos; i++) {
+		const amount = document.getElementById("position"+i+"amount").value;
+		if (amount>0) {
+			total += +amount;
 		}
+	}
 
 	// Zeige Ergebnis an
-		if (total) {
-			document.getElementById("positiontotal").innerHTML = moneyform.format(total);
-		}
-		document.getElementById("positionnotes").hidden = !(!!total);
+	if (total) {
+		document.getElementById("positiontotal").innerHTML = moneyform.format(total);
 	}
+	document.getElementById("positionnotes").hidden = !(!!total);
+}
+
+/**
+ * Berechne das Fahrt- und Übernachtungsgeld und zeige beide an,
+ * falls sie größer als Null sind.
+ * 
+ * @since	2.0
+ */
+function calculateExtra() {
+	const km = parseFloat(document.getElementById("cardistance").value);
+	if (!(isNaN(km)) && (km > 0)) {
+		carmoney = Math.min(km*carMoneyPerKM, carMoneyMax);
+	} else {
+		carmoney = 0;
+	}
+	if (document.getElementById("overnightcheck").checked && days > 1) {
+		sleepmoney = (days-1) * moneyPerNight;
+	} else {
+		sleepmoney = 0;
+	}
+
+	// Zeige Ergebnis an
+	if (carmoney > 0 || sleepmoney > 0) {
+		let summary = "";
+		if (carmoney) {
+			summary = "<b>"+moneyform.format(carmoney)+"</b> an Wegstrecken&shy;entschädigung";
+			if (sleepmoney) {
+				summary += " und ";
+			}
+		}
+		if (sleepmoney) {
+			summary += "<b>"+moneyform.format(sleepmoney)+"</b> an Übernachtungs&shy;geld"
+		}
+		document.getElementById("extraamount").innerHTML = summary;
+		document.getElementById("extrasummary").hidden = false;
+	} else {
+		document.getElementById("extrasummary").hidden = true;
+	}
+}
 
 // Funktionen zum grundlegenden Ablauf
 
@@ -299,6 +349,10 @@ function start() {
 		}
 	}
 
+	// Ereignisse für sonstige Eingabefelder
+	document.getElementById("cardistance").addEventListener('change',calculateExtra);
+	document.getElementById("overnightcheck").addEventListener('change',calculateExtra);
+
 	// Ereignisse für Schaltflächen
 	/*document.getElementById("submit").addEventListener('click',validateForm);*/
 	document.getElementById("reset").addEventListener('click',restart);
@@ -322,6 +376,7 @@ function restart() {
 	updateDateRange(earliestdate.toISOString().split("T")[0],new Date().toISOString().split("T")[0]);
 
 	document.getElementById("positionnotes").hidden = true;
+	document.getElementById("extrasummary").hidden = true;
 }
 
 /**
@@ -350,6 +405,7 @@ function display() {
 	listDates();
 	updateMinDate();
 	updateMaxDate();
+	calculateExtra();
 }
 
 // Beim Starten dieses Scripts

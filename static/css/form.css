@@ -290,6 +290,10 @@ label.money::after {
 	content:	"€";
 	padding-left:	.25em;
 }
+label.km::after {
+	content:	"km";
+	padding-left:	.25em;
+}
 /*.negative {
 	color:		red;
 }*/

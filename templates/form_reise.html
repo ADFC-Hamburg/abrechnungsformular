@@ -103,6 +103,18 @@
 			</section>
 		</fieldset>
 		<fieldset>
+			<legend>Erstattungen</legend>
+			<section>
+				<label class="field km">Mit privaten PKW zurückgelegte Strecke: <input type="number" name="car" id="cardistance" min="0" step="any" class="km"></label>
+			</section>
+			<section id="nightsection">
+				<label class="option"><input type="checkbox" id="overnightcheck" name="night" value="1">Du hattest keine Ausgaben für Übernachtungen oder die Ausgaben lagen unter {{ rates['UebernachtMin'].replace('.',',') }}&nbsp;&euro; pro Tag.</label>
+			</section>
+			<section id="extrasummary" data-carmoneyperkm="{{ rates['PKWproKM'] }}" data-carmoneymax="{{ rates['PKWMaximum'] }}" data-moneypernight="{{ rates['UebernachtMin'] }}" hidden>
+				Dir werden <span id="extraamount"></span> erstattet.
+			</section>
+		</fieldset>
+		<fieldset>
 			<legend>Daten absenden</legend>
 			<section>
 				<input type="submit" id="submit" value="Abrechnung erstellen">
