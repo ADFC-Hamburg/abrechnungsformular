@@ -10,7 +10,7 @@ from drafthorse.pdf import attach_xml
 from flask import Blueprint, render_template, request, abort, send_file
 from weasyprint import HTML
 
-from . import aktive, PATHS, CONTACT, REISE_RATE, VERSION
+from . import aktive, reise, PATHS, CONTACT, REISE_RATE, VERSION
 
 # Constants
 STATIC = 'pages.static'
@@ -31,12 +31,13 @@ def index():
                            address=CONTACT)
 
 @pages.route('/reisekosten')
-def reise():
+def reise_form():
     """
     Zeigt das Formular zur Erstellung einer Reisekostenabrechnung an
     """
     return render_template('form_reise.html', static=STATIC, version=VERSION,
-                           address=CONTACT, rates=REISE_RATE)
+                           address=CONTACT, rates=REISE_RATE,
+                           abrechnung=reise.Abrechnung)
 
 @pages.route('/abrechnung', methods=['GET'])
 def aktive_pdf():

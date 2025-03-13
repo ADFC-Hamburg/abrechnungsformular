@@ -1,8 +1,9 @@
 const moneyform = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }); // wird genutzt, um Geldbeträge zu formatieren
 const daylength = 86400000 // Millisekunden pro Tag
-const maxDates = 10; // Maximale Anzahl an Tagen für Angabe der Mahlzeiten im HTML-Dokument
-const maxPos = 12; // Maximale Anzahl an Positionen im HTML-Dokument
 const earliestdate = new Date ("1989-11-27");
+
+const maxDates = parseInt(document.forms[0].dataset.maxdates); // Maximale Anzahl an Tagen für Angabe der Mahlzeiten im HTML-Dokument
+const maxPos = parseInt(document.forms[0].dataset.maxpositions); // Maximale Anzahl an Positionen im HTML-Dokument
 
 const carMoneyPerKM = parseFloat(document.getElementById('extrasummary').dataset.carmoneyperkm);
 const carMoneyMax = parseFloat(document.getElementById('extrasummary').dataset.carmoneymax);
