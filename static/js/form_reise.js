@@ -15,6 +15,8 @@ const carMoneyMax = parseFloat(document.getElementById('extrasummary').dataset.c
 const moneyPerNight = parseFloat(document.getElementById('extrasummary').dataset.moneypernight);
 
 var days = 0;
+var daymoney = 0;
+var positionmoney = 0;
 var carmoney = 0;
 var sleepmoney = 0;
 
@@ -269,23 +271,24 @@ function updateDateRange(min=null,max=null) {
  * @since	2.0
  */
 function calculateDayMoney() {
-	let total = 0.0;
+	daymoney = 0.0;
 	if (days > 0 && days <= maxDates) {
 		if (days == 1 && checkHours(minHours)===true) {
-			total = calculateSingleDay(1,dailyRateSingle);
+			daymoney = calculateSingleDay(1,dailyRateSingle);
 		} else if (days > 1) {
 			for (let i=1; i<=days; i++) {
 				let rate = dailyRate;
 				if (i==1 || i==days) {
 					rate = dailyRateReduced;
 				}
-				total += calculateSingleDay(i,rate);
+				daymoney += calculateSingleDay(i,rate);
 			}
 		}
 	}
 	document.getElementById("dayplural").hidden = (days==1);
-	document.getElementById("mealsummary").hidden = !(Boolean(total));
-	document.getElementById("dayamount").innerHTML = moneyform.format(total);
+	document.getElementById("mealsummary").hidden = !(Boolean(daymoney));
+	document.getElementById("dayamount").innerHTML = moneyform.format(daymoney);
+	calculateTotal();
 }
 
 /**
@@ -295,19 +298,20 @@ function calculateDayMoney() {
  * @since	2.0
  */
 function calculatePositions() {
-	let total = 0.0;
+	positionmoney = 0.0;
 	for (let i = 1; i <= maxPos; i++) {
 		const amount = document.getElementById("position"+i+"amount").value;
 		if (amount>0) {
-			total += +amount;
+			positionmoney += +amount;
 		}
 	}
 
 	// Zeige Ergebnis an
-	if (total) {
-		document.getElementById("positiontotal").innerHTML = moneyform.format(total);
+	if (positionmoney) {
+		document.getElementById("positiontotal").innerHTML = moneyform.format(positionmoney);
 	}
-	document.getElementById("positionnotes").hidden = !(!!total);
+	document.getElementById("positionnotes").hidden = !(!!positionmoney);
+	calculateTotal();
 }
 
 /**
@@ -345,6 +349,20 @@ function calculateExtra() {
 		document.getElementById("extrasummary").hidden = false;
 	} else {
 		document.getElementById("extrasummary").hidden = true;
+	}
+	calculateTotal();
+}
+
+/**
+ * Rechnet alle Geldwerte zusammen und zeigt sie an,
+ * falls der Gesamtwert größer als Null ist.
+ */
+function calculateTotal() {
+	const total = daymoney + positionmoney + carmoney + sleepmoney;
+	if (total > 0) {
+		document.getElementById("totalamount").innerHTML = "Wir überweisen den Erstattungsbetrag von <b>"+moneyform.format(total)+"</b> auf dein Bankkonto.";
+	} else {
+		document.getElementById("totalamount").innerHTML = "<aside>Der Erstattungsbetrag wird hier automatisch zusammengerechnet.</aside>";
 	}
 }
 
@@ -476,6 +494,12 @@ function restart() {
 	document.getElementById("mealsummary").hidden = true;
 	document.getElementById("positionnotes").hidden = true;
 	document.getElementById("extrasummary").hidden = true;
+
+	daymoney = 0;
+	positionmoney = 0;
+	carmoney = 0;
+	sleepmoney = 0;
+	calculateTotal();
 }
 
 /**

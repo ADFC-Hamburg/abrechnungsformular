@@ -33,15 +33,6 @@
 				</section>
 			</fieldset>
 			<fieldset>
-				<legend>Bankverbindung</legend>
-				<section>
-					<label class="field"><abbr title="Internationale Bankkontonummer">IBAN</abbr>: <input type="text" name="iban" id="processiban" size=22 placeholder="DE12345678901234567890" class="iban"></label>
-					<label class="field">Kontoinhaber: <input type="text" name="owner" id="processowner" autocomplete="name"></label>
-					<br>
-					<label class="option indent"> <input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem ADFC&nbsp;Hamburg bekannt.</label>
-				</section>
-			</fieldset>
-			<fieldset>
 				<legend>Angaben zur Reise</legend>
 				<section>
 					<div class="select">
@@ -115,6 +106,16 @@
 			</section>
 			<section id="extrasummary" data-carmoneyperkm="{{ rates['PKWproKM'] }}" data-carmoneymax="{{ rates['PKWMaximum'] }}" data-moneypernight="{{ rates['UebernachtMin'] }}" hidden>
 				<div class="subinput">Dir werden <span id="extraamount"></span> erstattet.</div>
+			</section>
+		</fieldset>
+		<fieldset>
+			<legend>Bankverbindung</legend>
+			<section id="totalamount">Wir überweisen den Erstattungsbetrag auf dein Bankkonto.</section>
+			<section>
+				<label class="field"><abbr title="Internationale Bankkontonummer">IBAN</abbr>: <input type="text" name="iban" id="processiban" size=22 placeholder="DE12345678901234567890" class="iban"></label>
+				<label class="field">Kontoinhaber: <input type="text" name="owner" id="processowner" autocomplete="name"></label>
+				<br>
+				<label class="option indent"> <input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem ADFC&nbsp;Hamburg bekannt.</label>
 			</section>
 		</fieldset>
 		<fieldset>
