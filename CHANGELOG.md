@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.12 - 2025-03-17
+
+### Fixed
+
+- HTML code in user-submitted text is now properly escaped again
+
 ## v1.11 - 2025-03-11
 
 ### Added
