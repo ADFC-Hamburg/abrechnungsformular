@@ -1,6 +1,7 @@
 const moneyform = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }); // wird genutzt, um Geldbeträge zu formatieren
 const daylength = 86400000 // Millisekunden pro Tag
 const earliestdate = new Date ("1989-11-27");
+const minHours = 8; // Mindeststundenzahl zur Auszahlung von Tagesgeld
 
 const maxDates = parseInt(document.forms[0].dataset.maxdates); // Maximale Anzahl an Tagen für Angabe der Mahlzeiten im HTML-Dokument
 const maxPos = parseInt(document.forms[0].dataset.maxpositions); // Maximale Anzahl an Positionen im HTML-Dokument
@@ -39,18 +40,23 @@ function dateDisplay(x,show=true) {
  * @param {number} x	Die letzte anzuzeigende Position
  */
 function dateDisplayInitialize(x) {
-	let inRange = (x <= maxDates);
+	let inRange = (x <= maxDates && x >= 0);
+	if (x == 1) {
+		inRange = checkHours();
+	}
 	for (let i = 1; i <= maxDates; i++) {
 		if (i<=x) {
-			dateDisplay(i,inRange);
+			dateDisplay(i,inRange===true);
 		} else {
 			dateDisplay(i,false);
 		}
 	}
 
-	let display = (Boolean(x) && inRange);
-	if (x==0) {
+	let display = (Boolean(x) && inRange===true);
+	if (x==0 || inRange===null) {
 		document.getElementById("mealhint").innerHTML = "Gib zunächst den Zeitraum der Reise ein.";
+	} else if (x==1 && !(inRange)) {
+		document.getElementById("mealhint").innerHTML = "Für Tagesreisen unter "+minHours.toLocaleString('de-DE')+" Stunden wird kein Tagesgeld ausgezahlt."
 	} else if (!(inRange)) {
 		document.getElementById("mealhint").innerHTML = "Es können höchstens "+String(maxDates)+" Reisetage abgerechnet werden.";
 	}
@@ -310,6 +316,32 @@ function calculateExtra() {
 	}
 }
 
+// Funktionen, die anderen Funktionen Werte bereitstellen
+
+/**
+ * Überprüft, ob eine Start- und Endzeit angegeben wurden
+ * und ob diese der Mindestlänge für Tagesgeldzahlungen genügen.
+ * 
+ * Gibt bei fehlenden Eingaben null zurück.
+ * 
+ * @returns {boolean|null}
+ * 
+ * @since	2.0
+ */
+function checkHours() {
+	const values = [document.getElementById("journeybegintime").value,document.getElementById("journeyendtime").value];
+	if (!(values[0] && values[1])) {
+		return null;
+	}
+	const startnumbers = values[0].split(":")
+	const endnumbers = values[1].split(":")
+	let starttime = parseInt(startnumbers[0])*60 + parseInt(startnumbers[1]);
+	let endtime = parseInt(endnumbers[0])*60 + parseInt(endnumbers[1]);
+	console.log(starttime);
+	console.log(endtime);
+	return (endtime - starttime >= minHours * 60);
+}
+
 // Funktionen zum grundlegenden Ablauf
 
 /**
@@ -334,6 +366,10 @@ function start() {
 	document.getElementById("journeyenddate").addEventListener('change',updateMaxDate);
 	document.getElementById("journeyenddate").addEventListener('change',timeDisplayCheck);
 	document.getElementById("journeyenddate").addEventListener('change',listDates);
+
+	// Ereignisse für Uhrzeitfelder
+	document.getElementById("journeybegintime").addEventListener('change',function(){ dateDisplayInitialize(1); })
+	document.getElementById("journeyendtime").addEventListener('change',function(){ dateDisplayInitialize(1); })
 
 	for (let i = 0; i < maxPos; i++) {
 		// Ereignisse für Positionsfelder-input
