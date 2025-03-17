@@ -6,6 +6,10 @@ const minHours = 8; // Mindeststundenzahl zur Auszahlung von Tagesgeld
 const maxDates = parseInt(document.forms[0].dataset.maxdates); // Maximale Anzahl an Tagen für Angabe der Mahlzeiten im HTML-Dokument
 const maxPos = parseInt(document.forms[0].dataset.maxpositions); // Maximale Anzahl an Positionen im HTML-Dokument
 
+const dailyRate = parseFloat(document.getElementById('mealsummary').dataset.dailyrate);
+const dailyRateReduced = parseFloat(document.getElementById('mealsummary').dataset.dailyratereduced);
+const dailyRateSingle = parseFloat(document.getElementById('mealsummary').dataset.dailyratesingle);
+const mealCost = [dailyRate/5, 2*dailyRate/5, 2*dailyRate/5];
 const carMoneyPerKM = parseFloat(document.getElementById('extrasummary').dataset.carmoneyperkm);
 const carMoneyMax = parseFloat(document.getElementById('extrasummary').dataset.carmoneymax);
 const moneyPerNight = parseFloat(document.getElementById('extrasummary').dataset.moneypernight);
@@ -64,6 +68,8 @@ function dateDisplayInitialize(x) {
 	document.getElementById("mealdays").hidden = !(display);
 	document.getElementById("mealinstruct").hidden = !(display);
 	document.getElementById("nightsection").hidden = !(inRange) || (x<2);
+
+	calculateDayMoney();
 }
 
 /**
@@ -257,13 +263,39 @@ function updateDateRange(min=null,max=null) {
 // Funktionen zur Berechnung und Anzeige von Werten
 
 /**
+ * Berechne den Gesamtwert aller Tagesgelder und zeige ihn an,
+ * falls er größer als Null ist.
+ * 
+ * @since	2.0
+ */
+function calculateDayMoney() {
+	let total = 0.0;
+	if (days > 0 && days <= maxDates) {
+		if (days == 1 && checkHours(minHours)===true) {
+			total = calculateSingleDay(1,dailyRateSingle);
+		} else if (days > 1) {
+			for (let i=1; i<=days; i++) {
+				let rate = dailyRate;
+				if (i==1 || i==days) {
+					rate = dailyRateReduced;
+				}
+				total += calculateSingleDay(i,rate);
+			}
+		}
+	}
+	document.getElementById("dayplural").hidden = (days==1);
+	document.getElementById("mealsummary").hidden = !(Boolean(total));
+	document.getElementById("dayamount").innerHTML = moneyform.format(total);
+}
+
+/**
  * Berechne den Gesamtwert aller Positionen und zeige ihn an,
  * falls er größer als Null ist.
  * 
  * @since	2.0
  */
 function calculatePositions() {
-	total = 0.0;
+	let total = 0.0;
 	for (let i = 1; i <= maxPos; i++) {
 		const amount = document.getElementById("position"+i+"amount").value;
 		if (amount>0) {
@@ -319,6 +351,27 @@ function calculateExtra() {
 // Funktionen, die anderen Funktionen Werte bereitstellen
 
 /**
+ * Berechnet das auszuzahlende Tagesgeld für einen bestimmten Tag.
+ * 
+ * @since	2.0
+ * 
+ * @param {int} day		Der Tag, dessen Tagesgeld berechnet wird
+ * @param {number} rate	Der Tagessatz (ohne Abzüge) für diesen Tag
+ * @returns {number}
+ */
+function calculateSingleDay(day,rate){
+	const dayname = "day"+String(day);
+	const values = [document.getElementById(dayname+"breakfast").checked,document.getElementById(dayname+"lunch").checked,document.getElementById(dayname+"dinner").checked];
+	let result = rate;
+	for (let i=0; i<3; i++) {
+		if (values[i]) {
+			result -= mealCost[i];
+		}
+	}
+	return Math.max(result,0);
+}
+
+/**
  * Überprüft, ob eine Start- und Endzeit angegeben wurden
  * und ob diese der angegebenen Mindestlänge genügen.
  * 
@@ -370,6 +423,15 @@ function start() {
 	document.getElementById("journeybegintime").addEventListener('change',function(){ dateDisplayInitialize(1); })
 	document.getElementById("journeyendtime").addEventListener('change',function(){ dateDisplayInitialize(1); })
 
+	for (let i = 0; i < maxDates; i++) {
+		// Ereignisse für Mahlzeiten-Checkboxen
+		const id = "day"+(i+1);
+		const displayFields = ["breakfast","lunch","dinner"];
+		for (let j = 0; j < displayFields.length; j++) {
+			document.getElementById(id+displayFields[j]).addEventListener('input',calculateDayMoney);
+		}
+	}
+
 	for (let i = 0; i < maxPos; i++) {
 		// Ereignisse für Positionsfelder-input
 		const id = "position"+(i+1);
@@ -402,7 +464,7 @@ function start() {
  * 
  * Zum Aufruf durch die Reset-Schaltfläche.
  * 
- * @since	1.3
+ * @since	2.0
  */
 function restart() {
 	dateDisplayInitialize(0);
@@ -411,6 +473,7 @@ function restart() {
 	timeDisplay(false);
 	updateDateRange(earliestdate.toISOString().split("T")[0],new Date().toISOString().split("T")[0]);
 
+	document.getElementById("mealsummary").hidden = true;
 	document.getElementById("positionnotes").hidden = true;
 	document.getElementById("extrasummary").hidden = true;
 }
@@ -441,6 +504,7 @@ function display() {
 	listDates();
 	updateMinDate();
 	updateMaxDate();
+	calculateDayMoney();
 	calculateExtra();
 }
 

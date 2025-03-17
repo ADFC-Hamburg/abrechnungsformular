@@ -83,6 +83,9 @@
 {% endfor %}
 				</div>
 			</section>
+			<section id="mealsummary" data-dailyrate="{{ rates['Tagessatz']['GanzerTag'] }}" data-dailyratereduced="{{ rates['Tagessatz']['AnAbreise'] }}" data-dailyratesingle="{{ rates['Tagessatz']['Einzeltag'] }}" hidden>
+				<div class="subinput">Dir werden <b id="dayamount"></b> an Tagesgeld<span id="dayplural">ern</span> ausgezahlt.</div>
+			</section>
 		</fieldset>
 		<fieldset>
 			<legend>Ausgaben</legend>
