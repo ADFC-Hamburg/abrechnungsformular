@@ -42,7 +42,7 @@ function dateDisplay(x,show=true) {
 function dateDisplayInitialize(x) {
 	let inRange = (x <= maxDates && x >= 0);
 	if (x == 1) {
-		inRange = checkHours();
+		inRange = checkHours(minHours);
 	}
 	for (let i = 1; i <= maxDates; i++) {
 		if (i<=x) {
@@ -320,15 +320,16 @@ function calculateExtra() {
 
 /**
  * Überprüft, ob eine Start- und Endzeit angegeben wurden
- * und ob diese der Mindestlänge für Tagesgeldzahlungen genügen.
+ * und ob diese der angegebenen Mindestlänge genügen.
  * 
  * Gibt bei fehlenden Eingaben null zurück.
  * 
- * @returns {boolean|null}
- * 
  * @since	2.0
+ * 
+ * @param {float} threshold	Die Mindestzeit in Stunden, bei der true zurückgegeben wird
+ * @returns {boolean|null}
  */
-function checkHours() {
+function checkHours(threshold = 0) {
 	const values = [document.getElementById("journeybegintime").value,document.getElementById("journeyendtime").value];
 	if (!(values[0] && values[1])) {
 		return null;
@@ -337,9 +338,7 @@ function checkHours() {
 	const endnumbers = values[1].split(":")
 	let starttime = parseInt(startnumbers[0])*60 + parseInt(startnumbers[1]);
 	let endtime = parseInt(endnumbers[0])*60 + parseInt(endnumbers[1]);
-	console.log(starttime);
-	console.log(endtime);
-	return (endtime - starttime >= minHours * 60);
+	return (endtime - starttime >= threshold * 60);
 }
 
 // Funktionen zum grundlegenden Ablauf
