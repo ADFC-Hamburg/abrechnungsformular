@@ -283,6 +283,7 @@ class Abrechnung():
         """
 
         self.positions = self._create_positions(self.POSITIONCOUNT)
+        self.days = tuple()
 
         self._user_name = self._user_group\
             = self._payment_name = self._cause = ""
@@ -299,6 +300,41 @@ class Abrechnung():
         for i in range(amount):
             out.append(Position())
         return tuple(out)
+
+    # Internal methods
+
+    def _create_days(self) -> tuple[Day|SingleDay]:
+        """
+        Berechnet die Länge der Reise aus Anfangs- und Enddatum
+        und gibt einen Tupel zurück, der aus einer entsprechenden
+        Anzahl aus Day- oder SingleDay-Objekten besteht.
+
+        Dabei werden bestehende Objekte gegebenenfalls
+        wiederverwendet.
+        """
+        if not (self._date_begin and self._date_end)\
+        or (self._date_begin > self._date_end):
+            # Zero days
+            return ()
+        elif (self._date_begin == self._date_end):
+            # One day
+            if len(self.days) == 1:
+                return self.days
+            else:
+                return (SingleDay(),)
+        else:
+            # Multiple days
+            number_days = (self.enddate-self.begindate).days + 1
+            if number_days > self.MAXDATES:
+                raise tools.IllegalValueException
+            current_length = len(self.days)
+            out = []
+            if current_length > 1:
+                # Reuse existing days
+                out.extend(self.days[:min(current_length,number_days)])
+            for i in range(len(out),number_days):
+                out.append(Day())
+            return tuple(out)
 
     # Variable getters and setters
     def setusername(self,value:str = ""):
@@ -362,6 +398,7 @@ class Abrechnung():
                 int(temp[0]), int(temp[1]), int(temp[2]))
         else:
             self._date_begin = None
+        self.days = self._create_days()
 
     def getbegindate(self) -> date|None:
         """Gibt das Datum des Beginns der Reise zurück."""
@@ -382,6 +419,7 @@ class Abrechnung():
                 int(temp[0]), int(temp[1]), int(temp[2]))
         else:
             self._date_end = None
+        self.days = self._create_days()
 
     def getenddate(self) -> date|None:
         """Gibt das Datum des Endes der Reise zurück."""
