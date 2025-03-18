@@ -189,16 +189,16 @@ class Day:
             case _:
                 raise IndexError(f"{self.__class__.__name__} index out of range")
 
-    def getmealcost(self) -> Decimal:
+    def getmealcost(self,reduced:bool = False) -> Decimal:
         """
         Gibt zurück, wie viel Tagesgeld durch bereitgestellte Verpflegung
-        gekürzt wird. Der Tagessatz wird dabei nicht berücksichtigt.
+        gekürzt wird.
         """
         cost = Decimal(0)
         for i in range(self.MEALS):
             if self[i]:
                 cost += self.MEAL_DEDUCTION[i]
-        return cost
+        return min(cost,self.getallowance(reduced))
     
     def getallowance(self,reduced:bool = False) -> Decimal:
         """
@@ -217,9 +217,7 @@ class Day:
         Argumente:
         reduced:    Ob der reduzierte Tagessatz greift.
         """
-
-        total = self.getallowance(reduced) - self.getmealcost()
-        return total.max(Decimal(0))
+        return self.getallowance(reduced) - self.getmealcost()
 
 
 class SingleDay(Day):
@@ -251,6 +249,18 @@ class SingleDay(Day):
                                     minutes = end.minute-begin.minute,
                                     seconds = end.second-begin.second)
 
+    def getmealcost(self):
+        """
+        Gibt zurück, wie viel Tagesgeld durch bereitgestellte Verpflegung
+        gekürzt wird.
+        Liegt die Länge der Reise unter dem Grenzwert, beträgt der
+        Tagessatz 0.
+        """
+        if self.THRESHOLD > self._timedelta:
+            return Decimal('0')
+        else:
+            return super().getmealcost(reduced=True)
+
     def getallowance(self) -> Decimal:
         """
         Gibt den Tagessatz ohne Kürzungen durch Verpflegung zurück.
@@ -261,6 +271,17 @@ class SingleDay(Day):
             return Decimal('0')
         else:
             return super().getallowance(reduced=True)
+        
+    def getbenefits(self) -> Decimal:
+        """
+        Gibt den Tagessatz mit Kürzungen durch Verpflegung zurück.
+        Liegt die Länge der Reise unter dem Grenzwert, beträgt der
+        Tagessatz 0.
+        """
+        if self.THRESHOLD > self._timedelta:
+            return Decimal('0')
+        else:
+            return super().getbenefits(reduced=True)
 
 
 class Abrechnung():
