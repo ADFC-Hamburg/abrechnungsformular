@@ -3,7 +3,7 @@ Modul für Klassen, die Reisekostenabrechnungen repräsentieren oder
 selbige als Dokument ausgeben.
 """
 
-from datetime import date, datetime, timedelta
+from datetime import date, time, timedelta
 from decimal import Decimal
 from html import escape
 
@@ -239,19 +239,17 @@ class SingleDay(Day):
         super().__init__()
     
     # Variable getters and setters
-    def settimedelta(self,begin:datetime,end:datetime):
+    def settimedelta(self,begin:time,end:time):
         """
         Berechnet die Dauer der Tagesreise.
 
         Argumente:
-        begin:  Datum und Uhrzeit des Beginns der Reise.
-        end:    Datum und Uhrzeit des Endes der Reise.
+        begin:  Uhrzeit des Beginns der Reise.
+        end:    Uhrzeit des Endes der Reise.
         """
-        result = end - begin
-        if result < 0:
-            raise tools.BelowMinimumException
-        else:
-            self._timedelta = result
+        self._timedelta = timedelta(hours = end.hour-begin.hour,
+                                    minutes = end.minute-begin.minute,
+                                    seconds = end.second-begin.second)
 
     def getallowance(self) -> Decimal:
         """
@@ -289,7 +287,8 @@ class Abrechnung():
         self._user_name = self._user_group\
             = self._payment_name = self._cause = ""
         self._payment_iban = IBAN("",allow_invalid=True)
-        self._date_begin = self._date_end = None
+        self._date_begin = self._date_end\
+            = self._time_begin = self._time_end = None
         self._car_distance = Decimal('0')
         self._overnight_flat = False
 
@@ -304,11 +303,20 @@ class Abrechnung():
         return tuple(out)
 
     # Internal methods
+    def _apply_time(self):
+        """
+        Gibt Anfangs- und Endzeit an das SingleDay-Objekt weiter.
+        
+        Macht nichts, falls eine der Zeiten fehlt oder die Reise nicht
+        genau einen Tag lang ist.
+        """
+        if len(self.days) == 1 and self.getbegintime() and self.getendtime():
+            self.days[0].settimedelta(self.getbegintime(),self.getendtime())
 
-    def _create_days(self) -> tuple[Day|SingleDay]:
+    def _create_days(self):
         """
         Berechnet die Länge der Reise aus Anfangs- und Enddatum
-        und gibt einen Tupel zurück, der aus einer entsprechenden
+        und erstellt einen Tupel, der aus einer entsprechenden
         Anzahl aus Day- oder SingleDay-Objekten besteht.
 
         Dabei werden bestehende Objekte gegebenenfalls
@@ -317,13 +325,12 @@ class Abrechnung():
         if not (self._date_begin and self._date_end)\
         or (self._date_begin > self._date_end):
             # Zero days
-            return ()
+            self.days = ()
         elif (self._date_begin == self._date_end):
             # One day
-            if len(self.days) == 1:
-                return self.days
-            else:
-                return (SingleDay(),)
+            if not len(self.days) == 1:
+                self.days = (SingleDay(),)
+                self._apply_time()
         else:
             # Multiple days
             number_days = (self.enddate-self.begindate).days + 1
@@ -336,7 +343,7 @@ class Abrechnung():
                 out.extend(self.days[:min(current_length,number_days)])
             for i in range(len(out),number_days):
                 out.append(Day())
-            return tuple(out)
+            self.days = tuple(out)
 
     # Variable getters and setters
     def setusername(self,value:str = ""):
@@ -400,7 +407,7 @@ class Abrechnung():
                 int(temp[0]), int(temp[1]), int(temp[2]))
         else:
             self._date_begin = None
-        self.days = self._create_days()
+        self._create_days()
 
     def getbegindate(self) -> date|None:
         """Gibt das Datum des Beginns der Reise zurück."""
@@ -421,11 +428,39 @@ class Abrechnung():
                 int(temp[0]), int(temp[1]), int(temp[2]))
         else:
             self._date_end = None
-        self.days = self._create_days()
+        self._create_days()
 
     def getenddate(self) -> date|None:
         """Gibt das Datum des Endes der Reise zurück."""
         return self._date_end
+
+    def setbegintime(self,value:str|time|None = None):
+        """Gibt die Uhrzeit des Beginns der Reise zurück."""
+        if type(value) == time:
+            self._time_begin = value
+        elif value:
+            self._time_begin = time.fromisoformat(value)
+        else:
+            self._time_begin = None
+        self._apply_time()
+
+    def getbegintime(self) -> time|None:
+        """Gibt die Uhrzeit des Beginns der Reise zurück."""
+        return self._time_begin
+
+    def setendtime(self,value:str|time|None = None):
+        """Gibt die Uhrzeit des Endes der Reise zurück."""
+        if type(value) == time:
+            self._time_end = value
+        elif value:
+            self._time_end = time.fromisoformat(value)
+        else:
+            self._time_end = None
+        self._apply_time()
+
+    def getendtime(self) -> time|None:
+        """Gibt die Uhrzeit des Endes der Reise zurück."""
+        return self._time_end
 
     def setcardistance(self,value):
         """
@@ -488,6 +523,10 @@ class Abrechnung():
                          "Das Datum, an dem die Reis begann.")
     enddate = property(getenddate,setenddate,None,
                        "Das Datum, an dem die Reise endete.")
+    begintime = property(getbegintime,setbegintime,None,
+                         "Die Uhrzeit, zu der die Reis begann.")
+    endtime = property(getendtime,setendtime,None,
+                       "Die Uhrzeit, zu der die Reise endete.")
     cardistance = property(getcardistance,setcardistance,None,
                            "Die mit dem PKW zurückgelegte Wegstrecke.")
     overnightflat = property(getovernightflat,setovernightflat,None,
