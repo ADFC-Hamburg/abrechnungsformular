@@ -529,6 +529,55 @@ class Abrechnung():
             return Decimal('0')
         return self.OVERNIGHT_MIN * (len(self.days) - 1)
 
+    def getpositiontotal(self) -> Decimal:
+        """
+        Gibt den Gesamtwert aller Positionen zurück.
+        """
+        return sum(position.value for position in self.positions)
+
+    def getdayallowancetotal(self) -> Decimal:
+        """
+        Gibt die Gesamtmenge an Tagesgeld ohne Abzüge zurück.
+        """
+        number_days = len(self.days)
+        if number_days == 0:
+            return Decimal()
+        if number_days == 1:
+            return self.days[0].getallowance()
+        return sum (self.days[i].getallowance(i==0 or i==number_days)
+                    for i in range(number_days))
+
+    def getdaycosttotal(self) -> Decimal:
+        """
+        Gibt den Gesamtwert der Abzüge vom Tagesgeld zurück.
+        """
+        number_days = len(self.days)
+        if number_days == 0:
+            return Decimal()
+        if number_days == 1:
+            return self.days[0].getmealcost()
+        return sum (self.days[i].getmealcost(i==0 or i==number_days)
+                    for i in range(number_days))
+
+    def getdaytotal(self) -> Decimal:
+        """
+        Gibt die Gesamtmenge an Tagesgeld zurück.
+        """
+        number_days = len(self.days)
+        if number_days == 0:
+            return Decimal()
+        if number_days == 1:
+            return self.days[0].getbenefits()
+        return sum (self.days[i].getbenefits(i==0 or i==number_days)
+                    for i in range(number_days))
+    
+    def gettotal(self) -> Decimal:
+        """
+        Gibt den gesamten Geldbetrag der Reisekostenabrechnung zurück.
+        """
+        return sum(self.getmileage(), self.getovernightpay(),
+                   self.getpositiontotal(), self.getdaytotal())
+
     # Properties
     username = property(getusername,setusername,None,
                         "Der Name des Aktiven.")
