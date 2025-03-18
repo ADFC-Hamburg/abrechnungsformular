@@ -275,6 +275,7 @@ class Abrechnung():
     MAXDATES = 10
     CAR_RATE_PER_KM = Decimal(REISE_RATE['PKWproKM'])
     CAR_MAXRATE = Decimal(REISE_RATE['PKWMaximum'])
+    OVERNIGHT_MIN = Decimal(REISE_RATE['UebernachtMin'])
 
     # Dunder methods
     def __init__(self):
@@ -290,6 +291,7 @@ class Abrechnung():
         self._payment_iban = IBAN("",allow_invalid=True)
         self._date_begin = self._date_end = None
         self._car_distance = Decimal('0')
+        self._overnight_flat = False
 
     # Part of initialization
     def _create_positions(self,amount:int) -> tuple[Position]:
@@ -450,6 +452,27 @@ class Abrechnung():
         """
         return self.CAR_MAXRATE.min(self.CAR_RATE_PER_KM * self._car_distance)
 
+    def setovernightflat(self,value:bool):
+        """
+        Legt fest, ob der Pauschalbetrag für Übernachtungen ausgezahlt wird.
+        """
+        self._overnight_flat = bool(value)
+
+    def getovernightflat(self) -> bool:
+        """
+        Gibt zurück, ob der Pauschalbetrag für Übernachtungen ausgezahlt wird.
+        """
+        return self._overnight_flat
+    
+    def getovernightpay(self) -> Decimal:
+        """
+        Gibt den Geldbetrag zurück,
+        der als Übernachtungspauschale ausgezahlt wird.
+        """
+        if not self._overnight_flat or len(self.days) < 2:
+            return Decimal('0')
+        return self.OVERNIGHT_MIN * (len(self.days) - 1)
+
     # Properties
     username = property(getusername,setusername,None,
                         "Der Name des Aktiven.")
@@ -467,3 +490,5 @@ class Abrechnung():
                        "Das Datum, an dem die Reise endete.")
     cardistance = property(getcardistance,setcardistance,None,
                            "Die mit dem PKW zurückgelegte Wegstrecke.")
+    overnightflat = property(getovernightflat,setovernightflat,None,
+                             "Ob Übernachtungspauschale ausgezahlt wird.")
