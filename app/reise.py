@@ -311,7 +311,7 @@ class Abrechnung():
         self._date_begin = self._date_end\
             = self._time_begin = self._time_end = None
         self._car_distance = Decimal('0')
-        self._overnight_flat = False
+        self._overnight_flat = self._payment_iban_known = False
 
     # Part of initialization
     def _create_positions(self,amount:int) -> tuple[Position]:
@@ -404,6 +404,12 @@ class Abrechnung():
     def getaccountiban(self,spaces:bool = True) -> str:
         """Gibt die IBAN des Bankkontos zurück."""
         return self._payment_iban.formatted
+
+    def setibanknown(self,mode=False):
+        self._payment_iban_known = bool(mode)
+    
+    def getibanknown(self) -> bool:
+        return self._payment_iban_known
 
     def setcause(self,value:str = ""):
         """Legt den Grund für die Reise fest."""
@@ -587,6 +593,8 @@ class Abrechnung():
                            "Der Inhaber des Überweisungskontos.")
     iban = property(getaccountiban,setaccountiban,None,
                     "Die IBAN des Überweisungskontos.")
+    ibanknown = property(getibanknown,setibanknown,None,
+                         "Ob die IBAN dem ADFC schon vorliegt.")
     cause = property(getcause,setcause,None,
                      "Der Grund für die Reise.")
     begindate = property(getbegindate,setbegindate,None,
