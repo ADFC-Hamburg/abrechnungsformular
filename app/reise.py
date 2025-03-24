@@ -68,6 +68,11 @@ class Position:
 
         return "\t"*indent + joiner.join(out)
 
+    def check_filled(self) -> bool:
+        """Gibt zurück, ob mindestens ein Feld ausgefüllt ist."""
+        return bool(self.getvalue() or self.getdate()
+                    or self.getreason() or self.getreceiptnumber())
+
     def check_complete(self) -> bool:
         """Gibt zurück, ob alle Felder ausgefüllt sind."""
         return bool(self.getvalue() and self.getdate()
@@ -296,6 +301,22 @@ class Abrechnung():
     CAR_MAXRATE = Decimal(REISE_RATE['PKWMaximum'])
     OVERNIGHT_MIN = Decimal(REISE_RATE['UebernachtMin'])
 
+    _FIELD_NAMES = {'uname':'dein Name','group':'deine Arbeitsgruppe',
+                    'reason':'der Anlass der Reise','iban':'deine IBAN',
+                    'owner':'der Name des Kontoinhabers/der Kontoinhaberin',
+                    'begin':'Anfangsdatum der Reise',
+                    'end':'Enddatum der Reise',
+                    'begintime':'Anfangszeit der Reise',
+                    'endtime':'Endzeit der Reise',
+                    'car':'die im Privatauto zurückgelegte Strecke'}
+    _FIELD_ERRORS = {'length':'Die IBAN muss die korrekte Länge haben'
+                     +' (22 Zeichen bei einer deutschen IBAN).',
+                     'checksum':'Die IBAN muss gültig sein.'
+                     +' (Wahrscheinlich liegt ein Tippfehler vor.)',
+                     'timetravel':'Die Reise darf nicht enden, '
+                     +'bevor sie angefangen hat.','maxdates':
+                     f'Es können maximal {MAXDATES} Tage abgerechnet werden.'}
+
     # Dunder methods
     def __init__(self):
         """
@@ -365,6 +386,202 @@ class Abrechnung():
             for i in range(len(out),number_days):
                 out.append(Day())
             self.days = tuple(out)
+
+    # Methods for input
+    def evaluate_query(self,query:dict) -> str:
+        """
+        Liest Parameter aus einem HTML-Query in Form eines Dictionary
+        ein und setzt alle Variablen auf den entsprechenden Wert.
+
+        Gibt außerdem eine Aufzählung aller Fehler als String zurück.
+
+        Erkennt die folgenden Schlüssel:
+        uname, ugroup, reason, known, iban, owner, begin, end, begintime,
+        endtime, car, night
+        
+        px, pxname, pxnr, pxdate (x zwischen 1 und MAXPOSITIONS),
+        
+        dxmy (x zwischen 1 und MAXDATES, y zwischen 1 und 3)
+        """
+        if query:
+            keys = tuple(query.keys())
+            missing = []
+            erronous = []
+            erronous_positions = []
+            below_minimum = []
+            mileage_negative = False
+            not_currency = []
+            incomplete_positions = []
+            errormessage = []
+
+            # User name and -group, cause of travel
+            if 'uname' in keys:
+                self.setusername(query['uname'])
+            if 'ugroup' in keys:
+                self.setusergroup(query['ugroup'])
+            if 'reason' in keys:
+                self.setcause(query['reason'])
+
+            # Date of travel
+            try:
+                if 'begin' in keys and query['begin']:
+                    self.setbegindate(query['begin'])
+            except Exception:
+                erronous.append(self._FIELD_NAMES['begin'])
+            try:
+                if 'end' in keys and query['end']:
+                    self.setenddate(query['end'])
+            except tools.IllegalValueException:
+                errormessage.append(self._FIELD_ERRORS['maxdates'])
+            except Exception:
+                erronous.append(self._FIELD_NAMES['end'])
+            if self._date_begin and self._date_end\
+            and self._date_begin > self._date_end:
+                errormessage.append(self._FIELD_ERRORS['timetravel'])
+
+            # Check if always required values were provided
+            for name in ('uname','ugroup','reason','begin','end'):
+                if not name in keys or not query[name]:
+                    missing.append(self._FIELD_NAMES[name])
+
+            # Time of travel
+            try:
+                if 'begintime' in keys and query['begintime']:
+                    self.setbegintime(query['begintime'])
+                elif len(self.days)==1:
+                    missing.append(self._FIELD_NAMES['begintime'])
+            except Exception:
+                erronous.append(self._FIELD_NAMES['begintime'])
+            try:
+                if 'endtime' in keys and query['endtime']:
+                    self.setendtime(query['endtime'])
+                elif len(self.days)==1:
+                    missing.append(self._FIELD_NAMES['endtime'])
+            except Exception:
+                erronous.append(self._FIELD_NAMES['endtime'])
+            if self._time_begin and self._time_end and len(self.days)==1\
+            and self._time_begin > self._time_end:
+                errormessage.append(self._FIELD_ERRORS['timetravel'])
+
+            # Payment information
+            if 'known' in keys and query['known'] == '1':
+                # Payment info is known
+                self.setibanknown(True)
+            else:
+                # Payment info not known
+                self.setibanknown(False)
+                if 'iban' in keys and query['iban']:
+                    try:
+                        self.setaccountiban(query['iban'])
+                    except exceptions.InvalidChecksumDigits:
+                        errormessage.append(self._FIELD_ERRORS['checksum'])
+                    except exceptions.InvalidLength:
+                        errormessage.append(self._FIELD_ERRORS['length'])
+                    except exceptions.InvalidStructure:
+                        erronous.append(self._FIELD_NAMES['iban'])
+                else:
+                    missing.append(self._FIELD_NAMES['iban'])
+                if 'owner' in keys and query['owner']:
+                    self.setaccountname(query['owner'])
+                else:
+                    missing.append(self._FIELD_NAMES['owner'])
+
+            # Days information
+            for day in range(len(self.days)):
+                for meal in range(3):
+                    name = f'd{day+1}m{meal+1}'
+                    self.days[day][meal] = bool(name in query and query[name]=='1')
+
+            # Positions
+            for i, position in enumerate(self.positions,start=1):
+                if f'p{i}name' in query:
+                    position.setreason(query[f'p{i}name'])
+                if f'p{i}nr' in query:
+                    position.setreceiptnumber(query[f'p{i}nr'])
+                if f'p{i}date' in query:
+                    try:
+                        position.setdate(query[f'p{i}date'])
+                    except Exception:
+                        erronous_positions.append(f'{i}.')
+                        continue
+                if f'p{i}' in query and query[f'p{i}']:
+                    try:
+                        position.setvalue(query[f'p{i}'])
+                    except tools.BelowMinimumException:
+                        below_minimum.append(f'{i}.')
+                        continue
+                    except tools.DecimalsException:
+                        not_currency.append(f'{i}.')
+                        continue
+                    except Exception:
+                        erronous_positions.append(f'{i}.')
+                        continue
+                if position.check_filled() and not position.check_complete():
+                    incomplete_positions.append(f'{i}.')
+                
+
+            # Car mileage and overnight flat rate
+            try:
+                if 'car' in query:
+                    self.setcardistance(query['car'] or '0')
+            except tools.BelowMinimumException:
+                mileage_negative = True
+            except Exception:
+                erronous.append(self._FIELD_NAMES['car'])
+            self.setovernightflat('night' in query and query['night']=='1')
+
+            # Finalize error message
+            missing = [item for item in missing if item not in erronous]
+            errorstart = []
+            if missing:
+                message = tools.write_list_de(missing)
+                if len(missing) > 1:
+                    message += ' müssen'
+                else:
+                    message += ' muss'
+                message += ' mit angegeben werden.'
+                errorstart.append(tools.uppercase_first(message))
+            if incomplete_positions:
+                message = 'Die ' + tools.write_list_de(incomplete_positions)
+                message += ' Position muss vollständig ausgefüllt sein.'
+                errorstart.append(message)
+            if not_currency:
+                message = 'Die ' + tools.write_list_de(not_currency)
+                message += ' Position muss ganze Centbeträge enthalten.'
+                errorstart.append(message)
+            if erronous or erronous_positions:
+                message = ""
+                if erronous:
+                    message = tools.write_list_de(erronous)
+                    if erronous_positions:
+                        message += ' sowie '
+                if erronous_positions:
+                    message += 'die ' + tools.write_list_de(erronous_positions)
+                    message += ' Position'
+                if len(erronous) > 1 or (erronous and erronous_positions):
+                    message += ' müssen'
+                else:
+                    message += ' muss'
+                message += ' korrekt ausgefüllt werden.'
+                errorstart.append(tools.uppercase_first(message))
+            if below_minimum or mileage_negative:
+                message = ""
+                if mileage_negative:
+                    message = self._FIELD_NAMES['car']
+                    if below_minimum:
+                        message += ' sowie '
+                if below_minimum:
+                    message += 'die ' + tools.write_list_de(below_minimum)
+                    message += ' Position'
+                if below_minimum and mileage_negative:
+                    message += ' dürfen'
+                else:
+                    message += ' darf'
+                message += ' keine negativen Werte enthalten.'
+                errorstart.append(tools.uppercase_first(message))
+
+            errormessage = errorstart + errormessage
+            return '\n'.join(errormessage)
 
     # Variable getters and setters
     def setusername(self,value:str = ""):

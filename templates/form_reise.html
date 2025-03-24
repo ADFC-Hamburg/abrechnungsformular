@@ -23,7 +23,7 @@
 			<p>Hier findest du das Abrechnungs&shy;formular für Aktive und Helfer&ast;innen beim ADFC&nbsp;Hamburg.</p>
 		</div>
 	</header>
-	<form action="" method="get" data-maxpositions="{{ abrechnung.POSITIONCOUNT }}" data-maxdates="{{ abrechnung.MAXDATES }}">
+	<form action="{{ url_for('pages.reise_pdf') }}" method="get" data-maxpositions="{{ abrechnung.POSITIONCOUNT }}" data-maxdates="{{ abrechnung.MAXDATES }}">
 		<header>
 			<fieldset>
 				<legend>Persönliche Angaben</legend>

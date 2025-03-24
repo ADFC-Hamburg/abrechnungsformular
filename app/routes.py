@@ -72,6 +72,19 @@ def aktive_pdf():
         # No query provided; use premade empty PDF instead
         return pages.send_static_file('blank/Aktivenabrechnung.pdf')
 
+@pages.route('/reisekosten/abrechnung', methods=['GET'])
+def reise_pdf():
+    """WIP"""
+    if request.method == 'GET' and request.args:
+        abrechnung = reise.Abrechnung()
+        errormessage = abrechnung.evaluate_query(request.args.to_dict())
+        if errormessage:
+            abort(400, errormessage)
+        return str(abrechnung.gettotal())
+    else:
+        # No query provided
+        abort(400)
+
 @pages.route('/favicon.ico')
 def favicon():
     """Returns the favicon."""
