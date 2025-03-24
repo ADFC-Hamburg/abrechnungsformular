@@ -217,7 +217,7 @@ class Day:
         Argumente:
         reduced:    Ob der reduzierte Tagessatz greift.
         """
-        return self.getallowance(reduced) - self.getmealcost()
+        return self.getallowance(reduced) - self.getmealcost(reduced)
 
 
 class SingleDay(Day):
@@ -303,7 +303,7 @@ class Abrechnung():
         """
 
         self.positions = self._create_positions(self.POSITIONCOUNT)
-        self.days = tuple()
+        self.days: tuple[Day|SingleDay] = tuple()
 
         self._user_name = self._user_group\
             = self._payment_name = self._cause = ""
@@ -574,15 +574,15 @@ class Abrechnung():
             return Decimal()
         if number_days == 1:
             return self.days[0].getbenefits()
-        return sum (self.days[i].getbenefits(i==0 or i==number_days)
+        return sum (self.days[i].getbenefits(i==0 or i==number_days-1)
                     for i in range(number_days))
     
     def gettotal(self) -> Decimal:
         """
         Gibt den gesamten Geldbetrag der Reisekostenabrechnung zurück.
         """
-        return sum(self.getmileage(), self.getovernightpay(),
-                   self.getpositiontotal(), self.getdaytotal())
+        return self.getmileage() + self.getovernightpay()\
+               + self.getpositiontotal() + self.getdaytotal()
 
     # Properties
     username = property(getusername,setusername,None,
