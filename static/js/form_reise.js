@@ -250,15 +250,15 @@ function updateMaxDate() {
 function updateDateRange(min=null,max=null) {
 	if (!(min === null)) {
 		document.getElementById("journeyenddate").min = min;
-		for (let i = 0; i < maxPos; i++) {
+		/*for (let i = 0; i < maxPos; i++) {
 			document.getElementById("position"+(i+1)+"date").min = min;
-		}
+		}*/
 	}
 	if (!(max === null)) {
 		document.getElementById("journeybegindate").max = max;
-		for (let i = 0; i < maxPos; i++) {
+		/*for (let i = 0; i < maxPos; i++) {
 			document.getElementById("position"+(i+1)+"date").max = max;
-		}
+		}*/
 	}
 }
 
@@ -423,6 +423,10 @@ function start() {
 	// Setze spätestes und frühestes erlaubtes Datum
 	document.getElementById("journeyenddate").max = new Date().toISOString().split("T")[0];
 	document.getElementById("journeybegindate").min = earliestdate.toISOString().split("T")[0];
+	for (let i = 1; i <= maxPos; i++) {
+		document.getElementById("position"+(i)+"date").max = new Date().toISOString().split("T")[0];
+		document.getElementById("position"+(i)+"date").min = earliestdate.toISOString().split("T")[0];
+	}
 
 	// Gib HTML-Elementen auslösbare Ereignisse
 
