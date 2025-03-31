@@ -457,7 +457,7 @@ function start() {
 	for (let i = 0; i < maxPos; i++) {
 		// Ereignisse für Positionsfelder-input
 		const id = "position"+(i+1);
-		const displayFields = ["name","number","date","amount"];
+		const displayFields = ["name","date","amount"];
 
 		document.getElementById(id+"amount").addEventListener('input',calculatePositions);
 
@@ -517,8 +517,8 @@ function restart() {
 function display() {
 	// Überprüfe, welche Felder noch leer sind, und verstecke Positionen entsprechend
 	for (let i = maxPos; i > 0; i--) {
-		const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"number").value, document.getElementById("position"+i+"date").value, document.getElementById("position"+i+"amount").value];
-		if (!(values[0]=="" && values[1]=="" && values[2]=="" && values[3]==0)) {
+		const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"date").value, document.getElementById("position"+i+"amount").value];
+		if (!(values[0]=="" && values[1]=="" && values[2]==0)) {
 			// Ein Feld in Position i ist bereits ausgefüllt
 			positionDisplayInitialize(i+1);
 			break;

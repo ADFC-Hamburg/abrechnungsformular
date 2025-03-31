@@ -19,19 +19,17 @@ class Position:
     """
 
     # Dunder methods
-    def __init__(self,receiptnumber:str = "",reason:str = "",
+    def __init__(self,reason:str = "",
                  date:date|None = None,value=Decimal('0.00')):
         """
         Initialisiert ein Objekt der Klasse Position.
 
         Argumente:
-        receipt: Nummer des zur Position gehörenden Belegs
         reason: Kostengrund
         date: Datum der Geldausgabe
         value: Ausgegebenes Geld
         """
         self.setreason(reason)
-        self.setreceiptnumber(receiptnumber)
         self.setdate(date)
         self.setvalue(value)
 
@@ -40,7 +38,6 @@ class Position:
 
     def __repr__(self) -> str:
         return str (f"{self.__class__.__name__}"
-                   +f"(receiptnumber={repr(self.getreceiptnumber())},"
                    +f"reason={repr(self.getreason())},"
                    +f"date={repr(self.getdate())},"
                    +f"value={repr(self.getvalue())})")
@@ -51,18 +48,17 @@ class Position:
     # Methods for output
     def htmlcells(self,indent:int = 0) -> str:
         """
-        Gibt vier Zellen im HTML-Format aus.
+        Gibt drei Zellen im HTML-Format aus.
         Jede Zelle hat eine eigene Zeile.
 
         Die Reihenfolge lautet:
-        Datum, Beleg-Nr., Kostengrund, Betrag
+        Datum, Kostengrund, Betrag
         """
         out = []
 
         joiner = "\n" + "\t"*indent
 
         out.append( tools.cell( format_date(self.getdate(),locale="de_DE") ) )
-        out.append( tools.cell( escape(self.getreceiptnumber()) ) )
         out.append( tools.cell( escape(self.getreason()) ) )
         out.append( tools.cell( tools.euro(self.getvalue()) ) )
 
@@ -71,22 +67,14 @@ class Position:
     def check_filled(self) -> bool:
         """Gibt zurück, ob mindestens ein Feld ausgefüllt ist."""
         return bool(self.getvalue() or self.getdate()
-                    or self.getreason() or self.getreceiptnumber())
+                    or self.getreason())
 
     def check_complete(self) -> bool:
         """Gibt zurück, ob alle Felder ausgefüllt sind."""
         return bool(self.getvalue() and self.getdate()
-                    and self.getreason() and self.getreceiptnumber())
+                    and self.getreason())
 
     # Variable getters and setters
-    def setreceiptnumber(self,value:str):
-        """Legt die Belegnummer der Position fest."""
-        self._receipt_nr = str(value).strip()
-
-    def getreceiptnumber(self) -> str:
-        """Gibt die Belegnummer der Position zurück."""
-        return self._receipt_nr
-
     def setreason(self,value:str):
         """Legt den Kostengrund fest."""
         self._reason = str(value).strip()
@@ -128,8 +116,6 @@ class Position:
         return self._value
 
     # Properties
-    receiptnumber = property(getreceiptnumber,setreceiptnumber,None,
-                             "Die Nummer des Belegs für die Position.")
     reason = property(getreason,setreason,None,
                       "Der Kostengrund der Position.")
     date = property(getdate,setdate,None,
@@ -399,7 +385,7 @@ class Abrechnung():
         uname, ugroup, reason, known, iban, owner, begin, end, begintime,
         endtime, car, night
         
-        px, pxname, pxnr, pxdate (x zwischen 1 und MAXPOSITIONS),
+        px, pxname, pxdate (x zwischen 1 und MAXPOSITIONS),
         
         dxmy (x zwischen 1 und MAXDATES, y zwischen 1 und 3)
         """
@@ -496,8 +482,6 @@ class Abrechnung():
             for i, position in enumerate(self.positions,start=1):
                 if f'p{i}name' in query:
                     position.setreason(query[f'p{i}name'])
-                if f'p{i}nr' in query:
-                    position.setreceiptnumber(query[f'p{i}nr'])
                 if f'p{i}date' in query:
                     try:
                         position.setdate(query[f'p{i}date'])
