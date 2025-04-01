@@ -46,24 +46,6 @@ class Position:
         return bool(self.getvalue())
 
     # Methods for output
-    def htmlcells(self,indent:int = 0) -> str:
-        """
-        Gibt drei Zellen im HTML-Format aus.
-        Jede Zelle hat eine eigene Zeile.
-
-        Die Reihenfolge lautet:
-        Datum, Kostengrund, Betrag
-        """
-        out = []
-
-        joiner = "\n" + "\t"*indent
-
-        out.append( tools.cell( format_date(self.getdate(),locale="de_DE") ) )
-        out.append( tools.cell( escape(self.getreason()) ) )
-        out.append( tools.cell( tools.euro(self.getvalue()) ) )
-
-        return "\t"*indent + joiner.join(out)
-
     def check_filled(self) -> bool:
         """Gibt zurück, ob mindestens ein Feld ausgefüllt ist."""
         return bool(self.getvalue() or self.getdate()
