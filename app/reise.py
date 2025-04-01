@@ -304,6 +304,15 @@ class Abrechnung():
         self._car_distance = Decimal('0')
         self._overnight_flat = self._payment_iban_known = False
 
+    def __bool__(self) -> bool:
+        """Gibt True zurück, falls Tage vorhanden sind
+        oder Positionen oder andere Felder eingegeben wurden."""
+
+        for position in self.positions:
+            if position:
+                return True
+        return bool(self.getovernightflat() or self.getcardistance() or len(self.days))
+
     # Part of initialization
     def _create_positions(self,amount:int) -> tuple[Position]:
         """
