@@ -6,6 +6,7 @@ selbige als Dokument ausgeben.
 from datetime import date, time, timedelta
 from decimal import Decimal
 from html import escape
+from re import sub
 
 from babel.dates import format_date
 from schwifty import IBAN, exceptions
@@ -269,6 +270,7 @@ class Abrechnung():
     CAR_MAXRATE = Decimal(REISE_RATE['PKWMaximum'])
     OVERNIGHT_MIN = Decimal(REISE_RATE['UebernachtMin'])
 
+    _NAME = "Reisekostenabrechnung"
     _FIELD_NAMES = {'uname':'dein Name','group':'deine Arbeitsgruppe',
                     'reason':'der Anlass der Reise','iban':'deine IBAN',
                     'owner':'der Name des Kontoinhabers/der Kontoinhaberin',
@@ -548,6 +550,24 @@ class Abrechnung():
 
             errormessage = errorstart + errormessage
             return '\n'.join(errormessage)
+
+    # Methods for output
+    def suggest_filename(self) -> str:
+        """
+        Gibt eine Empfehlung für einen Dateinamen aus für Dateien, die
+        aus diesem Objekt generiert werden.
+        """
+        # Use constant _NAME as filename
+        out = self._NAME
+        if self.getusername():
+            # Add project name without special characters
+            out += " "+sub('[^A-Za-zÄÖÜäöüß0-9\\-_ ]','',
+                           self.getusername())
+        if self.getbegindate():
+            # Add project date
+            out += " "+str(self.getbegindate())
+        return out
+
 
     # Variable getters and setters
     def setusername(self,value:str = ""):
