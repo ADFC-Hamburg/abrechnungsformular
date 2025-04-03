@@ -143,7 +143,7 @@
 		<tbody>{% for i in range(abrechnung.POSITIONCOUNT) %}
 			<tr>
 				<td class="nr">{{ i+1 }}</td>
-				<td class="text">{{ abrechnung.positions[i].reason }}</td>
+				<td class="text">{{ abrechnung.positions[i].reason|e }}</td>
 				<td class="date">{% if abrechnung.positions[i].date %}{{ format_date(abrechnung.positions[i].date,locale='de_DE') }}{% endif %}</td>
 				<td class="money">{{ euro(abrechnung.positions[i].value,empty=True) }}</td>
 				<td></td>
