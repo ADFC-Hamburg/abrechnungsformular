@@ -223,7 +223,7 @@ class SingleDay(Day):
                                     minutes = end.minute-begin.minute,
                                     seconds = end.second-begin.second)
 
-    def getmealcost(self):
+    def getmealcost(self) -> Decimal:
         """
         Gibt zurück, wie viel Tagesgeld durch bereitgestellte Verpflegung
         gekürzt wird.
@@ -232,8 +232,11 @@ class SingleDay(Day):
         """
         if self.THRESHOLD > self._timedelta:
             return Decimal('0')
-        else:
-            return super().getmealcost(reduced=True)
+        cost = Decimal(0)
+        for i in range(self.MEALS):
+            if self[i]:
+                cost += self.MEAL_DEDUCTION[i]
+        return min(cost,self.getallowance())
 
     def getallowance(self) -> Decimal:
         """
@@ -244,7 +247,7 @@ class SingleDay(Day):
         if self.THRESHOLD > self._timedelta:
             return Decimal('0')
         else:
-            return super().getallowance(reduced=True)
+            return self.ALLOWANCE_REDUCED
         
     def getbenefits(self) -> Decimal:
         """
@@ -255,7 +258,7 @@ class SingleDay(Day):
         if self.THRESHOLD > self._timedelta:
             return Decimal('0')
         else:
-            return super().getbenefits(reduced=True)
+            return self.getallowance() - self.getmealcost()
 
 
 class Abrechnung():
