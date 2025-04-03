@@ -11,7 +11,7 @@ from re import sub
 from babel.dates import format_date
 from schwifty import IBAN, exceptions
 
-from . import tools, REISE_RATE
+from . import tools, PATHS, REISE_RATE
 
 
 class Position:
@@ -564,6 +564,19 @@ class Abrechnung():
             return '\n'.join(errormessage)
 
     # Methods for output
+    def html_compose(self) -> str:
+        """
+        Liest eine HTML-Vorlage ein und erstellt dann aus dieser
+        fertig ausgefüllte Abrechnungsformulare im HTML-Format.
+        """
+
+        template = tools.pdf_environment.get_template(PATHS.REISE_HTML)
+        today = format_date(date.today(),format='long',locale='de_DE')
+
+        return template.render(abrechnung=self,today=today,
+                               daycount=len(self.days),rates=REISE_RATE,
+                               rate_mahlzeit=Day.MEAL_DEDUCTION)
+
     def suggest_filename(self) -> str:
         """
         Gibt eine Empfehlung für einen Dateinamen aus für Dateien, die
@@ -579,7 +592,6 @@ class Abrechnung():
             # Add project date
             out += " "+str(self.getbegindate())
         return out
-
 
     # Variable getters and setters
     def setusername(self,value:str = ""):
