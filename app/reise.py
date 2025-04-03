@@ -595,19 +595,19 @@ class Abrechnung():
 
     # Variable getters and setters
     def setusername(self,value:str = ""):
-        """Legt den Namen des Aktiven fest."""
+        """Legt den Namen des/der Aktiven fest."""
         self._user_name = str(value).strip()
 
     def getusername(self) -> str:
-        """Gibt den Namen des Aktiven zurück."""
+        """Gibt den Namen des/der Aktiven zurück."""
         return self._user_name
 
     def setusergroup(self,value:str = ""):
-        """Legt die Arbeitsgruppe des Aktiven fest."""
+        """Legt die Arbeitsgruppe des/der Aktiven fest."""
         self._user_group = str(value).strip()
 
     def getusergroup(self) -> str:
-        """Gibt die Arbeitsgruppe des Aktiven zurück."""
+        """Gibt die Arbeitsgruppe des/der Aktiven zurück."""
         return self._user_group
 
     def setaccountname(self,value:str = ""):
@@ -813,9 +813,9 @@ class Abrechnung():
 
     # Properties
     username = property(getusername,setusername,None,
-                        "Der Name des Aktiven.")
+                        "Der Name des/der Aktiven.")
     usergroup = property(getusergroup,setusergroup,None,
-                          "Die Arbeitsgruppe des Aktiven.")
+                          "Die Arbeitsgruppe des/der Aktiven.")
     accountname = property(getaccountname,setaccountname,None,
                            "Der Inhaber des Überweisungskontos.")
     iban = property(getaccountiban,setaccountiban,None,
