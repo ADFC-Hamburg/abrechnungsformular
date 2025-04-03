@@ -267,8 +267,8 @@ class Abrechnung():
     """
 
     # Class constants
-    POSITIONCOUNT = 12
-    MAXDATES = 10
+    POSITIONCOUNT = 10
+    MAXDATES = 5
     CAR_RATE_PER_KM = Decimal(REISE_RATE['PKWproKM'])
     CAR_MAXRATE = Decimal(REISE_RATE['PKWMaximum'])
     OVERNIGHT_MIN = Decimal(REISE_RATE['UebernachtMin'])
