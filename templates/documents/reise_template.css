@@ -1,0 +1,402 @@
+@page {
+	size:		A4 portrait;
+	margin:		0;
+}
+:root {
+	font-size:	10pt;
+	font-family:	Arial, Helvetica, Arimo, "Liberation Sans", sans-serif;
+	--serif:	"Times New Roman", Times, Tinos, "Liberation Serif", serif;
+
+	--field-height:	1em;
+	--thin-border:	0.375pt solid black;
+	--main-width:	170mm;
+	--side-padding:	1.4mm;
+	--add-padding:	172.8mm; /* main-width + 2*side-padding */
+	--with-padding:	-1.4mm;
+}
+* {
+	box-sizing:	border-box;
+}
+body {
+	padding:	0;
+	margin: 	0;
+}
+.document {
+	width:		210mm;
+	height:		297mm;
+	border:		0;
+	margin:		0;
+	padding:	10mm 15mm 10mm 25mm;
+	position:	relative;
+}
+
+/* Allgemeine Einstellungen */
+
+a {
+	color:		black;
+}
+h1 {
+	margin:		0 0 0.5pt;
+}
+h1 i {
+	font-style:	normal;
+	font-weight:	normal;
+	font-size:	10pt;
+}
+table:not(:first-child) {
+	margin-top:	.5em;
+}
+caption {
+	font-weight:	bold;
+	text-align:	left;
+	margin:		0 var(--side-padding) 1pt;
+}
+p {
+	margin:		0;
+}
+p + p {
+	margin-top:	1.6mm;
+}
+table {
+	border-collapse:collapse;
+	position:	relative;
+	left:		var(--with-padding);
+	float:		left;
+}
+table.right {
+	left:		auto;
+	right:		var(--with-padding);
+	float:		right;
+}
+td, th {
+	padding:	1pt var(--side-padding);
+}
+td.mini, th.mini {
+	width:		0;
+}
+
+/* Classes */
+.equal-columns {
+	table-layout:	fixed;
+}
+.check {
+	text-align:	center;
+	width:		max-content;
+	font-family:	"DejaVu Sans", sans-serif;
+}
+.field {
+	height:		var(--field-height);
+}
+.field.date {
+	width:		23mm;
+	text-align:	center;
+}
+.field.km {
+	width:		12mm;
+	text-align:	center;
+}
+.field.text {
+	width:		60mm;
+	max-width:	60mm;
+}
+.field.time {
+	width:		14mm;
+	text-align:	center;
+}
+.hide {
+	border:		none !important;
+}
+.note {
+	font-size:	50%;
+	text-align:	left;
+	line-height:	1;
+}
+.money {
+	white-space:	nowrap;
+}
+.sum {
+	position:	relative;
+	border:		var(--thin-border);
+}
+.sum::before {
+	content:	"";
+	position:	absolute;
+	right:		-.375pt;
+	left:		-.375pt;
+	bottom:		-2pt;
+	height:		2pt;
+	border:		.375pt solid black;
+	border-top:	none;
+	z-index:	-1;
+}
+.text {
+	text-overflow:	ellipsis;
+	overflow:	hidden;
+	white-space:	nowrap;
+}
+.wide {
+	width:		var(--add-padding);
+}
+
+/* Header */
+
+header::before {
+	position:	absolute;
+	width:		54.4mm;
+	height:		17.5mm;
+	right:		10mm;
+	top:		10mm;
+
+	content:	"";
+	background-image:url('../../static/img/ADFC-HH-orangeblue.svg');
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size:contain;
+}
+header .info, header .box {
+	position:	absolute;
+	font-size:	8pt;
+}
+header .info {
+	font-weight:	bold;
+	left:		151.3mm;
+	top:		33mm;
+	width:		43.5mm;
+}
+header .box {
+	font-size:	8pt;
+	text-align:	justify;
+	left:		146.9mm;
+	top:		47.6mm;
+	width:		54.4mm;
+	border:		0.5pt solid black;
+	padding:	1mm;
+}
+
+/* Angaben */
+
+.angaben {
+	width:		116.5mm;
+	max-width:	116.5mm;
+	--field-height:	7mm;
+}
+.angaben h3 {
+	font-size:	inherit;
+}
+.angaben table {
+	position:	relative;
+	left:		var(--with-padding);
+	width:		100%;
+	max-width:	100%;
+}
+.angaben tr {
+	border:		var(--thin-border);
+	height:		var(--field-height);
+}
+.angaben td {
+	line-height:	5mm;
+}
+.angaben .field {
+	width:		87mm;
+	max-width:	87mm;
+	overflow:	hidden;
+	text-overflow:	ellipsis;
+}
+
+/* Adresse */
+
+header address {
+	font-size:	12pt;
+	font-style:	normal;
+
+	position:	absolute;
+	left:		25mm;
+	top:		55mm;
+	width:		80mm;
+	height:		40mm;
+
+	white-space:	nowrap;
+}
+
+/* Formular */
+
+main {
+	position:	absolute;
+	left:		25mm;
+	top:		95mm;
+	width:		var(--main-width);
+}
+div.field {
+	display:	inline-block;
+	border-bottom:	0.5pt dotted black;
+	padding:	0 1mm .5pt;
+	height:		var(--field-height);
+}
+
+/* Auswahltabellen */
+
+.select {
+	border:		var(--thin-border);
+}
+.select tr:first-child td {
+	padding-top:	1mm;
+}
+.select tr:last-child td {
+	padding-bottom:	1mm;
+}
+.select .label {
+	width:		34.7mm;
+}
+.select td {
+	height:		6.3mm;
+	white-space:	nowrap;
+}
+.select td div.field {
+	float:		right;
+	margin-bottom:	-0.5pt;
+}
+
+/* Tabellen mit Index oben und links */
+
+.caption-table thead {
+	border:		var(--thin-border);
+	border-bottom:	none;
+}
+.caption-table thead th:first-child {
+	text-decoration:underline;
+}
+.caption-table thead th:not(:first-child) {
+	border-bottom:	var(--thin-border);
+}
+.caption-table tbody th,
+.caption-table tfoot th {
+	border-right:	var(--thin-border);
+}
+.caption-table tbody {
+	border:		var(--thin-border);
+	border-top:	none;
+}
+.caption-table tfoot tr {
+	border:		var(--thin-border);
+}
+.caption-table th:first-child {
+	text-align:	left;
+}
+.days th:not(:first-child),
+.days td:not(:first-child) {
+	padding:	1pt 0;
+	text-align:	center;
+	width:		14mm;
+}
+.days .note {
+	width:		0;
+	padding-top:	0.5pt;
+}
+
+/* Minitabellen */
+table.mini {
+	border:		var(--thin-border);
+	width:		50mm;
+	max-width:	50mm;
+}
+table.mini .check {
+	vertical-align:	top;
+}
+table.mini td.field {
+	white-space:	nowrap;
+	vertical-align:	bottom;
+	text-align:	right;
+}
+
+/*Positions- und Summentabelle*/
+.calculation td,
+.calculation th {
+	border:		var(--thin-border);
+}
+.calculation th {
+	text-align:	center;
+}
+.calculation tbody,
+.calculation tfoot {
+	border-top:	1pt solid black;
+}
+.calculation .nr {
+	text-align:	center;
+	width:		0;
+}
+.calculation .date {
+	text-align:	center;
+	width:		10ch;
+}
+.calculation .money{
+	text-align:	right;
+	width:		9ch;
+}
+.calculation .text {
+	max-width:	15.688rem;
+}
+.calculation div.note {
+	position:	relative;
+	top:		1pt;
+	margin-left:	1em;
+	text-align:	right;
+	float:		right;
+}
+.calculation .padding + td,
+.calculation .padding + th,
+.calculation td + .padding,
+.calculation th + .padding {
+	border-left-style:hidden;
+}
+
+/* Unterschriftsfeld */
+
+footer {
+	position:	absolute;
+	left:		25mm;
+	bottom:		10mm;
+	width:		var(--main-width);
+}
+footer table:not(:first-child) {
+	margin-top:	0;
+}
+footer .booking {
+	width:		60mm;
+}
+footer tr {
+	border:		var(--thin-border);
+}
+footer td {
+	height:		6mm;
+	padding:	0 0.5pt;
+}
+footer td.label {
+	width:		30mm;
+}
+footer td.label:first-child {
+	padding-left:	var(--side-padding);
+}
+footer td.signature {
+	width:		62mm;
+	font-size:	8pt;
+	color:		darkgray;
+	white-space:	nowrap;
+}
+footer th {
+	text-align:	left;
+	padding-top:	0;
+}
+.version {
+	position:	absolute;
+	font-size:	6pt;
+	bottom:		-1em;
+	right:		0;
+}
+
+/* Seitennummer */
+
+.page {
+	position:	absolute;
+	bottom:		10mm;
+	right:		15mm;
+}
