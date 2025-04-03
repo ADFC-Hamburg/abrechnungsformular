@@ -74,16 +74,28 @@ def aktive_pdf():
 
 @pages.route('/reisekosten/abrechnung', methods=['GET'])
 def reise_pdf():
-    """WIP"""
+    """
+    Zeigt eine Reisekostenabrechnung als PDF-Datei an.
+
+    Daten werden aus einem GET-Querystring ausgelesen. Falls es keinen
+    gibt, wird ein vorgefertigtes leeres PDF-Dokument angezeigt.
+    """
     if request.method == 'GET' and request.args:
+        # Query provided; create invoice
         abrechnung = reise.Abrechnung()
         errormessage = abrechnung.evaluate_query(request.args.to_dict())
         if errormessage:
             abort(400, errormessage)
-        return str(abrechnung.gettotal())
+        # Create PDF from invoice
+        document = abrechnung.html_compose()
+        filename = abrechnung.suggest_filename()+'.pdf'
+        html = HTML(string=document,base_url=PATHS.PDF_TEMPLATE_FOLDER)
+        pdf = html.write_pdf()
+        return send_file(BytesIO(pdf), mimetype='application/pdf',
+                         as_attachment=True, download_name=filename)
     else:
-        # No query provided
-        abort(400)
+        # No query provided; use premade empty PDF instead
+        return pages.send_static_file('blank/Reisekostenabrechnung.pdf')
 
 @pages.route('/favicon.ico')
 def favicon():
