@@ -20,7 +20,7 @@
 	<header>
 		<div>
 			<h1>Reise&shy;kosten&shy;abrechnung</h1>
-			<p>Hier findest du das Abrechnungs&shy;formular für Aktive und Helfer&ast;innen beim ADFC&nbsp;Hamburg.</p>
+			<p>Hier findest du das Abrechnungs&shy;formular für Reise&shy;kosten für den ADFC&nbsp;Hamburg.</p>
 		</div>
 	</header>
 	<form action="{{ url_for('pages.reise_pdf') }}" method="get" data-maxpositions="{{ abrechnung.POSITIONCOUNT }}" data-maxdates="{{ abrechnung.MAXDATES }}">
@@ -121,10 +121,10 @@
 			<legend>Daten absenden</legend>
 			<section>
 				<input type="submit" id="submit" value="Abrechnung erstellen">
-				<!--<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>-->
+				<a href="{{ url_for('pages.reise_pdf') }}" class="button" download="Reisekostenabrechnung.pdf">Leere Abrechnung herunterladen</a>
 				<input type="reset" id="reset" value="Formular zurücksetzen">
-				<!--<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
-				<b>Papierbelege schickst du bitte im Original</b> und mit der dazugehörigen Positionsnummer versehen <b>zusammen mit dem ausgedruckten, ausgefüllten und unterschriebenen Formular</b> an die Geschäftsstelle (<address>ADFC&nbsp;Hamburg, Koppel 34-36, 20099 Hamburg</address>) oder gibst es dort ab.</aside>-->
+				<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
+				<b>Papierbelege schickst du bitte im Original</b> und mit der dazugehörigen Positionsnummer versehen <b>zusammen mit dem ausgedruckten, ausgefüllten und unterschriebenen Formular</b> an die Geschäftsstelle (<address>ADFC&nbsp;Hamburg, Koppel 34-36, 20099 Hamburg</address>) oder gibst es dort ab.</aside>
 			</section>
 		</fieldset>
 
