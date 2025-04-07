@@ -233,6 +233,38 @@ function updateMaxDate() {
 }
 
 /**
+ * Gleiche die früheste erlaubte Enduhrzeit der Anfangsuhrzeit an.
+ * 
+ * Sollte die Anfangsuhrzeit noch nicht eingegeben worden sein,
+ * setze sie auf 0:00
+ * 
+ * @since	2.0
+ */
+function updateMinTime() {
+	let value = document.getElementById("journeybegintime").value;
+	if (value == "") {
+		value = "0:00";
+	}
+	document.getElementById("journeyendtime").min = value;
+}
+
+/**
+ * Gleiche die späteste erlaubte Anfangsuhrzeit der Enduhrzeit an.
+ * 
+ * Sollte die Enduhrzeit noch nicht eingegeben worden sein,
+ * setze sie auf 23:59
+ * 
+ * @since	2.0
+ */
+function updateMaxTime() {
+	let value = document.getElementById("journeyendtime").value;
+	if (value == "") {
+		value = "23:59";
+	}
+	document.getElementById("journeybegintime").max = value;
+}
+
+/**
  * Begrenze den erlaubten Bereich aller Datumsfelder auf den
  * per Parameter angegebenen Mindest- und Höchstwert. (Ausgenommen sind
  * der Höchstwert für das Ende der Reise und der Mindestwert für den
@@ -443,7 +475,9 @@ function start() {
 
 	// Ereignisse für Uhrzeitfelder
 	document.getElementById("journeybegintime").addEventListener('change',function(){ dateDisplayInitialize(1); })
+	document.getElementById("journeybegintime").addEventListener('change',updateMinTime);
 	document.getElementById("journeyendtime").addEventListener('change',function(){ dateDisplayInitialize(1); })
+	document.getElementById("journeyendtime").addEventListener('change',updateMaxTime);
 
 	for (let i = 0; i < maxDates; i++) {
 		// Ereignisse für Mahlzeiten-Checkboxen
@@ -494,6 +528,9 @@ function restart() {
 	positionDisplayInitialize(1);
 	timeDisplay(false);
 	updateDateRange(earliestdate.toISOString().split("T")[0],new Date().toISOString().split("T")[0]);
+
+	document.getElementById("journeybegintime").max = '23:59'
+	document.getElementById("journeyendtime").min = '0:00'
 
 	document.getElementById("mealsummary").hidden = true;
 	document.getElementById("positionnotes").hidden = true;
