@@ -715,13 +715,11 @@ function start() {
 	document.getElementById("journeyendtime").addEventListener('change',function(){ dateDisplayInitialize(1); })
 	document.getElementById("journeyendtime").addEventListener('change',updateMaxTime);
 
-	for (let i = 0; i < maxDates; i++) {
-		// Ereignisse für Mahlzeiten-Checkboxen
-		const id = "day"+(i+1);
-		const displayFields = ["breakfast","lunch","dinner"];
-		for (let j = 0; j < displayFields.length; j++) {
-			document.getElementById(id+displayFields[j]).addEventListener('input',calculateDayMoney);
-		}
+	// Ereignisse für Mahlzeiten-Checkboxen
+	let fields = document.getElementById("mealdays").querySelectorAll("input[type='checkbox']");
+	count = fields.length;
+	for (let i = 0; i < count; i++) {
+		fields[i].addEventListener('input',calculateDayMoney);
 	}
 
 	for (let i = 0; i < maxPos; i++) {
