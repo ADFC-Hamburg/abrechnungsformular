@@ -624,6 +624,44 @@ function validateNumber(target) {
 }
 
 /**
+ * Validiert das gesamte Formular.
+ * 
+ * @since	2.0
+ */
+function validateForm() {
+
+	// Validierung von Textfeldern
+	for (let i = 0; i < fieldsText.length; i++) {
+		if (fieldsText[i].classList.contains('iban')) {
+			validateIban(fieldsText[i]);
+		} else {
+			validateText(fieldsText[i]);
+		}
+	}
+
+	// Validierung von Datumsfeldern
+	for (let i = 0; i < fieldsDate.length; i++) {
+		validateDate(fieldsDate[i]);
+	}
+
+	// Validierung von Zeitfeldern
+	for (let i = 0; i < fieldsTime.length; i++) {
+		validateTime(fieldsTime[i]);
+	}
+
+	// Validierung von Zahlenfeldern
+	for (let i = 0; i < fieldsNumber.length; i++) {
+		validateNumber(fieldsNumber[i]);
+	}
+
+	// Gibt es unvollständig ausgefüllte Positionen?
+	for (let i = 0; i < maxPos; i++) {
+		validateCompletion(i+1);
+	}
+
+}
+
+	/**
  * Überprüft, ob eine Position halb ausgefüllt ist
  * (z.B. Postion mit Namen und Wert, aber keinem Datum)
  * und gibt in diesem Fall eine Fehlermeldung aus.
@@ -637,18 +675,12 @@ function validateCompletion(position) {
 	let filled = Boolean(fields[0].value || fields[1].value || fields[2].value != 0);
 	if (fields[0].value == "" && filled) {
 		fields[0].setCustomValidity('Bitte fülle diese Position vollständig aus.');
-	} else {
-		fields[0].setCustomValidity('');
 	}
 	if (fields[1].value == "" && filled) {
 		fields[1].setCustomValidity('Bitte fülle diese Position vollständig aus.');
-	} else {
-		fields[1].setCustomValidity('');
 	}
 	if (fields[2].value == 0 && filled) {
 		fields[2].setCustomValidity('Bitte fülle diese Position vollständig aus.');
-	} else {
-		fields[2].setCustomValidity('');
 	}
 }
 
@@ -743,6 +775,7 @@ function start() {
 
 	// Ereignisse für Schaltflächen
 	/*document.getElementById("submit").addEventListener('click',validateForm);*/
+	document.getElementById("submit").addEventListener('click',validateForm);
 	document.getElementById("reset").addEventListener('click',restart);
 
 	// Ereignis beim Anzeigen der Seite
