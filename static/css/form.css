@@ -7,6 +7,8 @@
 	--radio-color:	hsl(25, 91%, 50%);
 	--fldst-color:	hsl(25, 91%, 95%);
 	--invalid-color:hsl(348, 100%, 50%);
+
+	--font-sans:	"Arimo","Liberation Sans","Open Sans",Arial,Helvetica,sans-serif;
 }
 * {
 	box-sizing:	border-box;
@@ -98,7 +100,7 @@ form {
 	margin: 	0 auto 1em;
 	padding:	0.5em;
 }
-form header {
+form > header {
 	--highlight:	#24477c;
 	--radio-color:	var(--adfc-blue);
 	--fldst-color:	hsl(216, 55%, 95%);
@@ -242,7 +244,7 @@ input[type="button"],
 	text-decoration:none;
 	text-align:	center;
 	font-weight:	bold;
-	font-family:	Arial, Helvetica, sans-serif;
+	font-family:	var(--font-sans);
 	font-size:	small;
 
 	cursor:		default;
