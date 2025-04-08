@@ -22,6 +22,9 @@
 			<h1>Aktiven&shy;abrechnung</h1>
 			<p>Hier findest du das Abrechnungs&shy;formular für Aktive und Helfer&ast;innen beim ADFC&nbsp;Hamburg.</p>
 		</div>
+		<nav>
+			<!--<a href="#" style="--highlight:red;">Linktext</a>--><a href="{{ url_for('pages.reise_form') }}">Reisekostenabrechnung</a>
+		</nav>
 	</header>
 	<form action="{{ url_for('pages.aktive_pdf') }}" method="get">
 		<header>

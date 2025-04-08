@@ -63,6 +63,54 @@ body > header img {
 	color:		white;
 	font-weight:	bold;
 }
+body > header > nav {
+	width:		100%;
+	text-align:	right;
+	overflow-x:	clip;
+}
+body > header > nav a {
+	position:	relative;
+	display:	inline-block;
+	z-index:	1;
+	white-space:	nowrap;
+	padding:	.3em .5em;
+	margin-left:	1em;
+
+	color:		black;
+	text-decoration:none;
+	font-family:	var(--font-sans);
+
+	transition:	padding	.35s;
+}
+body > header > nav a:hover {
+	padding-left:	0;
+	padding-right:	1em;
+}
+body > header > nav a::before {
+	position:	absolute;
+	left:		-.55em;
+	right:		-.85em;
+	top:		0;
+	bottom:		0;
+	z-index:	-1;
+
+	content:	"";
+	background-color:var(--highlight);
+	transform:	skewX(-45deg);
+}
+body > header > nav a::after {
+	position:	absolute;
+	right:		.5em;
+	bottom:		.3em;
+	content:	"\27A4";
+	opacity:	0;
+
+	transition:	opacity .35s, right .35s;
+}
+body > header > nav a:hover::after {
+	right:		0;
+	opacity:	1;
+}
 
 /* Dokument-Footer ———————————————————————————*/
 
@@ -378,6 +426,12 @@ label.km::after {
 	}
 	body > header::before {
 		background-image:url('../img/ADFC-HH-white.svg');
+	}
+	body > header > nav a {
+		color:		black !important;
+	}
+	body > header > nav a::before {
+		background-color:white;
 	}
 	fieldset {
 		background-color:white !important;
