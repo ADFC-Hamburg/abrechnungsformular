@@ -87,10 +87,12 @@ def reise_pdf():
         if errormessage:
             abort(400, errormessage)
         # Create PDF from invoice
+        xml = abrechnung.factur_x()
         document = abrechnung.html_compose()
         filename = abrechnung.suggest_filename()+'.pdf'
         html = HTML(string=document,base_url=PATHS.PDF_TEMPLATE_FOLDER)
         pdf = html.write_pdf()
+        pdf = attach_xml(pdf, xml)
         return send_file(BytesIO(pdf), mimetype='application/pdf',
                          as_attachment=True, download_name=filename)
     else:

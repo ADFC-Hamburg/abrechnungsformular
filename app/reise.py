@@ -3,15 +3,20 @@ Modul für Klassen, die Reisekostenabrechnungen repräsentieren oder
 selbige als Dokument ausgeben.
 """
 
-from datetime import date, time, timedelta
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
-from html import escape
 from re import sub
 
-from babel.dates import format_date
+from babel.dates import format_date, format_time
+from drafthorse.models.accounting import ApplicableTradeTax as DH_ApplicableTradeTax
+from drafthorse.models.document import Document as DH_Document
+from drafthorse.models.note import IncludedNote as DH_IncludedNote
+from drafthorse.models.party import TaxRegistration as DH_TaxRegistration
+from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms
+from drafthorse.models.product import ProductCharacteristic as DH_ProductCharacteristic
 from schwifty import IBAN, exceptions
 
-from . import tools, PATHS, REISE_RATE
+from . import tools, CONTACT, PATHS, REISE_RATE
 
 
 class Position:
@@ -122,6 +127,7 @@ class Day:
                       ALLOWANCE_FULL*Decimal('0.4'),
                       ALLOWANCE_FULL*Decimal('0.4'))
     MEALS = 3
+    MEALNAMES = ('Frühstück','Mittagessen','Abendessen')
 
     # Dunder methods
     def __init__(self):
@@ -564,6 +570,172 @@ class Abrechnung():
             return '\n'.join(errormessage)
 
     # Methods for output
+    def factur_x(self) -> bytes:
+        """
+        Erstellt aus der Abrechnung eine E-Rechnung,
+        die dem Standard Factur-X Extended (auch bekannt als
+        ZUGFeRD Extended) entspricht. Diese wird als binäre
+        XML-Datei zurückgegeben.
+        """
+
+        # General information
+        doc = DH_Document()
+        doc.context.guideline_parameter.id = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
+        doc.header.id = "REISE"+datetime.now().strftime("%Y%m%d%H%M%S")
+        doc.header.name = self._NAME.upper()
+        doc.header.issue_date_time = date.today()
+        doc.header.languages.add("de")
+        doc.header.type_code = "380" # Commercial invoice
+
+        if self.getcause():
+            note = DH_IncludedNote()
+            note.content_code = 'CAUSE'
+            note.content.add(self.getcause())
+            note.subject_code = "ACD" # Reason
+            doc.header.notes.add(note)
+
+        if self.getcause() == 'Testrechnung':
+            doc.context.test_indicator = True
+
+        # Names, addresses, tax registrations
+        adfc = doc.trade.agreement.buyer
+        user = doc.trade.agreement.seller
+
+        adfc.name = CONTACT['Name']
+        adfc.address.line_one = CONTACT['LineOne']
+        if 'LineTwo' in CONTACT.keys():
+            adfc.address.line_two = CONTACT['LineTwo']
+        if 'LineThree' in CONTACT.keys():
+            adfc.address.line_three = CONTACT['LineThree']
+        adfc.address.postcode = CONTACT['PostCode']
+        adfc.address.city_name = CONTACT['City']
+        #adfc.address.country_subdivision = CONTACT['State']
+        adfc.address.country_id = CONTACT['Country']
+
+        user.name = self.getusername()
+        user.description = self.getusergroup()
+        user.address.line_one = "c/o " + CONTACT['Name']
+        user.address.line_two = CONTACT['LineOne']
+        if 'LineTwo' in CONTACT.keys():
+            user.address.line_three = CONTACT['LineTwo']
+        user.address.postcode = CONTACT['PostCode']
+        user.address.city_name = CONTACT['City']
+        #user.address.country_subdivision = CONTACT['State']
+        user.address.country_id = CONTACT['Country']
+
+        tr = DH_TaxRegistration()
+        tr.id = ("VA",CONTACT['VAT-Nr.']) # FC == Tax number, VA == VAT Number
+        adfc.tax_registrations.add(tr)
+        user.tax_registrations.add(tr)
+
+        # Dates
+        doc.trade.settlement.period.start = self.getbegindate()
+        doc.trade.settlement.period.end = self.getenddate()
+
+        # Day allowance
+        for index, day in enumerate(self.days):
+            li = tools.TaxExemptLineItem()
+            li.document.line_id = 'T'+str(index+1)
+            li.product.name = 'Tagesgeld ' + format_date(
+                self.getbegindate()+timedelta(days=index),
+                format="EEEE, d. MMMM",locale="de_DE"
+            )
+            li.agreement.net.basis_quantity = (1,"DAY")
+            li.delivery.billed_quantity = (1,"DAY")
+            for i, meal in enumerate(day.MEALNAMES):
+                pc = DH_ProductCharacteristic()
+                pc.description = meal
+                pc.value = 'true' if day[i] else 'false'
+                li.product.characteristics.add(pc)
+            if day.__class__ == SingleDay:
+                li.agreement.net.amount = day.getbenefits()
+                li.settlement.monetary_summation.total_amount = day.getbenefits()
+                note2 = DH_IncludedNote()
+                note2.content_code = 'TIME'
+                note2.content.add(format_time(self.getbegintime(),
+                    format='short',locale='de_DE')+' - '+format_time(
+                    self.getendtime(),format='short',locale='de_DE'))
+                note2.subject_code = "BLO" # Period of time
+                li.document.notes.add(note2)
+            else:
+                reduced = index==0 or index==len(self.days)-1
+                li.agreement.net.amount = day.getbenefits(reduced)
+                li.settlement.monetary_summation.total_amount = day.getbenefits(reduced)
+            doc.trade.items.add(li)
+        
+        # Positions
+        for index, position in enumerate(self.positions):
+            if not position:
+                continue
+            li = tools.TaxExemptLineItem()
+            li.document.line_id = str(index+1)
+            li.product.name = position.getreason()
+            li.agreement.contract.issue_date_time = position.getdate()
+            li.agreement.net.amount = position.getvalue()
+            li.agreement.net.basis_quantity = (1, "H87")  # H87 == Item
+            li.delivery.billed_quantity = (1, "H87")  # H87 == Item
+            li.settlement.monetary_summation.total_amount = position.getvalue()
+            doc.trade.items.add(li)
+
+        # Travel expense reimbursement
+        if self.getcardistance():
+            li = tools.TaxExemptLineItem()
+            li.document.line_id = "WSE"
+            li.product.name = "Wegstreckenentschädigung"
+            li.agreement.net.amount = self.CAR_RATE_PER_KM
+            li.agreement.net.basis_quantity = (self.getcardistance(),"KMT") # Kilometre
+            li.delivery.billed_quantity = (min(self.getcardistance(),self.CAR_MAXRATE/self.CAR_RATE_PER_KM),"KMT") # Kilometre
+            li.settlement.monetary_summation.total_amount = self.getmileage()
+            doc.trade.items.add(li)
+
+        # Overnight pay flat
+        if self.getovernightpay():
+            li = tools.TaxExemptLineItem()
+            li.document.line_id = "ÜP"
+            li.product.name = "Übernachtungspauschale"
+            li.agreement.net.amount = self.OVERNIGHT_MIN
+            li.agreement.net.basis_quantity = (len(self.days) - 1,"DAY")
+            li.delivery.billed_quantity = (len(self.days) - 1,"DAY")
+            li.settlement.monetary_summation.total_amount = self.getovernightpay()
+            doc.trade.items.add(li)
+
+        # Payment information
+        doc.trade.settlement.payment_means.payee_account.account_name = CONTACT['AccName']
+        doc.trade.settlement.payment_means.payee_account.iban = CONTACT['IBAN']
+        doc.trade.settlement.payment_means.payee_institution.bic = CONTACT['BIC']
+
+        term = DH_PaymentTerms()
+        doc.trade.settlement.payment_means.type_code = "42" # Payment to bank account
+        term.description = "Wir überweisen den Abrechnungsbetrag auf dein Konto."
+        if self.getibanknown():
+            doc.trade.settlement.payment_means.information.add("Meine Bankverbindung ist dem ADFC Hamburg bekannt.")
+        else:
+            doc.trade.settlement.payment_means.payee_account.iban = self.getaccountiban()
+            if self.getaccountname():
+                doc.trade.settlement.payment_means.payee_account.account_name = self.getaccountname()
+        doc.trade.settlement.terms.add(term)
+
+        trade_tax = DH_ApplicableTradeTax()
+        trade_tax.calculated_amount = Decimal()
+        trade_tax.basis_amount = self.gettotal()
+        trade_tax.type_code = "VAT"
+        trade_tax.category_code = 'E' # Exempt from tax
+        trade_tax.exemption_reason = "Vereinsinterne Abrechnung"
+        trade_tax.rate_applicable_percent = Decimal()
+        doc.trade.settlement.trade_tax.add(trade_tax)
+
+        # Total
+        doc.trade.settlement.currency_code = "EUR"
+        doc.trade.settlement.monetary_summation.line_total = self.gettotal()
+        doc.trade.settlement.monetary_summation.charge_total = Decimal()
+        doc.trade.settlement.monetary_summation.allowance_total = Decimal()
+        doc.trade.settlement.monetary_summation.tax_basis_total = self.gettotal()
+        doc.trade.settlement.monetary_summation.tax_total = (Decimal(),"EUR")
+        doc.trade.settlement.monetary_summation.grand_total = self.gettotal()
+        doc.trade.settlement.monetary_summation.due_amount = self.gettotal()
+
+        return doc.serialize(schema="FACTUR-X_EXTENDED")
+
     def html_compose(self) -> str:
         """
         Liest eine HTML-Vorlage ein und erstellt dann aus dieser
@@ -739,7 +911,8 @@ class Abrechnung():
         Gibt die Höhe der Wegstreckenentschädigung für Fahrten
         im privaten PKW zurück.
         """
-        return self.CAR_MAXRATE.min(self.CAR_RATE_PER_KM * self._car_distance)
+        return self.CAR_MAXRATE.min(self.CAR_RATE_PER_KM * self._car_distance)\
+            .quantize(Decimal('.01'))
 
     def setovernightflat(self,value:bool):
         """
