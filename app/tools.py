@@ -3,8 +3,11 @@ Sammelmodul für diverse Funktionen, die im Ausgabeprogramm
 der Aktivenabrechnung zum Einsatz kommen.
 """
 
+from decimal import Decimal
+
 from babel.numbers import format_currency, format_decimal
 from babel.dates import format_date, format_time
+from drafthorse.models.tradelines import LineItem
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import CONTACT, PATHS, VERSION
@@ -18,6 +21,14 @@ class DecimalsException(Exception):
 
 class IllegalValueException(Exception):
     pass
+
+class TaxExemptLineItem(LineItem):
+    """Drafthorse line item with tax exemption."""
+    def __init__(self):
+        super().__init__()
+        self.settlement.trade_tax.type_code = "VAT"
+        self.settlement.trade_tax.category_code = 'E' # Exempt from tax
+        self.settlement.trade_tax.rate_applicable_percent = Decimal()
 
 
 def cell(value = "", classes="") -> str:

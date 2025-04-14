@@ -14,7 +14,6 @@ from drafthorse.models.document import Document as DH_Document
 from drafthorse.models.note import IncludedNote as DH_IncludedNote
 from drafthorse.models.party import TaxRegistration as DH_TaxRegistration
 from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms
-from drafthorse.models.tradelines import LineItem as DH_LineItem
 from schwifty import IBAN, exceptions
 
 from . import tools, CONTACT, PATHS
@@ -560,7 +559,7 @@ class Abrechnung:
             position = self.positions[index]
             if not position:
                 continue
-            li = DH_LineItem()
+            li = tools.TaxExemptLineItem()
             li.document.line_id = str(index+1)
             li.product.name = position.getname()
             li.agreement.net.amount = Decimal(abs(position.getunitprice()) or abs(position.getvalue()))
@@ -569,22 +568,16 @@ class Abrechnung:
                 count = -count
             li.agreement.net.basis_quantity = (count, "H87")  # H87 == Item
             li.delivery.billed_quantity = (count, "H87")  # H87 == Item
-            li.settlement.trade_tax.type_code = "VAT"
-            li.settlement.trade_tax.category_code = 'E' # Exempt from tax
-            li.settlement.trade_tax.rate_applicable_percent = Decimal("0.00")
             li.settlement.monetary_summation.total_amount = Decimal(position.getvalue() * mode)
             doc.trade.items.add(li)
 
         if self.getdonations():
-            li = DH_LineItem()
+            li = tools.TaxExemptLineItem()
             li.document.line_id = "SP"
             li.product.name = "Spenden"
             li.agreement.net.amount = Decimal(self.getdonations())
             li.agreement.net.basis_quantity = (Decimal(mode), "H87")  # H87 == Item
             li.delivery.billed_quantity = (Decimal(mode), "H87")  # H87 == Item
-            li.settlement.trade_tax.type_code = "VAT"
-            li.settlement.trade_tax.category_code = 'E' # Exempt from tax
-            li.settlement.trade_tax.rate_applicable_percent = Decimal("0.00")
             li.settlement.monetary_summation.total_amount = Decimal(self.getdonations() * mode)
             doc.trade.items.add(li)
         
