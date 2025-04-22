@@ -49,7 +49,7 @@
 		</table>
 	</div>
 	<adress>
-		{{ address['Name'] }}<br />Buchhaltung<br />{{ address['LineOne'] }}<br />{{ address['PostCode'] }} {{ address['City'] }}
+		{{ address['Name'] }}<br />Buchhaltung<br />{{ address['LineOne'] }}<br />{% if address['LineTwo'] %}{{ address['LineTwo'] }}<br />{% endif %}{% if address['LineThree'] %}{{ address['LineThree'] }}<br />{% endif %}{{ address['PostCode'] }} {{ address['City'] }}
 	</adress>
 	<div class="abrechnung">
 		<h1><strong>Aktivenabrechnung</strong> — Einnahmen und Ausgaben</h1>

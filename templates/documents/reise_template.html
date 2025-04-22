@@ -33,7 +33,7 @@
 		</table>
 	</div>
 	<address>
-		{{ address['Name'] }}<br />Buchhaltung<br />{{ address['LineOne'] }}<br />{{ address['PostCode'] }} {{ address['City'] }}
+		{{ address['Name'] }}<br />Buchhaltung<br />{{ address['LineOne'] }}<br />{% if address['LineTwo'] %}{{ address['LineTwo'] }}<br />{% endif %}{% if address['LineThree'] %}{{ address['LineThree'] }}<br />{% endif %}{{ address['PostCode'] }} {{ address['City'] }}
 	</address>
 	<div class="info">Mit einem Sternchen * gekennzeichnete Felder werden von der Buchhaltung ausgef&uuml;llt.</div>
 	<div class="box">
