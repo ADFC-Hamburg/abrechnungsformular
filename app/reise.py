@@ -624,7 +624,7 @@ class Abrechnung():
         user.address.country_id = CONTACT['Country']
 
         tr = DH_TaxRegistration()
-        tr.id = ("VA",CONTACT['VAT-Nr.']) # FC == Tax number, VA == VAT Number
+        tr.id = ("VA",CONTACT['VAT']) # FC == Tax number, VA == VAT Number
         adfc.tax_registrations.add(tr)
         user.tax_registrations.add(tr)
 
