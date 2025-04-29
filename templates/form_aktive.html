@@ -5,7 +5,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Aktivenabrechnung</title>
-	<meta name="description" content="Abrechnungsformular des ADFC Hamburg" />
+	<meta name="description" content="Abrechnungsformular des {{ address['NameShort'] }}" />
 	<meta name="author" content="Patrick Lübcke" />
 	<meta name="application-name" content="Abrechnungsformular" />
 	<meta name="theme-color" content="#24477c" />
@@ -20,7 +20,7 @@
 	<header>
 		<div>
 			<h1>Aktiven&shy;abrechnung</h1>
-			<p>Hier findest du das Abrechnungs&shy;formular für Aktive und Helfer&ast;innen beim ADFC&nbsp;Hamburg.</p>
+			<p>Hier findest du das Abrechnungs&shy;formular für Aktive und Helfer&ast;innen beim {{ address['NameShort'] | replace(' ','\xa0') }}.</p>
 		</div>
 		<nav>
 			<!--<a href="#" style="--highlight:red;">Linktext</a>--><a href="{{ url_for('pages.reise_form') }}">Reisekostenabrechnung</a>
@@ -191,7 +191,7 @@
 					<label class="field"><abbr title="Internationale Bankkontonummer">IBAN</abbr>: <input type="text" name="iban" id="processiban" size=22 placeholder="DE12345678901234567890" class="iban"></label>
 					<label class="field">Kontoinhaber: <input type="text" name="owner" id="processowner" autocomplete="name"></label>
 					<br>
-					<label class="option"><input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem ADFC&nbsp;Hamburg bekannt.</label>
+					<label class="option"><input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem {{ address['NameShort'] | replace(' ','\xa0') }} bekannt.</label>
 				</div>
 			</section>
 			<!--Einzug-->
@@ -211,7 +211,7 @@
 			<section>
 				<div class="select">
 					<label class="option"><input type="radio" id="processbyuser" name="prtype" value="3">Du überweist den Abrechnungsbetrag selbst.</label>
-					<aside id="processnote">Bitte überweise den Abrechnungsbetrag innerhalb von 10 Tagen auf das Konto des ADFC&nbsp;Hamburg mit der folgenden <abbr title="Internationale Bankkontonummer">IBAN</abbr>: <span class="iban">DE80&nbsp;4306&nbsp;0967&nbsp;2029&nbsp;4456&nbsp;00</span></aside>
+					<aside id="processnote">Bitte überweise den Abrechnungsbetrag innerhalb von 10 Tagen auf das Konto des {{ address['NameShort'] | replace(' ','\xa0') }} mit der folgenden <abbr title="Internationale Bankkontonummer">IBAN</abbr>: <span class="iban">{{ address['IBAN'] | replace(' ','\xa0') }}</span></aside>
 				</div>
 			</section>
 		</fieldset>
@@ -222,7 +222,7 @@
 				<input type="submit" id="submit" value="Abrechnung erstellen">
 				<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
 				<input type="reset" id="reset" value="Formular zurücksetzen">
-				<aside>Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
+				<aside>Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:{{ address['MailAccounting'] }}">{{ address['MailAccounting'] }}</a> schicken.<br />
 				Vergiss dabei nicht, <b>sämtliche Belege</b> an die E&#8209;Mail anzuhängen. Kassen&shy;bons oder andere Papier&shy;belege schickst du als Scan oder notfalls als Foto ein, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.<br />
 				Wenn eine Digitalisierung der Belege nicht möglich ist, sende die Abrechnung bitte dennoch per E&#8209;Mail ein. Sende die Belege <b>im Original</b> mit der jeweiligen Positions&shy;nummer versehen, zusammen mit einer Notiz zum Datum der Abrechnung, an unsere Geschäfts&shy;stelle <address>({{ address["NameShort"] }}, {{ address["LineOne"] }}, {% if address["LineTwo"] %}{{ address["LineTwo"] }}, {% endif %}{% if address["LineThree"] %}{{ address["LineThree"] }}, {% endif %}{{ address["PostCode"] }} {{ address["City"] }})</address> oder gib sie dort ab.</aside>
 			</section>

@@ -5,7 +5,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Reisekostenabrechnung</title>
-	<meta name="description" content="Abrechnungsformular des ADFC Hamburg" />
+	<meta name="description" content="Abrechnungsformular des {{ address['NameShort'] }}" />
 	<meta name="author" content="Patrick Lübcke" />
 	<meta name="application-name" content="Abrechnungsformular" />
 	<meta name="theme-color" content="#24477c" />
@@ -20,7 +20,7 @@
 	<header>
 		<div>
 			<h1>Reise&shy;kosten&shy;abrechnung</h1>
-			<p>Hier findest du das Abrechnungs&shy;formular für Reise&shy;kosten für den ADFC&nbsp;Hamburg.</p>
+			<p>Hier findest du das Abrechnungs&shy;formular für Reise&shy;kosten für den {{ address['NameShort'] | replace(' ','\xa0') }}.</p>
 		</div>
 		<nav>
 			<!--<a href="#" style="--highlight:red;">Linktext</a>--><a href="{{ url_for('pages.index') }}">Aktivenabrechnung</a>
@@ -117,7 +117,7 @@
 				<label class="field"><abbr title="Internationale Bankkontonummer">IBAN</abbr>: <input type="text" name="iban" id="processiban" size=22 placeholder="DE12345678901234567890" class="iban"></label>
 				<label class="field">Kontoinhaber: <input type="text" name="owner" id="processowner" autocomplete="name"></label>
 				<br>
-				<label class="option indent"> <input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem ADFC&nbsp;Hamburg bekannt.</label>
+				<label class="option indent"> <input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem {{ address['NameShort'] | replace(' ','\xa0') }} bekannt.</label>
 			</section>
 		</fieldset>
 		<fieldset>
@@ -126,7 +126,7 @@
 				<input type="submit" id="submit" value="Abrechnung erstellen">
 				<a href="{{ url_for('pages.reise_pdf') }}" class="button" download="Reisekostenabrechnung.pdf">Leere Abrechnung herunterladen</a>
 				<input type="reset" id="reset" value="Formular zurücksetzen">
-				<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
+				<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:{{ address['MailAccounting'] }}">{{ address['MailAccounting'] }}</a> schicken.<br />
 				<b>Papierbelege schickst du bitte im Original</b> und mit der dazugehörigen Positionsnummer versehen <b>zusammen mit dem ausgedruckten, ausgefüllten und unterschriebenen Formular</b> an die Geschäftsstelle <address>{{ address["NameShort"] }}, {{ address["LineOne"] }}, {% if address["LineTwo"] %}{{ address["LineTwo"] }}, {% endif %}{% if address["LineThree"] %}{{ address["LineThree"] }}, {% endif %}{{ address["PostCode"] }} {{ address["City"] }}</address> oder gibst es dort ab.</aside>
 			</section>
 		</fieldset>

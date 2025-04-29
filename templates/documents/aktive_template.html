@@ -5,7 +5,7 @@
 	<meta charset="utf-8" />
 	<title>Aktivenabrechnung</title>
 	<meta name="author" content="ADFC Hamburg" />
-	<meta name="description" content="Kosten- und Gewinnabrechnung für Aktive des ADFC Hamburg."/>
+	<meta name="description" content="Kosten- und Gewinnabrechnung für Aktive des {{ address['NameShort'] }}."/>
 	<link rel="stylesheet" href="aktive_template.css">
 </head>
 
@@ -17,7 +17,7 @@
 	<!-- <div class="symbol">a</div> -->
 	<div class="info">Mit einem Sternchen * gekennzeichnete Felder werden von der Buchhaltung ausgef&uuml;llt.</div>
 	<div class="box">
-		<p>Zusammen mit <b>digitalen Belegen</b> kannst du dieses <b>Formular per E&#8209;Mail</b> an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> senden.</p>
+		<p>Zusammen mit <b>digitalen Belegen</b> kannst du dieses <b>Formular per E&#8209;Mail</b> an <a href="mailto:{{ address['MailAccounting'] }}">{{ address['MailAccounting'] }}</a> senden.</p>
 		<p>Papier&shy;belege hängst du als Scan oder not&shy;falls als Foto an, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.</p>
 		<p>Alternativ sende die Belege <b>im Original</b> mit der jeweiligen Positions&shy;nummer versehen, zusammen mit einer Notiz zum Datum dieser Abrechnung, an unsere Geschäfts&shy;stelle (Adresse links) oder gib sie dort ab.</p>
 	</div>
