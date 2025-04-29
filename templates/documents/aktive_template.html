@@ -115,7 +115,7 @@
 			<tr>
 				<td></td>
 				<td class="check">{{ checkbox(abrechnung.ibanmode == 1 and abrechnung.ibanknown) | safe }}</td>
-				<td>Meine Bankverbindung ist dem ADFC Hamburg bekannt.</td>
+				<td>Meine Bankverbindung ist dem {{ address['NameShort'] }} bekannt.</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -143,7 +143,7 @@
 			</tr>
 			<tr>
 				<td class="check">{{ checkbox(abrechnung.ibanmode == 3) | safe }}</td>
-				<td colspan=2>Ich überweise den Abrechnungsbetrag innerhalb von 10 Tagen auf das Konto des ADFC Hamburg mit der IBAN:&#9;DE80 4306 0967 2029 4456 00</td>
+				<td colspan=2>Ich überweise den Abrechnungsbetrag innerhalb von 10 Tagen auf das Konto des {{ address['NameShort'] }} mit der IBAN:&#9;DE80 4306 0967 2029 4456 00</td>
 			</tr>
 		</table>
 		<table class="bottomtable">
