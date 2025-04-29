@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Reisekostenabrechnung</title>
+	<meta name="description" content="Abrechnungsformular des ADFC Hamburg" />
+	<meta name="author" content="Patrick Lübcke" />
+	<meta name="application-name" content="Abrechnungsformular" />
+	<meta name="theme-color" content="#24477c" />
+	<link rel="stylesheet" href="{{ url_for(static, filename='css/form.css') }}">
+	<link rel="icon" href="{{ url_for(static, filename='img/favicon.ico') }}" sizes="32x32">
+	<link rel="icon" href="{{ url_for(static, filename='img/icon.svg') }}" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="{{ url_for(static, filename='img/apple-touch-icon.png') }}">
+	<link rel="manifest" href="{{ url_for(static, filename='json/manifest.webmanifest') }}">
+</head>
+
+<body>
+	<header>
+		<div>
+			<h1>Reise&shy;kosten&shy;abrechnung</h1>
+			<p>Hier findest du das Abrechnungs&shy;formular für Reise&shy;kosten für den ADFC&nbsp;Hamburg.</p>
+		</div>
+		<nav>
+			<!--<a href="#" style="--highlight:red;">Linktext</a>--><a href="{{ url_for('pages.index') }}">Aktivenabrechnung</a>
+		</nav>
+	</header>
+	<form action="{{ url_for('pages.reise_pdf') }}" method="get" data-maxpositions="{{ abrechnung.POSITIONCOUNT }}" data-maxdates="{{ abrechnung.MAXDATES }}">
+		<header>
+			<fieldset>
+				<legend>Persönliche Angaben</legend>
+				<section>
+					<label class="field">Dein Name: <input type="text" name="uname" id="username" autocomplete="name" required></label>
+					<label class="field">Dein Arbeitsbereich: <input type="text" name="ugroup" id="usergroup" autocomplete="on" required></label>
+				</section>
+			</fieldset>
+			<fieldset>
+				<legend>Angaben zur Reise</legend>
+				<section>
+					<div class="select">
+						<label class="field">Anlass: <input type="text" name="reason" id="reason" size=24 required></label>
+					</div>
+					<div class="subselect">
+						<label class="field">Beginn der Reise: <input type="date" name="begin" id="journeybegindate" required></label>
+						<label class="field">Ende der Reise: <input type="date" name="end" id="journeyenddate" required></label>
+					</div>
+				</section>
+				<section id="timesection">
+					<noscript class="select">
+						<aside>Nur bei eintägiger Reise auszufüllen</aside>
+					</noscript>
+					<div class="subselect">
+						<label class="field">Uhrzeit der Abreise: <input type="time" name="begintime" id="journeybegintime" step=60></label>
+						<label class="field">Uhrzeit der Rückkehr: <input type="time" name="endtime" id="journeyendtime" step=60></label>
+					</div>
+				</section>
+			</fieldset>
+		</header>
+		<fieldset>
+			<legend>Verpflegung</legend>
+			<section>
+				<div id="mealinstruct">Gib hier alle Mahlzeiten an, welche du unentgeldlich durch den ADCF oder Veranstalter erhalten hast oder welche in einem anderen Kostenpunkt enthalten sind (z.B. Hotelzimmer inklusive Frühstück).</div>
+				<aside id="mealhint" hidden></aside>
+			</section>
+			<section id="mealdays">
+				<div style="column-count:2; column-gap:3rem;">
+{% for i in range(1,abrechnung.MAXDATES +1) %}
+					<div class="block">
+						<div class="select" id="day{{ i }}">Tag {{ i }}:</div>
+						<div class="subselect">
+							<label class="option"><input type="checkbox" name="d{{ i }}m1" id="day{{ i }}breakfast" value="1">Frühstück</label>
+							<label class="option"><input type="checkbox" name="d{{ i }}m2" id="day{{ i }}lunch" value="1">Mittagessen</label>
+							<label class="option"><input type="checkbox" name="d{{ i }}m3" id="day{{ i }}dinner" value="1">Abendessen</label>
+						</div>
+					</div>
+{% endfor %}
+				</div>
+			</section>
+			<section id="mealsummary" data-dailyrate="{{ rates['Tagessatz']['GanzerTag'] }}" data-dailyratereduced="{{ rates['Tagessatz']['AnAbreise'] }}" data-dailyratesingle="{{ rates['Tagessatz']['Einzeltag'] }}" hidden>
+				<div class="subinput">Dir werden <b id="dayamount"></b> an Tagesgeld<span id="dayplural">ern</span> ausgezahlt.</div>
+			</section>
+		</fieldset>
+		<fieldset>
+			<legend>Ausgaben</legend>
+{% for i in range(1,abrechnung.POSITIONCOUNT +1) %}
+			<section id="position{{ i }}section">
+				<div class="select">
+					<label class="field">Kostengrund: <input type="text" class="field" name="p{{ i }}name" id="position{{ i }}name" placeholder="Position {{ i }}" size=24></label>
+					<label class="field">Datum: <input type="date" name="p{{ i }}date" id="position{{ i }}date"></label>
+				</div>
+				<div class="subinput">
+					<label class="field money">Betrag: <input type="number" name="p{{ i }}" id="position{{ i }}amount" min="0" step="0.01" class="money"></label>
+				</div>
+			</section>
+{% endfor %}
+			<section id="positionnotes" hidden>
+				<div class="subinput">Insgesamt wurden <b id="positiontotal"></b> ausgegeben.</div>
+			</section>
+		</fieldset>
+		<fieldset>
+			<legend>Erstattungen</legend>
+			<section>
+				<label class="field km">Mit privaten PKW zurückgelegte Strecke: <input type="number" name="car" id="cardistance" min="0" step="any" class="km"></label>
+			</section>
+			<section id="nightsection">
+				<label class="option"><input type="checkbox" id="overnightcheck" name="night" value="1">Du hattest keine Ausgaben für Übernachtungen oder die Ausgaben lagen unter {{ rates['UebernachtMin'].replace('.',',') }}&nbsp;&euro; pro Tag.</label>
+			</section>
+			<section id="extrasummary" data-carmoneyperkm="{{ rates['PKWproKM'] }}" data-carmoneymax="{{ rates['PKWMaximum'] }}" data-moneypernight="{{ rates['UebernachtMin'] }}" hidden>
+				<div class="subinput">Dir werden <span id="extraamount"></span> erstattet.</div>
+			</section>
+		</fieldset>
+		<fieldset>
+			<legend>Bankverbindung</legend>
+			<section id="totalamount">Wir überweisen den Erstattungsbetrag auf dein Bankkonto.</section>
+			<section>
+				<label class="field"><abbr title="Internationale Bankkontonummer">IBAN</abbr>: <input type="text" name="iban" id="processiban" size=22 placeholder="DE12345678901234567890" class="iban"></label>
+				<label class="field">Kontoinhaber: <input type="text" name="owner" id="processowner" autocomplete="name"></label>
+				<br>
+				<label class="option indent"> <input type="checkbox" name="known" id="processuserknown" value="1">Meine Bankverbindung ist dem ADFC&nbsp;Hamburg bekannt.</label>
+			</section>
+		</fieldset>
+		<fieldset>
+			<legend>Daten absenden</legend>
+			<section>
+				<input type="submit" id="submit" value="Abrechnung erstellen">
+				<a href="{{ url_for('pages.reise_pdf') }}" class="button" download="Reisekostenabrechnung.pdf">Leere Abrechnung herunterladen</a>
+				<input type="reset" id="reset" value="Formular zurücksetzen">
+				<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> schicken.<br />
+				<b>Papierbelege schickst du bitte im Original</b> und mit der dazugehörigen Positionsnummer versehen <b>zusammen mit dem ausgedruckten, ausgefüllten und unterschriebenen Formular</b> an die Geschäftsstelle <address>{{ address["NameShort"] }}, {{ address["LineOne"] }}, {% if address["LineTwo"] %}{{ address["LineTwo"] }}, {% endif %}{% if address["LineThree"] %}{{ address["LineThree"] }}, {% endif %}{{ address["PostCode"] }} {{ address["City"] }}</address> oder gibst es dort ab.</aside>
+			</section>
+		</fieldset>
+
+	</form>
+	<footer>
+		<nav>
+			<a href="{{ address['WebLegal'] }}">Impressum</a><a href="{{ address['WebPrivacy'] }}">Datenschutz</a>
+		</nav>
+		<div class="version">Abrechnungsformular v{{version}}</div>
+	</footer>
+	<script src="{{ url_for(static, filename='js/form_reise.js') }}"></script>
+</body>
+
+</html>

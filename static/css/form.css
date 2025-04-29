@@ -7,6 +7,8 @@
 	--radio-color:	hsl(25, 91%, 50%);
 	--fldst-color:	hsl(25, 91%, 95%);
 	--invalid-color:hsl(348, 100%, 50%);
+
+	--font-sans:	"Arimo","Liberation Sans","Open Sans",Arial,Helvetica,sans-serif;
 }
 * {
 	box-sizing:	border-box;
@@ -61,6 +63,54 @@ body > header img {
 	color:		white;
 	font-weight:	bold;
 }
+body > header > nav {
+	width:		100%;
+	text-align:	right;
+	overflow-x:	clip;
+}
+body > header > nav a {
+	position:	relative;
+	display:	inline-block;
+	z-index:	1;
+	white-space:	nowrap;
+	padding:	.3em .5em;
+	margin-left:	1em;
+
+	color:		black;
+	text-decoration:none;
+	font-family:	var(--font-sans);
+
+	transition:	padding	.35s;
+}
+body > header > nav a:hover {
+	padding-left:	0;
+	padding-right:	1em;
+}
+body > header > nav a::before {
+	position:	absolute;
+	left:		-.55em;
+	right:		-.85em;
+	top:		0;
+	bottom:		0;
+	z-index:	-1;
+
+	content:	"";
+	background-color:var(--highlight);
+	transform:	skewX(-45deg);
+}
+body > header > nav a::after {
+	position:	absolute;
+	right:		.5em;
+	bottom:		.3em;
+	content:	"\27A4";
+	opacity:	0;
+
+	transition:	opacity .35s, right .35s;
+}
+body > header > nav a:hover::after {
+	right:		0;
+	opacity:	1;
+}
 
 /* Dokument-Footer ———————————————————————————*/
 
@@ -98,7 +148,7 @@ form {
 	margin: 	0 auto 1em;
 	padding:	0.5em;
 }
-form header {
+form > header {
 	--highlight:	#24477c;
 	--radio-color:	var(--adfc-blue);
 	--fldst-color:	hsl(216, 55%, 95%);
@@ -133,7 +183,7 @@ fieldset section + section {
 	padding-top:	0.625em;
 }
 fieldset section:last-child {
-	padding-bottom:	0;
+	padding-bottom:	0.625em;
 }
 fieldset section::after {
 	content:	"";
@@ -188,7 +238,8 @@ input[type="date"]:focus {
 }
 input[type="text"]:user-invalid:not(:focus),
 input[type="number"]:user-invalid:not(:focus),
-input[type="date"]:user-invalid:not(:focus) {
+input[type="date"]:user-invalid:not(:focus),
+input[type="time"]:user-invalid:not(:focus) {
 
 	box-shadow:	0 0 0.15em 0.05em var(--invalid-color);
 
@@ -241,7 +292,7 @@ input[type="button"],
 	text-decoration:none;
 	text-align:	center;
 	font-weight:	bold;
-	font-family:	Arial, Helvetica, sans-serif;
+	font-family:	var(--font-sans);
 	font-size:	small;
 
 	cursor:		default;
@@ -290,15 +341,26 @@ label.money::after {
 	content:	"€";
 	padding-left:	.25em;
 }
+label.km::after {
+	content:	"km";
+	padding-left:	.25em;
+}
 /*.negative {
 	color:		red;
 }*/
+.block:not([hidden]) {
+	display:	inline-block;
+	width:		100%;
+}
 .locked {
 	color:		lightgrey;
 }
 .iban {
 	font-family:	monospace;
 	font-size:	120%;
+}
+.indent {
+	margin-left:	2.5em;
 }
 
 /*Widescreen Layout: Zwei Spalten ————————————
@@ -364,6 +426,12 @@ label.money::after {
 	}
 	body > header::before {
 		background-image:url('../img/ADFC-HH-white.svg');
+	}
+	body > header > nav a {
+		color:		black !important;
+	}
+	body > header > nav a::before {
+		background-color:white;
 	}
 	fieldset {
 		background-color:white !important;

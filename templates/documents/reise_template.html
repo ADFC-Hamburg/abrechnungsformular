@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Reisekostenabrechnung</title>
+	<meta name="author" content="ADFC Hamburg" />
+	<meta name="description" content="Reisekostenabrechnung für Aktive des ADFC Hamburg."/>
+	<link rel="stylesheet" href="reise_template.css">
+</head>
+
+<body><div class="document">
+
+<header>
+	<div class="angaben">
+		<table>
+			<caption>Antragsteller*in</caption>
+			<tr>
+				<td class="label">Name:</td>
+				<td class="field text">{{ abrechnung.username|e }}</td>
+			</tr>
+			<tr>
+				<td class="label">Arbeitsbereich:</td>
+				<td class="field text">{{ abrechnung.usergroup|e }}</td>
+			</tr>
+		</table>
+		<table>
+			<caption>Angaben zur Reise</caption>
+			<tr>
+				<td class="label">Anlass:</td>
+				<td class="field text">{{ abrechnung.cause|e }}</td>
+			</tr>
+		</table>
+	</div>
+	<address>
+		{{ address['Name'] }}<br />Buchhaltung<br />{{ address['LineOne'] }}<br />{% if address['LineTwo'] %}{{ address['LineTwo'] }}<br />{% endif %}{% if address['LineThree'] %}{{ address['LineThree'] }}<br />{% endif %}{{ address['PostCode'] }} {{ address['City'] }}
+	</address>
+	<div class="info">Mit einem Sternchen * gekennzeichnete Felder werden von der Buchhaltung ausgef&uuml;llt.</div>
+	<div class="box">
+		<p>Zusammen mit <b>digitalen Belegen</b> kannst du dieses <b>Formular per E&#8209;Mail</b> an <a href="mailto:buchhaltung@hamburg.adfc.de">buchhaltung@hamburg.adfc.de</a> senden.</p>
+		<p>Papier&shy;belege hängst du als Scan oder not&shy;falls als Foto an, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.</p>
+		<p>Alternativ sende die Belege <b>im Original</b> mit der jeweiligen Positions&shy;nummer versehen, zusammen mit einer Notiz zum Datum dieser Abrechnung, an unsere Geschäfts&shy;stelle (Adresse links) oder gib sie dort ab.</p>
+	</div>
+</header>
+
+<main>
+	<h1>Antrag auf Reisekostenerstattung</h1>
+
+	<table class="select wide">
+		<caption>Zeitraum</caption>
+		<tr>
+			<td class="check">{{ checkbox(daycount > 1) }}</td>
+			<td class="label">Mehrtägige Reise</td>
+			<td>Beginn der Reise am:<div class="field date">{% if daycount > 1 %}{{ format_date(abrechnung.begindate,locale='de_DE') }}{% endif %}</div></td>
+			<td>Ende der Reise am:<div class="field date">{% if daycount > 1 %}{{ format_date(abrechnung.enddate,locale='de_DE') }}{% endif %}</div></td>
+		</tr>
+		<tr>
+			<td class="check">{{ checkbox(daycount == 1) }}</td>
+			<td class="label">Eintägige Reise</td>
+			<td>Datum der Reise:<div class="field date">{% if daycount == 1 %}{{ format_date(abrechnung.begindate,locale='de_DE') }}{% endif %}</div></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="check"></td>
+			<td></td>
+			<td>Beginn der Reise um:<div class="field time">{% if daycount == 1 and abrechnung.begintime %}{{ format_time(abrechnung.begintime,format='short',locale='de_DE') }}{% endif %}</div></td>
+			<td>Ende der Reise um:<div class="field time">{% if daycount == 1 and abrechnung.endtime %}{{ format_time(abrechnung.endtime,format='short',locale='de_DE') }}{% endif %}</div></td>
+		</tr>
+	</table>
+
+	<table class="select wide">
+		<caption>Zahlungsabwicklung</caption>
+		<tr>
+			<td class="check">{{ checkbox(not abrechnung.ibanknown and abrechnung) }}</td>
+			<td>IBAN:<div class="field text">{{ abrechnung.iban }}</div></td>
+			<td>Kontoinhaber*in:<div class="field text">{{ abrechnung.accountname|e }}</div></td>
+		</tr>
+		<tr>
+			<td class="check">{{ checkbox(abrechnung.ibanknown) }}</td>
+			<td colspan=2 class="label">Meine Bankverbindung ist dem ADFC Hamburg bekannt.</td>
+		</tr>
+	</table>
+
+	<table class="caption-table days">
+		<caption>Tagesgelder und Catering</caption>
+		<thead>
+			<tr>
+				<th>Mahlzeiten gestellt</th>{% for i in range(abrechnung.MAXDATES) %}
+				<th>{{ i+1 }}. Tag</th>{% endfor %}
+			</tr>
+		</thead>
+		<tbody>{% for meal in range(3) %}
+			<tr>
+				<th>{{ ('Frühstück','Mittagessen','Abendessen')[meal] }}</th>{% for day in range(abrechnung.MAXDATES) %}
+				<td class="check">{{ checkbox(daycount>day and abrechnung.days[day][meal]) }}</td>{% endfor %}
+			</tr>{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>Tagesgeld</th>{% for day in range(abrechnung.MAXDATES) %}
+				<td class="field money">{% if daycount>day %}{{ euro(abrechnung.days[day].getbenefits(day==0 or day==daycount-1)) if daycount != 1 else euro(abrechnung.days[day].getbenefits()) }}{% endif %}</td>{% endfor %}
+			</tr>
+			<tr class="hide">
+				<td colspan=6 class="note">Tagesgeldsatz: {{ euro(rates['Tagessatz']['AnAbreise']) }} für Anreise- und Abreisetag; {{ euro(rates['Tagessatz']['GanzerTag']) }} für Zwischentage; {{ euro(rates['Tagessatz']['Einzeltag']) }} für Einzeltage ab 8 Stunden.<br>
+				Abzug für gestellte Mahlzeiten: {{ euro(rate_mahlzeit[0]) }} / Frühstück; {{ euro(rate_mahlzeit[1]) }} / Mittagessen; {{ euro(rate_mahlzeit[2]) }} / Abendessen.</td>
+			</tr>
+		</tfoot>
+	</table>
+
+	<table class="right mini">
+		<caption>Fahrtkosten</caption>
+		<tr>
+			<td>Im Privat-PKW<br>zurückgelegt:</td>
+			<td class="field"><div class="field km">{% if abrechnung.cardistance %}{{ format_decimal(abrechnung.cardistance,locale="de_DE") }}{% endif %}</div>km</td>
+		</tr>
+	</table>
+
+	<table class="right mini">
+		<caption>Übernachtungspauschale</caption>
+		<tr>
+			<td class="check">{{ checkbox(abrechnung.overnightflat) }}</td>
+			<td>Meine Übernachtungs&shy;kosten lagen unter<br>{{ euro(rates['UebernachtMin']) }} pro Nacht.</td>
+		</tr>
+	</table>
+
+	<table class="wide calculation">
+		<caption>Kostenabrechnung</caption>
+		<thead>
+			<tr>
+				<th></th>
+				<th class="padding">Position</th>
+				<th></th>
+				<th rowspan=2>Betrag<br>€</th>
+				<th rowspan=2 class="mini">Konto *</th>
+				<th rowspan=2 class="mini">Kosten&shy;stelle *</th>
+			</tr>
+			<tr>
+				<th>Nr.</th>
+				<th>Kostengrund</th>
+				<th>Datum</th>
+			</tr>
+		</thead>
+		<tbody>{% for i in range(abrechnung.POSITIONCOUNT) %}
+			<tr>
+				<td class="nr">{{ i+1 }}</td>
+				<td class="text">{{ abrechnung.positions[i].reason|e }}</td>
+				<td class="date">{% if abrechnung.positions[i].date %}{{ format_date(abrechnung.positions[i].date,locale='de_DE') }}{% endif %}</td>
+				<td class="money">{{ euro(abrechnung.positions[i].value,empty=True) }}</td>
+				<td></td>
+				<td></td>
+			</tr>{% endfor %}
+		</tbody>
+		<tbody>
+			<tr>
+				<td class="padding"></td>
+				<td colspan=2>Gesamtsumme Tagesgelder</td>
+				<td class="money">{{ euro(abrechnung.getdaytotal(),empty=True) }}</td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="padding"></td>
+				<td colspan=2>Wegstreckenentschädigung<div class="note"> Bei Fahrt im Privat-PKW<br>{{ euro(rates['PKWproKM']) }} / Kilometer; maximal {{ euro(rates['PKWMaximum']) }}</div></td>
+				<td class="money">{{ euro(abrechnung.getmileage(),empty=True) }}</td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="padding"></td>
+				<td colspan=2>Übernachtungspauschale<div class="note">Auszahlung von {{ euro(rates['UebernachtMin']) }} / Nacht, falls Gesamtkosten für<br>Übernachtungen niedriger (z.B. bei privater Unterbringung)</div></td>
+				<td class="money">{{ euro(abrechnung.getovernightpay(),empty=True) }}</td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td class="padding"></td>
+				<td colspan=2>Erstattungsbetrag</td>
+				<td class="money sum">{{ euro(abrechnung.gettotal(),empty=not abrechnung) or '&nbsp;' }}</td>
+				<td></td>
+			</tr>
+		</tfoot>
+	</table>
+
+</main>
+
+<footer>
+	<table>
+		<tr>
+			<th colspan=2>Unterschrift</th>
+		</tr>
+		<tr>
+			<td class="label">Datum:</td>
+			<td class="date">{% if abrechnung %}{{ today }}{% endif %}</td>
+		</tr>
+		<tr>
+			<td class="label">Unterschrift:</td>
+			<td class="signature">{% if abrechnung %}(Bei digitaler Einreichung nicht notwendig.){% endif %}</td>
+		</tr>
+	</table>
+	<table class="right booking">
+		<tr>
+			<th colspan=2>Buchungsvermerke *</th>
+		</tr>
+		<tr>
+			<td class="check">&#9744;</td>
+			<td>Überweisung angew.:</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>Konto-Auszug:</td>
+		</tr>
+	</table>
+	<div class="version">{% if abrechnung %}v{{ version }}{% endif %}</div>
+</footer>
+
+</div></body>
