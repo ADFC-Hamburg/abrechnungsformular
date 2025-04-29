@@ -708,7 +708,7 @@ class Abrechnung():
         doc.trade.settlement.payment_means.type_code = "42" # Payment to bank account
         term.description = "Wir überweisen den Abrechnungsbetrag auf dein Konto."
         if self.getibanknown():
-            doc.trade.settlement.payment_means.information.add("Meine Bankverbindung ist dem ADFC Hamburg bekannt.")
+            doc.trade.settlement.payment_means.information.add(f"Meine Bankverbindung ist dem {CONTACT['NameShort']} bekannt.")
         else:
             doc.trade.settlement.payment_means.payee_account.iban = self.getaccountiban()
             if self.getaccountname():
