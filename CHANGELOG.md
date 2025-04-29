@@ -1,5 +1,20 @@
 # Changelog
 
+## UNRELEASED
+
+### Added
+
+- Second web form for generating travel expense invoices
+- Config file
+
+### Changed
+
+- All mentions of ADFC Hamburg (except the logo) can now be replaced via config
+
+### Removed
+
+- CONTACT.json (replaced by CONFIG.ini)
+
 ## v1.12 - 2025-03-17
 
 ### Fixed
