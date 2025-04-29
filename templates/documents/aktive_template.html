@@ -29,18 +29,18 @@
 		<table>
 			<tr>
 				<td>Name:</td>
-				<td>{{ abrechnung.getusername()|e }}</td>
+				<td>{{ abrechnung.getusername() }}</td>
 			</tr>
 			<tr>
 				<td>Arbeitsbereich:</td>
-				<td>{{ abrechnung.getusergroup()|e }}</td>
+				<td>{{ abrechnung.getusergroup() }}</td>
 			</tr>
 		</table>
 		<h1>Angaben zur Aktion</h1>
 		<table>
 			<tr>
 				<td>Aktion&nbsp;/&nbsp;Projekt:</td>
-				<td>{{ abrechnung.getprojectname()|e }}</td>
+				<td>{{ abrechnung.getprojectname() }}</td>
 			</tr>
 			<tr>
 				<td>Datum:</td>
@@ -78,7 +78,7 @@
 {% for i in range(abrechnung.POSITIONCOUNT) %}
 				<tr>
 					<td>{{ i+1 }}</td>
-{{ abrechnung.positions[i].htmlcells(indent=5) }}
+{{ abrechnung.positions[i].htmlcells(indent=5) | safe }}
 					<td></td>
 					<td></td>
 				</tr>
@@ -109,40 +109,40 @@
 		<h1>Zahlungsabwicklung</h1>
 		<table class="abwicklung">
 			<tr>
-				<td class="check">{{ checkbox(abrechnung.ibanmode == 1) }}</td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 1) | safe }}</td>
 				<td colspan=2>Bitte &uuml;berweist den Abrechnungsbetrag auf mein Konto.</td>
 			</tr>
 			<tr>
 				<td></td>
-				<td class="check">{{ checkbox(abrechnung.ibanmode == 1 and abrechnung.ibanknown) }}</td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 1 and abrechnung.ibanknown) | safe }}</td>
 				<td>Meine Bankverbindung ist dem ADFC Hamburg bekannt.</td>
 			</tr>
 			<tr>
 				<td></td>
-				<td class="check">{{ checkbox(abrechnung.ibanmode == 1 and not abrechnung.ibanknown) }}</td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 1 and not abrechnung.ibanknown) | safe }}</td>
 				<td><table class="subtable"><tr>
 					<td>IBAN:</td>
 					<td>{{ abrechnung.iban or "DE" }}</td>
 					<td>Kontoinhaber:</td>
-					<td>{{ abrechnung.accountname|e }}</td>
+					<td>{{ abrechnung.accountname }}</td>
 				</tr></table></td>
 			</tr>
 			<tr>
-				<td class="check">{{ checkbox(abrechnung.ibanmode == 2) }}</td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 2) | safe }}</td>
 				<td colspan=2>Bitte nutzt für die Abbuchung des Betrages das euch erteilte SEPA-Lastschriftmandat.</td>
 			</tr>
 			<tr>
 				<td></td>
-				<td class="check">{{ checkbox(abrechnung.ibanmode == 2 and abrechnung.sepamode == 2) }}</td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 2 and abrechnung.sepamode == 2) | safe }}</td>
 				<td>Bitte sendet mir das Formular für die erstmalige Erteilung des SEPA-Mandats zu.</td>
 			</tr>
 			<tr>
 				<td></td>
-				<td class="check">{{ checkbox(abrechnung.ibanmode == 2 and abrechnung.sepamode == 3) }}</td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 2 and abrechnung.sepamode == 3) | safe }}</td>
 				<td>Bitte sendet mir ein neues SEPA-Mandatsformular zu, da sich meine Bankverbindung geändert hat.</td>
 			</tr>
 			<tr>
-				<td class="check">{{ checkbox(abrechnung.ibanmode == 3) }}</td>
+				<td class="check">{{ checkbox(abrechnung.ibanmode == 3) | safe }}</td>
 				<td colspan=2>Ich überweise den Abrechnungsbetrag innerhalb von 10 Tagen auf das Konto des ADFC Hamburg mit der IBAN:&#9;DE80 4306 0967 2029 4456 00</td>
 			</tr>
 		</table>

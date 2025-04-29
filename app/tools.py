@@ -81,7 +81,8 @@ def write_list_de(list:list[str]) -> str:
     return text
 
 
-pdf_environment = Environment(loader=FileSystemLoader(PATHS.PDF_TEMPLATE_FOLDER))
+pdf_environment = Environment(loader=FileSystemLoader(PATHS.PDF_TEMPLATE_FOLDER),
+                              autoescape=True)
 pdf_environment.globals.update(address=CONTACT,checkbox=checkbox,euro=euro,
                                format_date=format_date,format_decimal=format_decimal,
                                format_time=format_time,version=VERSION)

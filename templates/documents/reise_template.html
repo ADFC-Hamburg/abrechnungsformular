@@ -17,18 +17,18 @@
 			<caption>Antragsteller*in</caption>
 			<tr>
 				<td class="label">Name:</td>
-				<td class="field text">{{ abrechnung.username|e }}</td>
+				<td class="field text">{{ abrechnung.username }}</td>
 			</tr>
 			<tr>
 				<td class="label">Arbeitsbereich:</td>
-				<td class="field text">{{ abrechnung.usergroup|e }}</td>
+				<td class="field text">{{ abrechnung.usergroup }}</td>
 			</tr>
 		</table>
 		<table>
 			<caption>Angaben zur Reise</caption>
 			<tr>
 				<td class="label">Anlass:</td>
-				<td class="field text">{{ abrechnung.cause|e }}</td>
+				<td class="field text">{{ abrechnung.cause }}</td>
 			</tr>
 		</table>
 	</div>
@@ -49,13 +49,13 @@
 	<table class="select wide">
 		<caption>Zeitraum</caption>
 		<tr>
-			<td class="check">{{ checkbox(daycount > 1) }}</td>
+			<td class="check">{{ checkbox(daycount > 1) | safe }}</td>
 			<td class="label">Mehrtägige Reise</td>
 			<td>Beginn der Reise am:<div class="field date">{% if daycount > 1 %}{{ format_date(abrechnung.begindate,locale='de_DE') }}{% endif %}</div></td>
 			<td>Ende der Reise am:<div class="field date">{% if daycount > 1 %}{{ format_date(abrechnung.enddate,locale='de_DE') }}{% endif %}</div></td>
 		</tr>
 		<tr>
-			<td class="check">{{ checkbox(daycount == 1) }}</td>
+			<td class="check">{{ checkbox(daycount == 1) | safe }}</td>
 			<td class="label">Eintägige Reise</td>
 			<td>Datum der Reise:<div class="field date">{% if daycount == 1 %}{{ format_date(abrechnung.begindate,locale='de_DE') }}{% endif %}</div></td>
 			<td></td>
@@ -71,12 +71,12 @@
 	<table class="select wide">
 		<caption>Zahlungsabwicklung</caption>
 		<tr>
-			<td class="check">{{ checkbox(not abrechnung.ibanknown and abrechnung) }}</td>
+			<td class="check">{{ checkbox(not abrechnung.ibanknown and abrechnung) | safe }}</td>
 			<td>IBAN:<div class="field text">{{ abrechnung.iban }}</div></td>
-			<td>Kontoinhaber*in:<div class="field text">{{ abrechnung.accountname|e }}</div></td>
+			<td>Kontoinhaber*in:<div class="field text">{{ abrechnung.accountname }}</div></td>
 		</tr>
 		<tr>
-			<td class="check">{{ checkbox(abrechnung.ibanknown) }}</td>
+			<td class="check">{{ checkbox(abrechnung.ibanknown) | safe }}</td>
 			<td colspan=2 class="label">Meine Bankverbindung ist dem ADFC Hamburg bekannt.</td>
 		</tr>
 	</table>
@@ -92,7 +92,7 @@
 		<tbody>{% for meal in range(3) %}
 			<tr>
 				<th>{{ ('Frühstück','Mittagessen','Abendessen')[meal] }}</th>{% for day in range(abrechnung.MAXDATES) %}
-				<td class="check">{{ checkbox(daycount>day and abrechnung.days[day][meal]) }}</td>{% endfor %}
+				<td class="check">{{ checkbox(daycount>day and abrechnung.days[day][meal]) | safe }}</td>{% endfor %}
 			</tr>{% endfor %}
 		</tbody>
 		<tfoot>
@@ -118,7 +118,7 @@
 	<table class="right mini">
 		<caption>Übernachtungspauschale</caption>
 		<tr>
-			<td class="check">{{ checkbox(abrechnung.overnightflat) }}</td>
+			<td class="check">{{ checkbox(abrechnung.overnightflat) | safe }}</td>
 			<td>Meine Übernachtungs&shy;kosten lagen unter<br>{{ euro(rates['UebernachtMin']) }} pro Nacht.</td>
 		</tr>
 	</table>
@@ -177,7 +177,7 @@
 			<tr>
 				<td class="padding"></td>
 				<td colspan=2>Erstattungsbetrag</td>
-				<td class="money sum">{{ euro(abrechnung.gettotal(),empty=not abrechnung) or '&nbsp;' }}</td>
+				<td class="money sum">{{ euro(abrechnung.gettotal(),empty=not abrechnung) or '\xa0' }}</td>
 				<td></td>
 			</tr>
 		</tfoot>
