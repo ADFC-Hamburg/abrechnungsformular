@@ -1,7 +1,7 @@
 {
     "short_name": "ADFC-Form",
     "name": "ADFC-Abrechnungs\u00ADformular",
-    "description": "Hier können Aktive und Helfer des ADFC\u00A0Hamburg Abrechnungsformulare ausfüllen und als PDF-Datei herunterladen.",
+    "description": "Hier können Aktive und Helfer des ADFC Abrechnungsformulare ausfüllen und als PDF-Datei herunterladen.",
     "icons": [
         { "src": "/static/img/icon-mask.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" },
         { "src": "/static/img/icon-mono.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "monochrome" },

@@ -269,7 +269,7 @@ class SingleDay(Day):
 
 class Abrechnung():
     """
-    Beschreibt eine Reisekostenabrechnung für den ADFC Hamburg.
+    Beschreibt eine Reisekostenabrechnung für den ADFC.
     """
 
     # Class constants

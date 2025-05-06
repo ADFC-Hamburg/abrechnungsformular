@@ -178,7 +178,7 @@ class Position:
 
 class Abrechnung:
     """
-    Beschreibt eine Aktivenabrechnung für den ADFC Hamburg.
+    Beschreibt eine Aktivenabrechnung für den ADFC.
     Beinhaltet 7 Objekte der Klasse Position im Tupel positions.
     """
     
