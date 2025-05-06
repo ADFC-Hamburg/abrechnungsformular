@@ -43,13 +43,19 @@ def white(svg:str):
 
 for file in args.file:
     path = Path(file)
-    with path.open() as f:
-        svg = f.read()
-        svg_semi = semiwhite(svg)
-        svg_white = white(svg_semi)
-        path_semi = path.with_stem(path.stem+'-semiwhite')
-        path_white = path.with_stem(path.stem+'-white')
-        if not path_semi.exists():
-            path_semi.write_text(svg_semi)
-        if not path_white.exists():
-            path_white.write_text(svg_white)
+    try:
+        f = path.open()
+    except FileNotFoundError:
+        print(f"'Die Datei '{file}' existiert nicht.")
+        exit(2)
+    else:
+        with f:
+            svg = f.read()
+            svg_semi = semiwhite(svg)
+            svg_white = white(svg_semi)
+            path_semi = path.with_stem(path.stem+'-semiwhite')
+            path_white = path.with_stem(path.stem+'-white')
+            if not path_semi.exists():
+                path_semi.write_text(svg_semi)
+            if not path_white.exists():
+                path_white.write_text(svg_white)
