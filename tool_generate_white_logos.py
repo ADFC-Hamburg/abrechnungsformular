@@ -20,8 +20,9 @@ gettext.gettext = Übersetzung
 
 import argparse, sys
 
-DESCRIPTION = "Dieses Script erstellt weiße Varianten transparenter SVG-Dateien" \
-+" und speichert diese im gleichen Ordner."
+DESCRIPTION = "Dieses Script erstellt weiße Varianten transparenter" \
++" SVG-Dateien und speichert diese im gleichen Ordner." \
++" Vorhandene Dateien werden dabei nicht überschrieben."
 
 parser = argparse.ArgumentParser(description=DESCRIPTION)
 parser.add_argument('file',nargs='+',help='Die zu bearbeitende(n) SVG-Datei(en)')
