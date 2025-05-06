@@ -31,7 +31,7 @@ body > header::before {
 	height:		4rem;
 	margin:		.75rem auto;
 
-	background-image:url('../img/ADFC-HH-orangewhite.svg');
+	background-image:url('../img/logo-semiwhite.svg');
 	background-repeat:no-repeat;
 	background-position:center;
 	background-size:100% auto;
@@ -425,7 +425,7 @@ label.km::after {
 		background-color:black;
 	}
 	body > header::before {
-		background-image:url('../img/ADFC-HH-white.svg');
+		background-image:url('../img/logo-white.svg');
 	}
 	body > header > nav a {
 		color:		black !important;

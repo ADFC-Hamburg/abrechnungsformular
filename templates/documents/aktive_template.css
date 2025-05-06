@@ -33,7 +33,7 @@ header::before {
 	top:		10mm;
 
 	content:	"";
-	background-image:url('../../static/img/ADFC-HH-orangeblue.svg');
+	background-image:url('../../static/img/logo.svg');
 	background-repeat:no-repeat;
 	background-position:center;
 	background-size:contain;
