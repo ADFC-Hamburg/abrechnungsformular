@@ -23,16 +23,21 @@ RUN pip3 install --upgrade pip && pip3 install --no-cache-dir --upgrade -r /abre
 # Enable writing font cache files (stops fontconfig from throwing errors)
 RUN chmod a+w /var/cache/fontconfig/
 
-# Setup non-root user to run the app (security best practice)
-ARG UID=10001
-RUN adduser --disabled-password --gecos "" --home "/nonexistent" --shell "/usr/sbin/nologin" --no-create-home --uid "${UID}" appuser
-USER appuser
-
 # Copy the necessary files and directories into the container
 COPY app/ /abrechnungsformular/app/
 COPY static/ /abrechnungsformular/static/
 COPY templates/ /abrechnungsformular/templates/
-COPY abrechnungsformular.py VERSION CONFIG.ini /abrechnungsformular/
+COPY abrechnungsformular.py VERSION CONFIG.ini tool_*.py /abrechnungsformular/
+
+# Generate files via Python scripts
+RUN python /abrechnungsformular/tool_generate_empty_pdf.py -ar /abrechnungsformular/static/blank/
+RUN python /abrechnungsformular/tool_generate_white_logos.py /abrechnungsformular/static/img/logo.svg
+RUN rm /abrechnungsformular/tool_*.py
+
+# Setup non-root user to run the app (security best practice)
+ARG UID=10001
+RUN adduser --disabled-password --gecos "" --home "/nonexistent" --shell "/usr/sbin/nologin" --no-create-home --uid "${UID}" appuser
+USER appuser
 
 # Expose port 8000 for the Flask application
 EXPOSE 8000
