@@ -6,6 +6,10 @@
 
 - Generate blank PDF files and white variants of company logo as part of the docker build process
 
+### Changed
+
+- Weasyprint (Python dependency) updated to version 65
+
 ### Removed
 
 - Blank PDF files (now generated during docker build)
