@@ -22,14 +22,15 @@ import argparse, sys
 
 from app import PATHS
 
-WRITEFOLDER = "static/blank/"
+WRITEFOLDER = ""
 DESCRIPTION = "Dieses Script erstellt leere Versionen der Abrechnungsformulare" \
-+" und speichert diese unter "+WRITEFOLDER
++" und speichert diese als PDF-Dateien."
 EPILOG = "WICHTIG:  Die Schriftarten Arimo und DejaVu Sans müssen installiert sein!"
 
 parser = argparse.ArgumentParser(description=DESCRIPTION,epilog=EPILOG)
 parser.add_argument('-a','--aktive',action='store_true',help='Erstellt eine leere Aktivenabrechnung')
 parser.add_argument('-r','--reise',action='store_true',help='Erstellt eine leere Reisekostenabrechnung')
+parser.add_argument('Pfad',nargs='?',help='Der Ordner, in dem die Formulare gespeichert werden',default=WRITEFOLDER)
 if len(sys.argv)==1:
     parser.print_help(sys.stderr)
     sys.exit(1)
@@ -40,12 +41,14 @@ from weasyprint import HTML
 
 from app import aktive, reise
 
-def print(object,name:str) -> None:
+def print_pdf(object,name:str) -> None:
     abrechnung = HTML(string=object.html_compose(),
                       base_url=PATHS.PDF_TEMPLATE_FOLDER)
-    abrechnung.write_pdf(WRITEFOLDER+name+'.pdf')
+    path = args.Pfad+name+'.pdf'
+    abrechnung.write_pdf(path)
+    print (f'Leere {name} gespeichert unter {path}')
 
 if args.aktive:
-    print(aktive.Abrechnung(),'Aktivenabrechnung')
+    print_pdf(aktive.Abrechnung(),'Aktivenabrechnung')
 if args.reise:
-    print(reise.Abrechnung(),'Reisekostenabrechnung')
+    print_pdf(reise.Abrechnung(),'Reisekostenabrechnung')
