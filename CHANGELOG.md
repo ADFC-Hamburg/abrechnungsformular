@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Generate blank PDF files and white variants of company logo as part of the docker build process
+
+### Removed
+
+- Blank PDF files (now generated during docker build)
+- White variants of ADFC logo (now generated during docker build)
+
 ## v2.0 - 2025-04-29
 
 ### Added
