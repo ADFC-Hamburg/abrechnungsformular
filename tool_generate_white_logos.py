@@ -26,6 +26,7 @@ DESCRIPTION = "Dieses Script erstellt weiße Varianten transparenter" \
 
 parser = argparse.ArgumentParser(description=DESCRIPTION)
 parser.add_argument('file',nargs='+',help='Die zu bearbeitende(n) SVG-Datei(en)')
+parser.add_argument('-n','--noerror',action='store_true',help='Ignoriere fehlende Dateien')
 parser.add_argument('-o','--overwrite',action='store_true',help='Überschreibe existierende Dateien')
 parser.add_argument('-v','--verbose',action='store_true',help='Gib ausführlichere Logs aus')
 if len(sys.argv)==1:
@@ -57,7 +58,8 @@ for file in args.file:
         f = path.open()
     except FileNotFoundError:
         print(f"'Die Datei '{file}' existiert nicht.")
-        exit(2)
+        if not args.noerror:
+            exit(2)
     else:
         with f:
             svg = f.read()
