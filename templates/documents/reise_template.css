@@ -147,7 +147,7 @@ header::before {
 	top:		10mm;
 
 	content:	"";
-	background-image:url('../../static/img/logo.svg');
+	background-image:url('../../static/img/logo.svg'),url('../../static/img/logo.png');
 	background-repeat:no-repeat;
 	background-position:center;
 	background-size:contain;

@@ -31,7 +31,7 @@ body > header::before {
 	height:		4rem;
 	margin:		.75rem auto;
 
-	background-image:url('../img/logo-semiwhite.svg');
+	background-image:url('../img/logo-semiwhite.svg'),url('../img/logo-semiwhite.png');
 	background-repeat:no-repeat;
 	background-position:center;
 	background-size:contain;
@@ -426,7 +426,7 @@ label.km::after {
 		background-color:black;
 	}
 	body > header::before {
-		background-image:url('../img/logo-white.svg');
+		background-image:url('../img/logo-white.svg'),url('../img/logo-white.png');
 	}
 	body > header > nav a {
 		color:		black !important;
