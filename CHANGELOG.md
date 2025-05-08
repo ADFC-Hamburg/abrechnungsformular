@@ -5,6 +5,7 @@
 ### Added
 
 - Generate blank PDF files and white variants of company logo as part of the docker build process
+- Can now use PNG files for company logo in place of SVG files
 
 ### Changed
 
