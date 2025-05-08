@@ -27,14 +27,14 @@ body > header::before {
 	content:	"";
 	display:	block;
 
-	width:		10.667rem;
+	width:		100%;
 	height:		4rem;
 	margin:		.75rem auto;
 
 	background-image:url('../img/logo-semiwhite.svg');
 	background-repeat:no-repeat;
 	background-position:center;
-	background-size:100% auto;
+	background-size:contain;
 }
 body > header {
 	position:	relative;
@@ -395,6 +395,7 @@ label.km::after {
 		position:	absolute;
 		margin:		0;
 		left:		1.75rem;
+		width:		10.667rem;
 		height:		100%;
 	}
 	body > header div {
