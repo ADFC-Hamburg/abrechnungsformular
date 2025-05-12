@@ -83,6 +83,11 @@ function dateDisplayInitialize(x) {
 	document.getElementById("mealinstruct").hidden = !(display);
 	document.getElementById("nightsection").hidden = !(inRange) || (x<2);
 
+	const plurals = document.getElementsByClassName("nightplural");
+	for (let i = 0; i < plurals.length; i++) {
+		plurals[i].hidden = (x == 2);
+	}
+
 	calculateDayMoney();
 }
 

@@ -104,7 +104,7 @@
 				<label class="field km">Mit privaten PKW zurückgelegte Strecke: <input type="number" name="car" id="cardistance" min="0" step="any" class="km"></label>
 			</section>
 			<section id="nightsection">
-				<label class="option"><input type="checkbox" id="overnightcheck" name="night" value="1">Du hattest keine Ausgaben für Übernachtungen oder die Ausgaben lagen unter {{ rates['UebernachtMin'].replace('.',',') }}&nbsp;&euro; pro Tag.</label>
+				<label class="option"><input type="checkbox" id="overnightcheck" name="night" value="1">Die Übernachtung<span class="nightplural">en</span> wurde<span class="nightplural">n</span> nicht vom {{ address["NameShort"] | replace(' ','\xa0') }} oder einem anderen Träger bezahlt und deine Kosten dafür lagen unter {{ rates['UebernachtMin'].replace('.',',') }}&nbsp;&euro; je Nacht.</label>
 			</section>
 			<section id="extrasummary" data-carmoneyperkm="{{ rates['PKWproKM'] }}" data-carmoneymax="{{ rates['PKWMaximum'] }}" data-moneypernight="{{ rates['UebernachtMin'] }}" hidden>
 				<div class="subinput">Dir werden <span id="extraamount"></span> erstattet.</div>
