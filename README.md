@@ -28,7 +28,9 @@ Ein angepasstes Docker-Image lässt sich aus den Quelldateien erstellen. [Lade d
 Als Logo können entweder SVG- oder PNG-Dateien verwendet werden. Du benötigst folgende Datei:
 
 * Eine Datei namens **logo.png** oder **logo.svg** - diese sollte eine farbige Version des Logos beinhalten.
+
 Bei Verwendung von PNG außerdem benötigt, bei SVG optional:
+
   * Eine Datei namens **logo-semiwhite.png** oder **logo-semiwhite.svg** - bei dieser sollten zumindest die blauen Teile des Logos weiß gefärbt sein.
   * Eine Datei namens **logo-white.png**oder **logo-white.svg** - diese sollte eine weiße Version des Logos beinhalten.
 
