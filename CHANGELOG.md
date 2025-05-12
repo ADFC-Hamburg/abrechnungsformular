@@ -10,6 +10,7 @@
 ### Changed
 
 - Weasyprint (Python dependency) updated to version 65
+- Reworded parts of the web forms and Reisekosten PDF form
 
 ### Removed
 
