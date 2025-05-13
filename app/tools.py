@@ -52,14 +52,20 @@ def checkbox(checked) -> str:
     """
     return "&#9746;" if bool(checked) else "&#9744;"
 
-def euro(value = 0, empty = False) -> str:
+def euro(value = 0, empty = False, shorten = False) -> str:
     """
     Gibt eine Zahl als Eurobetrag zurück.
+
     Ist empty True, wird statt 0,00 € ein leerer String zurückgegeben.
+
+    Ist shorten True, werden Nachkommastellen von Ganzbeträgen abgeschnitten.
     """
     if empty and not value:
         return ""
-    return format_currency(value,"EUR",locale="de_DE")
+    out = format_currency(value,"EUR",locale="de_DE")
+    if shorten:
+        out = out.replace(',00','')
+    return out
 
 def uppercase_first(text:str) -> str:
     """

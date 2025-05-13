@@ -11,6 +11,7 @@
 
 - Weasyprint (Python dependency) updated to version 65
 - Reworded parts of the web forms and Reisekosten PDF form
+- Cut off decimal places from whole Euro amounts in rate listings in Reisekosten PDF form
 
 ### Removed
 
