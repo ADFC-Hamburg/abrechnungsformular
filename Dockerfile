@@ -30,7 +30,7 @@ COPY templates/ /abrechnungsformular/templates/
 COPY abrechnungsformular.py VERSION CONFIG.ini tool_*.py /abrechnungsformular/
 
 # Generate files via Python scripts
-RUN python /abrechnungsformular/tool_generate_empty_pdf.py -ar /abrechnungsformular/static/blank/; rm /abrechnungsformular/tool_generate_empty_pdf.py
+RUN mkdir /abrechnungsformular/static/blank; python /abrechnungsformular/tool_generate_empty_pdf.py -ar /abrechnungsformular/static/blank/; rm /abrechnungsformular/tool_generate_empty_pdf.py
 RUN python /abrechnungsformular/tool_generate_white_logos.py -nv /abrechnungsformular/static/img/logo.svg; rm /abrechnungsformular/tool_generate_white_logos.py
 
 # Setup non-root user to run the app (security best practice)

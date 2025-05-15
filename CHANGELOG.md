@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Fixed
+
+- Blank PDF file generation works now
+
 ## v2.1 - 2025-05-15
 
 ### Added
