@@ -152,6 +152,9 @@ td, th {
 	color:		darkgray;
 	white-space:	nowrap;
 }
+.shrink-text {
+	font-size:	75%;
+}
 .version {
 	font-size:	6pt;
 	text-align:	right;

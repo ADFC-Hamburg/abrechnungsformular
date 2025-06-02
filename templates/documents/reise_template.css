@@ -118,6 +118,9 @@ td.mini, th.mini {
 .money {
 	white-space:	nowrap;
 }
+.shrink-text {
+	font-size:	75%;
+}
 .sum {
 	position:	relative;
 	border:		var(--thin-border);

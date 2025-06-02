@@ -122,7 +122,7 @@
 				<td class="check">{{ checkbox(abrechnung.ibanmode == 1 and not abrechnung.ibanknown) | safe }}</td>
 				<td><table class="subtable"><tr>
 					<td>IBAN:</td>
-					<td>{{ abrechnung.iban or "DE" }}</td>
+					<td{% if abrechnung.getaccountiban(spaces=False)|length > 22 %} class="shrink-text"{% endif %}>{{ abrechnung.iban or "DE" }}</td>
 					<td>Kontoinhaber:</td>
 					<td class="abbreviate">{{ abrechnung.accountname }}</td>
 				</tr></table></td>

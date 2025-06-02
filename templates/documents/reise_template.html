@@ -72,7 +72,7 @@
 		<caption>Zahlungsabwicklung</caption>
 		<tr>
 			<td class="check">{{ checkbox(not abrechnung.ibanknown and abrechnung) | safe }}</td>
-			<td>IBAN:<div class="field text">{{ abrechnung.iban }}</div></td>
+			<td>IBAN:<div class="field text"><span class="{% if abrechnung.getaccountiban(spaces=False)|length > 24 %}shrink-text{% endif %}">{{ abrechnung.iban }}</span></div></td>
 			<td>Kontoinhaber*in:<div class="field text abbreviate">{{ abrechnung.accountname }}</div></td>
 		</tr>
 		<tr>
