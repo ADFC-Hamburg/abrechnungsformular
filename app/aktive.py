@@ -56,31 +56,6 @@ class Position:
                     or self._value != 0.0)
     
     # Methods for output
-    def htmlcells(self,indent:int = 0) -> str:
-        """
-        Gibt fünf Zellen im HTML-Format aus.
-        Jede Zelle hat eine eigene Zeile.
-
-        Die Reihenfolge lautet:
-        Name, Anzahl Einheiten, Kosten pro Einheit, Einnahmen, Ausgaben
-        """
-        out = []
-        
-        joiner = "\n" + "\t"*indent
-        
-        out.append( tools.cell( escape(self._name) ) )
-        
-        if self:
-            out.append( tools.cell(self.getunitcount()) )
-        else:
-            out.append( tools.cell() )
-        
-        out.append( tools.cell( tools.euro(abs(self.getunitprice()),True) ) )
-        out.append( tools.cell( tools.euro(self.getincome(),True) ) )
-        out.append( tools.cell( tools.euro(self.getcost(),True) ) )
-        
-        return "\t"*indent+joiner.join(out)
-    
     def check_complete(self) -> bool:
         """Gibt zurück, ob Name und Wert vorhanden sind."""
         return bool(self.getname() and self.getvalue())
