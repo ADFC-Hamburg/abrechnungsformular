@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Position names in PDF files will never be abbreviated
+- Size of some text fields in PDF files (position names, IBANs, account names) are shrunk if text exceeds a certain length
+
+### Fixed
+
+- IBAN and account owner fields in Antragsformular PDF file can no longer be wider than intended
+
 ## v2.2 - 2025-05-15
 
 ### Fixed
