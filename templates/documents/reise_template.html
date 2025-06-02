@@ -73,7 +73,7 @@
 		<tr>
 			<td class="check">{{ checkbox(not abrechnung.ibanknown and abrechnung) | safe }}</td>
 			<td>IBAN:<div class="field text"><span class="{% if abrechnung.getaccountiban(spaces=False)|length > 24 %}shrink-text{% endif %}">{{ abrechnung.iban }}</span></div></td>
-			<td>Kontoinhaber*in:<div class="field text abbreviate">{{ abrechnung.accountname }}</div></td>
+			<td>Kontoinhaber*in:<div class="field text abbreviate"><span class="{% if abrechnung.accountname|length > 20 %}shrink-text{% endif %}">{{ abrechnung.accountname }}</span></div></td>
 		</tr>
 		<tr>
 			<td class="check">{{ checkbox(abrechnung.ibanknown) | safe }}</td>
@@ -143,7 +143,7 @@
 		<tbody>{% for i in range(abrechnung.POSITIONCOUNT) %}
 			<tr>
 				<td class="nr">{{ i+1 }}</td>
-				<td class="text">{{ abrechnung.positions[i].reason|e }}</td>
+				<td class="text{% if abrechnung.positions[i].reason|length > 30 %} shrink-text{% endif %}">{{ abrechnung.positions[i].reason|e }}</td>
 				<td class="date">{% if abrechnung.positions[i].date %}{{ format_date(abrechnung.positions[i].date,locale='de_DE') }}{% endif %}</td>
 				<td class="money">{{ euro(abrechnung.positions[i].value,empty=True) }}</td>
 				<td></td>

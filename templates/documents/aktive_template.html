@@ -78,7 +78,7 @@
 {% for i in range(abrechnung.POSITIONCOUNT) %}
 				<tr>
 					<td>{{ i+1 }}</td>
-					<td>{{ abrechnung.positions[i].getname() }}</td>
+					<td class="{% if abrechnung.positions[i].getname()|length > 22 %}shrink-text{% endif %}">{{ abrechnung.positions[i].getname() }}</td>
 					<td>{% if abrechnung.positions[i] %}{{ abrechnung.positions[i].getunitcount() }}{% endif %}</td>
 					<td>{{ euro(abrechnung.positions[i].getunitprice()|abs,empty=True) }}</td>
 					<td>{{ euro(abrechnung.positions[i].getincome(),empty=True) }}</td>
@@ -128,7 +128,7 @@
 					<td>IBAN:</td>
 					<td{% if abrechnung.getaccountiban(spaces=False)|length > 22 %} class="shrink-text"{% endif %}>{{ abrechnung.iban or "DE" }}</td>
 					<td>Kontoinhaber:</td>
-					<td class="abbreviate">{{ abrechnung.accountname }}</td>
+					<td class="abbreviate{% if abrechnung.accountname|length > 20 %} shrink-text{% endif %}">{{ abrechnung.accountname }}</td>
 				</tr></table></td>
 			</tr>
 			<tr>
