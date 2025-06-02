@@ -17,18 +17,18 @@
 			<caption>Antragsteller*in</caption>
 			<tr>
 				<td class="label">Name:</td>
-				<td class="field text">{{ abrechnung.username }}</td>
+				<td class="field text abbreviate">{{ abrechnung.username }}</td>
 			</tr>
 			<tr>
 				<td class="label">Arbeitsbereich:</td>
-				<td class="field text">{{ abrechnung.usergroup }}</td>
+				<td class="field text abbreviate">{{ abrechnung.usergroup }}</td>
 			</tr>
 		</table>
 		<table>
 			<caption>Angaben zur Reise</caption>
 			<tr>
 				<td class="label">Anlass:</td>
-				<td class="field text">{{ abrechnung.cause }}</td>
+				<td class="field text abbreviate">{{ abrechnung.cause }}</td>
 			</tr>
 		</table>
 	</div>
@@ -73,7 +73,7 @@
 		<tr>
 			<td class="check">{{ checkbox(not abrechnung.ibanknown and abrechnung) | safe }}</td>
 			<td>IBAN:<div class="field text">{{ abrechnung.iban }}</div></td>
-			<td>Kontoinhaber*in:<div class="field text">{{ abrechnung.accountname }}</div></td>
+			<td>Kontoinhaber*in:<div class="field text abbreviate">{{ abrechnung.accountname }}</div></td>
 		</tr>
 		<tr>
 			<td class="check">{{ checkbox(abrechnung.ibanknown) | safe }}</td>

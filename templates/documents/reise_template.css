@@ -79,6 +79,11 @@ td.mini, th.mini {
 .equal-columns {
 	table-layout:	fixed;
 }
+.abbreviate {
+	text-overflow:	ellipsis;
+	overflow:	hidden;
+	white-space:	nowrap;
+}
 .check {
 	text-align:	center;
 	font-family:	"DejaVu Sans", sans-serif;
@@ -127,11 +132,6 @@ td.mini, th.mini {
 	border:		.375pt solid black;
 	border-top:	none;
 	z-index:	-1;
-}
-.text {
-	text-overflow:	ellipsis;
-	overflow:	hidden;
-	white-space:	nowrap;
 }
 .wide {
 	width:		var(--add-padding);
@@ -198,8 +198,6 @@ header .box {
 .angaben .field {
 	width:		87mm;
 	max-width:	87mm;
-	overflow:	hidden;
-	text-overflow:	ellipsis;
 }
 
 /* Adresse */

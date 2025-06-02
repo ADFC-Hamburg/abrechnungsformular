@@ -29,18 +29,18 @@
 		<table>
 			<tr>
 				<td>Name:</td>
-				<td>{{ abrechnung.getusername() }}</td>
+				<td class="abbreviate">{{ abrechnung.getusername() }}</td>
 			</tr>
 			<tr>
 				<td>Arbeitsbereich:</td>
-				<td>{{ abrechnung.getusergroup() }}</td>
+				<td class="abbreviate">{{ abrechnung.getusergroup() }}</td>
 			</tr>
 		</table>
 		<h1>Angaben zur Aktion</h1>
 		<table>
 			<tr>
 				<td>Aktion&nbsp;/&nbsp;Projekt:</td>
-				<td>{{ abrechnung.getprojectname() }}</td>
+				<td class="abbreviate">{{ abrechnung.getprojectname() }}</td>
 			</tr>
 			<tr>
 				<td>Datum:</td>
@@ -124,7 +124,7 @@
 					<td>IBAN:</td>
 					<td>{{ abrechnung.iban or "DE" }}</td>
 					<td>Kontoinhaber:</td>
-					<td>{{ abrechnung.accountname }}</td>
+					<td class="abbreviate">{{ abrechnung.accountname }}</td>
 				</tr></table></td>
 			</tr>
 			<tr>
