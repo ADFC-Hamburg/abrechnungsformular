@@ -802,7 +802,7 @@ class Abrechnung():
 
     def getaccountiban(self,spaces:bool = True) -> str:
         """Gibt die IBAN des Bankkontos zurück."""
-        return self._payment_iban.formatted
+        return self._payment_iban.formatted if spaces else str(self._payment_iban)
 
     def setibanknown(self,mode=False):
         self._payment_iban_known = bool(mode)

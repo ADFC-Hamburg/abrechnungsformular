@@ -747,7 +747,7 @@ class Abrechnung:
     
     def getaccountiban(self,spaces:bool = True) -> str:
         """Gibt die IBAN des Bankkontos zurück."""
-        return self._payment["iban"].formatted
+        return self._payment["iban"].formatted if spaces else str(self._payment["iban"])
 
     def setibanmode(self,mode=None):
         if mode and int(mode) in self._MODES_IBAN:
