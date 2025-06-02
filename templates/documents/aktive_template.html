@@ -78,7 +78,11 @@
 {% for i in range(abrechnung.POSITIONCOUNT) %}
 				<tr>
 					<td>{{ i+1 }}</td>
-{{ abrechnung.positions[i].htmlcells(indent=5) | safe }}
+					<td>{{ abrechnung.positions[i].getname() }}</td>
+					<td>{% if abrechnung.positions[i] %}{{ abrechnung.positions[i].getunitcount() }}{% endif %}</td>
+					<td>{{ euro(abrechnung.positions[i].getunitprice()|abs,empty=True) }}</td>
+					<td>{{ euro(abrechnung.positions[i].getincome(),empty=True) }}</td>
+					<td>{{ euro(abrechnung.positions[i].getcost(),empty=True) }}
 					<td></td>
 					<td></td>
 				</tr>
