@@ -17,6 +17,7 @@ RUN apt-get install -y fonts-croscore fonts-dejavu-core libpango1.0-0
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip and install Python dependencies
+ENV PIP_ROOT_USER_ACTION=ignore
 COPY ./requirements.txt /abrechnungsformular/requirements.txt
 RUN pip3 install --upgrade pip && pip3 install --no-cache-dir --upgrade -r /abrechnungsformular/requirements.txt
 
