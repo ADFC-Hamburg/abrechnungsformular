@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Removed warning about running pip as root user during docker build process
+
 ## v2.3 - 2025-06-02
 
 ### Changed
