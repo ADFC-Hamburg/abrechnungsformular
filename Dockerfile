@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# Use the official Python 3.13.0-slim image as base
-FROM python:3.13.0-slim AS base
+# Use the official Python Alpine image as base
+FROM python:3.13.7-alpine3.22 AS base
 
 # Description of resulting image
 LABEL org.opencontainers.image.description="Ein Webserver, über welchen Aktive und Helfer des ADFC Abrechnungsformulare ausfüllen und herunterladen können."
@@ -10,10 +10,10 @@ LABEL org.opencontainers.image.description="Ein Webserver, über welchen Aktive 
 WORKDIR /abrechnungsformular
 
 # Install necessary packages, then delete package index and cache
-RUN apt-get update \
- && apt-get install -y fonts-croscore fonts-dejavu-core libpango1.0-0 \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+RUN apk update \
+ && apk add font-croscore font-dejavu pango \
+ && apk cache clean \
+ && rm -rf /var/cache/apk/* /lib/apk/db/*
 
 # Upgrade pip and install Python dependencies
 ENV PIP_ROOT_USER_ACTION=ignore
