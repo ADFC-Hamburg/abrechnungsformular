@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Underlying Linux image changed from Debian-slim to Alpine
 - Package index update, package installation and index/cache cleaning are combined into a single layer in the docker image
 
 ### Fixed
