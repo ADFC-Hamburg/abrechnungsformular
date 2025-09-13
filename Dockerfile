@@ -13,7 +13,7 @@ WORKDIR /abrechnungsformular
 RUN apk update \
  && apk add font-croscore font-dejavu pango \
  && apk cache clean \
- && rm -rf /var/cache/apk/*
+ && rm -rf /var/cache/apk/* /lib/apk/db/*
 
 # Upgrade pip and install Python dependencies
 ENV PIP_ROOT_USER_ACTION=ignore
