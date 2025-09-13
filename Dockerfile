@@ -9,12 +9,11 @@ LABEL org.opencontainers.image.description="Ein Webserver, über welchen Aktive 
 # Set the working directory within the container
 WORKDIR /abrechnungsformular
 
-# Install necessary packages
-RUN apt-get update
-RUN apt-get install -y fonts-croscore fonts-dejavu-core libpango1.0-0
-
-# Cleanup cache and temporary files from apt-get
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install necessary packages, then delete package index and cache
+RUN apt-get update \
+ && apt-get install -y fonts-croscore fonts-dejavu-core libpango1.0-0 \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip and install Python dependencies
 ENV PIP_ROOT_USER_ACTION=ignore

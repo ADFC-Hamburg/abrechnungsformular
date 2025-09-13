@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Package index update, package installation and index/cache cleaning are combined into a single layer in the docker image
+
 ### Fixed
 
 - Removed warning about running pip as root user during docker build process
