@@ -166,7 +166,7 @@ fieldset {
 	margin:		1em auto 0;
 	background-color:var(--fldst-color);
 
-	border: 2px groove var(--highlight);
+	border: 2px solid var(--highlight);
 }
 fieldset legend {
 	font-weight:	bold;
