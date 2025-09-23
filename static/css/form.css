@@ -6,7 +6,8 @@
 	--adfc-orange:	#ee7f00;
 	--dark-orange:	#f47216;
 	--adfc-green:	#00793a;
-	--highlight:	#f47216;
+	--color-dark:	#737373;
+	--highlight:	var(--adfc-orange);
 	--radio-color:	hsl(25, 91%, 50%);
 	--fldst-color:	hsl(25, 91%, 95%);
 	--invalid-color:hsl(348, 100%, 50%);
@@ -119,7 +120,7 @@ body > header > nav a:hover::after {
 
 body > footer {
 	color:		white;
-	background-color:#737373;
+	background-color:var(--color-dark);
 
 	font-size:	80%;
 
@@ -152,13 +153,13 @@ form {
 	padding:	0.5em;
 }
 form > header {
-	--highlight:	#24477c;
-	--radio-color:	var(--adfc-blue);
+	--highlight:	var(--adfc-blue);
+	--radio-color:	var(--dark-blue);
 	--fldst-color:	hsl(216, 55%, 95%);
 
 	padding-bottom:	1.5em;
 	border-style:	none none dotted;
-	border-color:	var(--adfc-blue);
+	border-color:	var(--color-dark);
 	border-width:	1px;
 }
 
@@ -285,7 +286,7 @@ input[type="button"],
 	margin-left:	2.5%;
 	margin-bottom:	.25rem;
 
-	background-color:var(--adfc-orange);
+	background-color:var(--dark-orange);
 	color:		white;
 
 	padding:	0.25em;
