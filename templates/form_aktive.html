@@ -47,132 +47,26 @@
 		<!--Geldbeträge-->
 		<fieldset>
 			<legend>Ausgaben und Einnahmen</legend>
-			<!--Postition 1-->
-			<section id="position1section">
+{% for i in range(1,abrechnung.POSITIONCOUNT+1) %}
+			<!--Postition {{ i }}-->
+			<section id="position{{ i }}section">
 				<div class="select">
-					<input type="text" class="field" name="p1name" id="position1name" placeholder="Position 1" size=24>
+					<input type="text" class="field" name="p{{ i }}name" id="position{{ i }}name" placeholder="Position {{ i }}" size=24>
 				</div>
 				<div class="select">
-					<label class="option"><input type="radio" id="position1minus" name="p1type" value=-1 checked>Ausgabe</label>
-					<label class="option"><input type="radio" id="position1plus" name="p1type" value=1>Einnahme</label>
+					<label class="option"><input type="radio" id="position{{ i }}minus" name="p{{ i }}type" value=-1 checked>Ausgabe</label>
+					<label class="option"><input type="radio" id="position{{ i }}plus" name="p{{ i }}type" value=1>Einnahme</label>
 					<!-- <span class="avoidwrap">
-						<label class="scriptonly option" hidden><input type="checkbox" id="position1multi">Mehrere Stückzahlen</label>
+						<label class="scriptonly option" hidden><input type="checkbox" id="position{{ i }}multi">Mehrere Stückzahlen</label>
 					</span> -->
 				</div>
 				<div class="subinput">
-					<label class="field">Anzahl: <input type="number" name="p1cnt" id="position1count" min=0 step=1 size=2 value=1></label>
-					<label class="field money">Einzelpreis: <input type="number" name="p1ppu" id="position1price" min="0" step="0.01" class="money"></label>
-					<label class="field money">Gesamt: <input type="number" name="p1" id="position1amount" min="0" step="0.01" class="money"></label>
+					<label class="field">Anzahl: <input type="number" name="p{{ i }}cnt" id="position{{ i }}count" min=0 step=1 size=2 value=1></label>
+					<label class="field money">Einzelpreis: <input type="number" name="p{{ i }}ppu" id="position{{ i }}price" min="0" step="0.01" class="money"></label>
+					<label class="field money">Gesamt: <input type="number" name="p{{ i }}" id="position{{ i }}amount" min="0" step="0.01" class="money"></label>
 				</div>
 			</section>
-			<!--Postition 2-->
-			<section id="position2section">
-				<div class="select">
-					<input type="text" class="field" name="p2name" id="position2name" placeholder="Position 2" size=24>
-				</div>
-				<div class="select">
-					<label class="option"><input type="radio" id="position2minus" name="p2type" value=-1 checked>Ausgabe</label>
-					<label class="option"><input type="radio" id="position2plus" name="p2type" value=1>Einnahme</label>
-					<!-- <span class="avoidwrap">
-						<label class="scriptonly option" hidden><input type="checkbox" id="position2multi">Mehrere Stückzahlen</label>
-					</span> -->
-				</div>
-				<div class="subinput">
-					<label class="field">Anzahl: <input type="number" name="p2cnt" id="position2count" min=0 step=1 size=2 value=1></label>
-					<label class="field money">Einzelpreis: <input type="number" name="p2ppu" id="position2price" min="0" step="0.01" class="money"></label>
-					<label class="field money">Gesamt: <input type="number" name="p2" id="position2amount" min="0" step="0.01" class="money"></label>
-				</div>
-			</section>
-			<!--Postition 3-->
-			<section id="position3section">
-				<div class="select">
-					<input type="text" class="field" name="p3name" id="position3name" placeholder="Position 3" size=24>
-				</div>
-				<div class="select">
-					<label class="option"><input type="radio" id="position3minus" name="p3type" value=-1 checked>Ausgabe</label>
-					<label class="option"><input type="radio" id="position3plus" name="p3type" value=1>Einnahme</label>
-					<!-- <span class="avoidwrap">
-						<label class="scriptonly option" hidden><input type="checkbox" id="position3multi">Mehrere Stückzahlen</label>
-					</span> -->
-				</div>
-				<div class="subinput">
-					<label class="field">Anzahl: <input type="number" name="p3cnt" id="position3count" min=0 step=1 size=2 value=1></label>
-					<label class="field money">Einzelpreis: <input type="number" name="p3ppu" id="position3price" min="0" step="0.01" class="money"></label>
-					<label class="field money">Gesamt: <input type="number" name="p3" id="position3amount" min="0" step="0.01" class="money"></label>
-				</div>
-			</section>
-			<!--Postition 4-->
-			<section id="position4section">
-				<div class="select">
-					<input type="text" class="field" name="p4name" id="position4name" placeholder="Position 4" size=24>
-				</div>
-				<div class="select">
-					<label class="option"><input type="radio" id="position4minus" name="p4type" value=-1 checked>Ausgabe</label>
-					<label class="option"><input type="radio" id="position4plus" name="p4type" value=1>Einnahme</label>
-					<!-- <span class="avoidwrap">
-						<label class="scriptonly option" hidden><input type="checkbox" id="position4multi">Mehrere Stückzahlen</label>
-					</span> -->
-				</div>
-				<div class="subinput">
-					<label class="field">Anzahl: <input type="number" name="p4cnt" id="position4count" min=0 step=1 size=2 value=1></label>
-					<label class="field money">Einzelpreis: <input type="number" name="p4ppu" id="position4price" min="0" step="0.01" class="money"></label>
-					<label class="field money">Gesamt: <input type="number" name="p4" id="position4amount" min="0" step="0.01" class="money"></label>
-				</div>
-			</section>
-			<!--Postition 5-->
-			<section id="position5section">
-				<div class="select">
-					<input type="text" class="field" name="p5name" id="position5name" placeholder="Position 5" size=24>
-				</div>
-				<div class="select">
-					<label class="option"><input type="radio" id="position5minus" name="p5type" value=-1 checked>Ausgabe</label>
-					<label class="option"><input type="radio" id="position5plus" name="p5type" value=1>Einnahme</label>
-					<!-- <span class="avoidwrap">
-						<label class="scriptonly option" hidden><input type="checkbox" id="position5multi">Mehrere Stückzahlen</label>
-					</span> -->
-				</div>
-				<div class="subinput">
-					<label class="field">Anzahl: <input type="number" name="p5cnt" id="position5count" min=0 step=1 size=2 value=1></label>
-					<label class="field money">Einzelpreis: <input type="number" name="p5ppu" id="position5price" min="0" step="0.01" class="money"></label>
-					<label class="field money">Gesamt: <input type="number" name="p5" id="position5amount" min="0" step="0.01" class="money"></label>
-				</div>
-			</section>
-			<!--Postition 6-->
-			<section id="position6section">
-				<div class="select">
-					<input type="text" class="field" name="p6name" id="position6name" placeholder="Position 6" size=24>
-				</div>
-				<div class="select">
-					<label class="option"><input type="radio" id="position6minus" name="p6type" value=-1 checked>Ausgabe</label>
-					<label class="option"><input type="radio" id="position6plus" name="p6type" value=1>Einnahme</label>
-					<!-- <span class="avoidwrap">
-						<label class="scriptonly option" hidden><input type="checkbox" id="position6multi">Mehrere Stückzahlen</label>
-					</span> -->
-				</div>
-				<div class="subinput">
-					<label class="field">Anzahl: <input type="number" name="p6cnt" id="position6count" min=0 step=1 size=2 value=1></label>
-					<label class="field money">Einzelpreis: <input type="number" name="p6ppu" id="position6price" min="0" step="0.01" class="money"></label>
-					<label class="field money">Gesamt: <input type="number" name="p6" id="position6amount" min="0" step="0.01" class="money"></label>
-				</div>
-			</section>
-			<!--Postition 7-->
-			<section id="position7section">
-				<div class="select">
-					<input type="text" class="field" name="p7name" id="position7name" placeholder="Position 7" size=24>
-				</div>
-				<div class="select">
-					<label class="option"><input type="radio" id="position7minus" name="p7type" value=-1 checked>Ausgabe</label>
-					<label class="option"><input type="radio" id="position7plus" name="p7type" value=1>Einnahme</label>
-					<!-- <span class="avoidwrap">
-						<label class="scriptonly option" hidden><input type="checkbox" id="position7multi">Mehrere Stückzahlen</label>
-					</span> -->
-				</div>
-				<div class="subinput">
-					<label class="field">Anzahl: <input type="number" name="p7cnt" id="position7count" min=0 step=1 size=2 value=1></label>
-					<label class="field money">Einzelpreis: <input type="number" name="p7ppu" id="position7price" min="0" step="0.01" class="money"></label>
-					<label class="field money">Gesamt: <input type="number" name="p7" id="position7amount" min="0" step="0.01" class="money"></label>
-				</div>
-			</section>
+{% endfor %}
 			<!--Spenden-->
 			<section>
 					<label class="money">Zusätzlich eingenommene Spenden: <input type="number" name="dono" id="donations" min="0" step="0.01" class="money"></label>

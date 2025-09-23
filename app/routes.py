@@ -28,7 +28,7 @@ def index():
     Zeigt das Formular zur Erstellung einer Aktivenabrechnung an
     """
     return render_template('form_aktive.html', static=STATIC, version=VERSION,
-                           address=CONTACT)
+                           address=CONTACT, abrechnung=aktive.Abrechnung)
 
 @pages.route('/reisekosten')
 def reise_form():
