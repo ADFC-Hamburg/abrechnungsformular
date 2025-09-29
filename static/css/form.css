@@ -272,54 +272,56 @@ label.option > input[type="radio"] {
 
 /* Buttons ———————————————————————————————————*/
 
-input[type="submit"],
-input[type="reset"],
-input[type="button"],
-.button {
+.menu {
+	input[type="submit"],
+	input[type="reset"],
+	input[type="button"],
+	.button {
 
-	width:		95%;
-	display:	block;
-	margin-left:	2.5%;
-	margin-bottom:	.25rem;
+		width:		95%;
+		display:	block;
+		margin-left:	2.5%;
+		margin-bottom:	.25rem;
 
-	background-color:var(--adfc-orange);
-	color:		white;
+		background-color:var(--adfc-orange);
+		color:		white;
 
-	padding:	0.25em;
-	border:		0.2em outset hsl(25, 91%, 76%);
-	border-radius:	0.25em;
+		padding:	0.25em;
+		border:		0.2em outset hsl(25, 91%, 76%);
+		border-radius:	0.25em;
 
-	text-decoration:none;
-	text-align:	center;
-	font-weight:	bold;
-	font-family:	var(--font-sans);
-	font-size:	small;
+		text-decoration:none;
+		text-align:	center;
+		font-weight:	bold;
+		font-family:	var(--font-sans);
+		font-size:	small;
 
-	cursor:		default;
-	user-select:	none;
-	-webkit-user-select:none;
-}
-input[type="reset"] {
-	background-color:hsl(10, 91%, 52%);
-	border-color:	hsl(10, 91%, 76%);
-}
-input[type="submit"]:hover,
-input[type="button"]:hover,
-.button:hover {
+		cursor:		default;
+		user-select:	none;
+		-webkit-user-select:none;
+	}
+	input[type="reset"] {
+		background-color:hsl(10, 91%, 52%);
+		border-color:	hsl(10, 91%, 76%);
+	}
+	input[type="submit"]:hover,
+	input[type="button"]:hover,
+	.button:hover {
 
-	background-color:hsl(25, 91%, 41%);
-	border-color:	hsl(25, 91%, 60%);
-}
-input[type="reset"]:hover {
-	background-color:hsl(10, 91%, 41%);
-	border-color:	hsl(10, 91%, 60%);
-}
-input[type="submit"]:active,
-input[type="reset"]:active,
-input[type="button"]:active,
-.button:active {
+		background-color:hsl(25, 91%, 41%);
+		border-color:	hsl(25, 91%, 60%);
+	}
+	input[type="reset"]:hover {
+		background-color:hsl(10, 91%, 41%);
+		border-color:	hsl(10, 91%, 60%);
+	}
+	input[type="submit"]:active,
+	input[type="reset"]:active,
+	input[type="button"]:active,
+	.button:active {
 
-	border-style:	inset;
+		border-style:	inset;
+	}
 }
 
 /* Diverse Elemente und Klassen ——————————————*/
@@ -380,14 +382,16 @@ label.km::after {
 /* Layout auf breitem Bildschirm */
 
 @media (min-width:35.625rem) {
-	input[type="submit"],
-	input[type="reset"],
-	input[type="button"],
-	.button {
+	.menu {
+		input[type="submit"],
+		input[type="reset"],
+		input[type="button"],
+		.button {
 
-		width:		auto;
-		display:	inline-block;
-		margin-left:	0;
+			width:		auto;
+			display:	inline-block;
+			margin-left:	0;
+		}
 	}
 }
 
