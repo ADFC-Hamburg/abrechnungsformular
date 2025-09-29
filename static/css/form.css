@@ -381,7 +381,7 @@ label.km::after {
 
 /* Layout auf breitem Bildschirm */
 
-@media (min-width:35.625rem) {
+@media (min-width:37.5rem) {
 	.menu {
 		input[type="submit"],
 		input[type="reset"],
