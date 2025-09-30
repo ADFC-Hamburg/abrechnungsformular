@@ -186,6 +186,10 @@ fieldset section::after {
 	clear:		both;
 	display:	table;
 }
+fieldset section.sidebuttons {
+	position:	relative;
+	padding-right:	1.625em;
+}
 .select {
 	float:		left;
 	clear:		left;
@@ -318,6 +322,36 @@ label.option > input[type="radio"] {
 	.button:active {
 
 		border-style:	inset;
+	}
+}
+
+.sidebuttons {
+	> input[type="button"] {
+		position:	absolute;
+		width:		auto;
+		display:	block;
+
+		right:		0;
+
+		font-size:	xx-small;
+		background-color:transparent;
+
+		padding:	1px .5em;
+		border:		none;
+	}
+	> input[type="button"]:hover {
+		background-color:hsl(25, 91%, 60%);
+	}
+	> input[type="button"]:active {
+		padding-top: 2px;
+		padding-bottom: 0px;
+	}
+	> input[type="button"][hidden] {
+		display:	none;
+	}
+	> input[type="button"].reset {
+		top:		35%;
+		bottom:		35%;
 	}
 }
 

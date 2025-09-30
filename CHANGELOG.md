@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Added buttons to web form for resetting individual positions
+
 ### Changed
 
 - Underlying Linux image changed from Debian-slim to Alpine

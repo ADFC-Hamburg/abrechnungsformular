@@ -208,7 +208,7 @@ function positionDisplay(x,show=true) {
 	document.getElementById("position"+x+"section").hidden = !(show);
 }
 
-// Funktion zur Berechnung und Anzeige des Gesamtbetrags
+// Funktionen zur Änderung von Werten im HTML-Formular
 
 /**
  * Berechne den Gesamtbetrag und gib ihn aus.
@@ -244,6 +244,23 @@ function calculate() {
 		document.getElementById("totalamount").innerHTML = "<aside>Die Einnahmen und Ausgaben werden hier automatisch zusammengezählt.</aside>";
 		processDisplay(0);
 	}
+}
+
+/**
+ * Leert sämtliche Eingabefelder einer einzelnen Position.
+ * 
+ * @since 2.4
+ * 
+ * @param {number} x		Die Position, die zurückgesetzt werden soll
+ */
+function resetPosition(x) {
+	const fields = [document.getElementById("position"+x+"name"), document.getElementById("position"+x+"count"), document.getElementById("position"+x+"price"), document.getElementById("position"+x+"amount")];
+	fields[0].value = "";
+	fields[1].value = 1;
+	fields[2].value = "";
+	fields[3].value = "";
+	multiSetting(x,false);
+	calculate();
 }
 
 // Funktionen, die anderen Funktionen Informationen bereitstellen
@@ -516,6 +533,12 @@ function start() {
 	// Setze spätestes erlaubtes Datum auf heute
 	document.getElementById("projectdate").max = new Date().toISOString().split("T")[0];
 
+	// Mache alle Elemente, die nur beim Einsatz von JavaScript sichbar sein sollen, sichtbar
+	const hiddenElements = document.getElementsByClassName("jsonly");
+	for (let i = 0; i < hiddenElements.length; i++) {
+		hiddenElements[i].removeAttribute("hidden");
+	}
+
 	// Gib HTML-Elementen auslösbare Ereignisse
 
 	// Ereignisse für Texteingabefelder
@@ -564,6 +587,9 @@ function start() {
 	document.getElementById("processuserknown").addEventListener('input',function(){ ibanLock(this.checked); });
 
 	// Ereignisse für Schaltflächen
+	for (let i = 1; i <= maxPos; i++) {
+		document.getElementById("position"+i+"reset").addEventListener('click',function(){ resetPosition(i); });
+	}
 	document.getElementById("submit").addEventListener('click',validateForm);
 	document.getElementById("reset").addEventListener('click',restart);
 

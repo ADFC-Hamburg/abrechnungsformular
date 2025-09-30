@@ -311,7 +311,7 @@ function updateDateRange(min=null,max=null) {
 	}
 }
 
-// Funktionen zur Berechnung und Anzeige von Werten
+// Funktionen zur Änderung von Werten im HTML-Formular
 
 /**
  * Berechne den Gesamtwert aller Tagesgelder und zeige ihn an,
@@ -413,6 +413,21 @@ function calculateTotal() {
 	} else {
 		document.getElementById("totalamount").innerHTML = "<aside>Der Erstattungsbetrag wird hier automatisch zusammengerechnet.</aside>";
 	}
+}
+
+/**
+ * Leert sämtliche Eingabefelder einer einzelnen Position.
+ * 
+ * @since 2.4
+ * 
+ * @param {number} x		Die Position, die zurückgesetzt werden soll
+ */
+function resetPosition(x) {
+	const fields = [document.getElementById("position"+x+"name"), document.getElementById("position"+x+"date"), document.getElementById("position"+x+"amount")];
+	fields[0].value = "";
+	fields[1].value = "";
+	fields[2].value = "";
+	calculatePositions();
 }
 
 // Funktionen, die anderen Funktionen Werte bereitstellen
@@ -705,6 +720,12 @@ function start() {
 		document.getElementById("position"+(i)+"date").min = earliestdate.toISOString().split("T")[0];
 	}
 
+	// Mache alle Elemente, die nur beim Einsatz von JavaScript sichbar sein sollen, sichtbar
+	const hiddenElements = document.getElementsByClassName("jsonly");
+	for (let i = 0; i < hiddenElements.length; i++) {
+		hiddenElements[i].removeAttribute("hidden");
+	}
+	
 	// Gib HTML-Elementen auslösbare Ereignisse
 
 	// Validierung von Textfeldern
@@ -779,7 +800,9 @@ function start() {
 	document.getElementById("overnightcheck").addEventListener('change',calculateExtra);
 
 	// Ereignisse für Schaltflächen
-	/*document.getElementById("submit").addEventListener('click',validateForm);*/
+	for (let i=1; i <= maxPos; i++) {
+		document.getElementById("position"+i+"reset").addEventListener('click',function(){ resetPosition(i); });
+	}
 	document.getElementById("submit").addEventListener('click',validateForm);
 	document.getElementById("reset").addEventListener('click',restart);
 
