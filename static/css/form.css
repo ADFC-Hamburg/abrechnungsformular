@@ -180,10 +180,6 @@ fieldset section {
 }
 fieldset section + section {
 	border-top:	2px groove #eee;
-	padding-top:	0.625em;
-}
-fieldset section:last-child {
-	padding-bottom:	0.625em;
 }
 fieldset section::after {
 	content:	"";
@@ -221,7 +217,7 @@ input[type="date"] {
 	border-width:	1px;
 
 	padding:	.25em;
-	margin-bottom:	.25em;
+	margin:		.125em 0;
 }
 input[type="text"]:focus,
 input[type="number"]:focus,
@@ -261,6 +257,7 @@ label.option {
 	display:	inline-block;
 	position:	relative;
 	padding-left:	1.5em;
+	margin:		.15em auto;
 }
 label.option > input[type="checkbox"],
 label.option > input[type="radio"] {
@@ -412,9 +409,6 @@ label.km::after {
 	}
 	.subinput label {
 		display:	inline-block;
-	}
-	.select {
-		margin-bottom:	.25em;
 	}
 	label + label.field {
 		margin-left:	.5em;
