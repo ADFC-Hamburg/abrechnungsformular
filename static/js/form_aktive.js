@@ -602,9 +602,9 @@ function restart() {
  */
 function display() {
 	for (let i = 1; i <= maxPos; i++) {
-				// Überprüfe, wo bereits zwischen Einnahme und Ausgabe gewählt wurde
+		// Überprüfe, wo bereits zwischen Einnahme und Ausgabe gewählt wurde
 		if (document.getElementById("position"+i+"plus").checked) {
-positionSetting(i,true,false);
+			positionSetting(i,true,false);
 		} else {
 			positionSetting(i,false,false);
 		}
