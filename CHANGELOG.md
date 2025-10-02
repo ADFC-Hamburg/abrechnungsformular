@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Enlarged position reset button slightly
+
+### Fixed
+
+- Position reset button now renders correctly regardless of available fonts
+
 ## v2.4 - 2025-09-30
 
 ### Added

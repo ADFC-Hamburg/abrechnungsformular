@@ -328,23 +328,26 @@ label.option > input[type="radio"] {
 .sidebuttons {
 	> input[type="button"] {
 		position:	absolute;
-		width:		auto;
+		width:		1.5em;
 		display:	block;
 
 		right:		0;
 
-		font-size:	xx-small;
 		background-color:transparent;
+		background-repeat:no-repeat;
+		background-position:center center;
+		background-size:contain;
 
-		padding:	1px .5em;
+		color:		transparent;
+
+		padding:	none;
 		border:		none;
 	}
 	> input[type="button"]:hover {
 		background-color:hsl(25, 91%, 60%);
 	}
 	> input[type="button"]:active {
-		padding-top: 2px;
-		padding-bottom: 0px;
+		background-position: center 60%;
 	}
 	> input[type="button"][hidden] {
 		display:	none;
@@ -352,6 +355,7 @@ label.option > input[type="radio"] {
 	> input[type="button"].reset {
 		top:		35%;
 		bottom:		35%;
+		background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' viewBox='0 0 16 8'><path d='M5 1 L11 7 M5 7 L11 1' stroke='black' stroke-width='1'/></svg>");
 	}
 }
 
