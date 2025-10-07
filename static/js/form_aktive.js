@@ -309,6 +309,25 @@ function allTextfields() {
 	return Array.from(document.querySelectorAll("input[type='text']"));
 }
 
+/**
+ * Überprüft, welche Position die letzte in numerischer Reihenfolge ist,
+ * in welcher ein Name, ein Stückpreis oder ein Gesamtpreis eingetragen ist.
+ * 
+ * @since 2.5
+ * 
+ * @returns {int}	Die Nummer der letzten ausgefüllten Position oder 0, falls keine Position ausgefüllt ist
+ */
+function lastFilledPosition() {
+	for (let i = maxPos; i > 0; i--) {
+		const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"count").value, document.getElementById("position"+i+"price").value, document.getElementById("position"+i+"amount").value];
+		if (!(values[0]=="" && values[2]==0 && values[3]==0)) {
+			// Ein Feld in Position i ist bereits ausgefüllt
+			return i;
+		}
+	}
+	return 0;
+}
+
 // Funktionen zur Validierung
 
 /**
@@ -655,16 +674,7 @@ function display() {
 	}
 
 	// Überprüfe, welche Felder noch leer sind, und verstecke Positionen entsprechend
-	for (let i = maxPos; i > 0; i--) {
-		const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"count").value, document.getElementById("position"+i+"price").value, document.getElementById("position"+i+"amount").value];
-		if (!(values[0]=="" && values[2]==0 && values[3]==0)) {
-			// Ein Feld in Position i ist bereits ausgefüllt
-			positionDisplayInitialize(i+1);
-			break;
-		} else if (i==1) {
-			positionDisplayInitialize(1);
-		}
-	}
+	positionDisplayInitialize(lastFilledPosition()+1);
 }
 
 // Beim Starten dieses Scripts
