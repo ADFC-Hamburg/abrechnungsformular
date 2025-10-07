@@ -263,6 +263,27 @@ function resetPosition(x) {
 	calculate();
 }
 
+/**
+ * Tauscht die Inhalte der Eingabefelder von zwei Positionen.
+ * 
+ * @since 2.5
+ * 
+ * @param {int} x	Die erste zu tauschende Position
+ * @param {int} y	Die zweite zu tauschende Position
+ */
+function swapPositions(x,y) {
+	const fields1 = [document.getElementById("position"+x+"name"), document.getElementById("position"+x+"count"), document.getElementById("position"+x+"price"), document.getElementById("position"+x+"amount")];
+	const fields2 = [document.getElementById("position"+y+"name"), document.getElementById("position"+y+"count"), document.getElementById("position"+y+"price"), document.getElementById("position"+y+"amount")];
+	for (let i = 0; i < fields1.length; i++) {
+		const carry = fields1[i].value;
+		fields1[i].value = fields2[i].value;
+		fields2[i].value = carry;
+	}
+	const multiCarry = getMultiSetting(x);
+	multiSetting(x,getMultiSetting(y));
+	multiSetting(y,multiCarry);
+}
+
 // Funktionen, die anderen Funktionen Informationen bereitstellen
 
 /**
