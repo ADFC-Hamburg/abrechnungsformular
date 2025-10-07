@@ -72,7 +72,7 @@ function updatePosition(x) {
 		// Anzahl sollte nicht leer sein, um Teilung durch Null zu vermeiden
 		field[0].value = 1;
 	}
-	if (multiPosition[x-1]) {
+	if (getMultiSetting(x)) {
 		// Mehrfacheingabe für Position x aktiviert
 		field[2].value = Math.round( field[0].value * field[1].value * 100 ) / 100;
 	} else {
@@ -326,6 +326,18 @@ function lastFilledPosition() {
 		}
 	}
 	return 0;
+}
+
+/**
+ * Gibt zurück, ob Position x eine Mehrfachposition ist.
+ * 
+ * @since 2.5
+ * 
+ * @param {int} x	Die Position, die überprüft wird
+ * @returns {boolean}	Ob Position x eine Mehrfachposition ist.
+ */
+function getMultiSetting(x) {
+	return multiPosition[x-1];
 }
 
 // Funktionen zur Validierung
