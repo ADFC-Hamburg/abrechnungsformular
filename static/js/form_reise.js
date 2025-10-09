@@ -161,6 +161,9 @@ function listDates() {
  */
 function positionDisplay(x,show=true) {
 	document.getElementById("position"+x+"section").hidden = !(show);
+	if (x > 1) {
+		document.getElementById("position"+(x-1)+"down").hidden = !(show);
+	}
 }
 
 /**
@@ -839,6 +842,12 @@ function start() {
 	// Ereignisse für Schaltflächen
 	for (let i=1; i <= maxPos; i++) {
 		document.getElementById("position"+i+"reset").addEventListener('click',function(){ resetPosition(i); });
+		if (i != 1) {
+			document.getElementById("position"+i+"up").addEventListener('click',function(){ swapPositions(i-1,i); });
+		}
+		if (i < maxPos) {
+			document.getElementById("position"+i+"down").addEventListener('click',function(){ swapPositions(i,i+1); });
+		}
 	}
 	document.getElementById("submit").addEventListener('click',validateForm);
 	document.getElementById("reset").addEventListener('click',restart);

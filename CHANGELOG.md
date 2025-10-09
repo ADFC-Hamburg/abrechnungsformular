@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Added buttons to web form for swapping positions
+
 ### Changed
 
 - Enlarged position reset button slightly
