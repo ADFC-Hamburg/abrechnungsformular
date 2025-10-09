@@ -602,8 +602,8 @@ function start() {
 		}
 	}
 
+	// Ereignisse für Positionsfelder-input
 	for (let i = 0; i < maxPos; i++) {
-		// Ereignisse für Positionsfelder-input
 		const id = "position"+(i+1);
 		const displayFields = ["name","count","price","amount"];
 
@@ -619,8 +619,8 @@ function start() {
 		document.getElementById(id+"price").addEventListener('change',function(){ validateNumber(this); });
 		document.getElementById(id+"amount").addEventListener('change',function(){ validateNumber(this); });
 
+		// Anzeige weiterer Positionen bei Eingabe
 		if (i < maxPos-1) {
-			// Anzeige weiterer Positionen bei Eingabe
 			for (let j = 0; j < displayFields.length; j++) {
 				document.getElementById(id+displayFields[j]).addEventListener('input',function(){ positionDisplay(i+2); });
 			}
