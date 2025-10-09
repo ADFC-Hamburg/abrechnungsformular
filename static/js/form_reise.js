@@ -434,6 +434,27 @@ function resetPosition(x) {
 }
 
 /**
+ * Löscht eine einzelne Position;
+ * lässt alle Positionen dahinter nachrücken
+ * und versteckt am Ende alle leeren Positionen bis auf eine.
+ * 
+ * @since 2.5
+ * 
+ * @param {int} x		Die Position, die gelöscht werden soll
+ */
+function removePosition(x) {
+	for (let i = x; i < maxPos; i++) {
+		const fields1 = [document.getElementById("position"+i+"name"), document.getElementById("position"+i+"date"), document.getElementById("position"+i+"amount")];
+		const fields2 = [document.getElementById("position"+(i+1)+"name"), document.getElementById("position"+(i+1)+"date"), document.getElementById("position"+(i+1)+"amount")];
+		for (let j = 0; j < fields1.length; j++) {
+			fields1[j].value = fields2[j].value;
+		}
+	}
+	resetPosition(maxPos);
+	positionDisplayInitialize(lastFilledPosition()+1);
+}
+
+/**
  * Tauscht die Inhalte der Eingabefelder von zwei Positionen.
  * 
  * @since 2.5
@@ -841,7 +862,7 @@ function start() {
 
 	// Ereignisse für Schaltflächen
 	for (let i=1; i <= maxPos; i++) {
-		document.getElementById("position"+i+"reset").addEventListener('click',function(){ resetPosition(i); });
+		document.getElementById("position"+i+"reset").addEventListener('click',function(){ removePosition(i); });
 		if (i != 1) {
 			document.getElementById("position"+i+"up").addEventListener('click',function(){ swapPositions(i-1,i); });
 		}
