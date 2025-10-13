@@ -161,6 +161,9 @@ function listDates() {
  */
 function positionDisplay(x,show=true) {
 	document.getElementById("position"+x+"section").hidden = !(show);
+	if (x > 1) {
+		document.getElementById("position"+(x-1)+"down").hidden = !(show);
+	}
 }
 
 /**
@@ -430,6 +433,45 @@ function resetPosition(x) {
 	calculatePositions();
 }
 
+/**
+ * Löscht eine einzelne Position;
+ * lässt alle Positionen dahinter nachrücken
+ * und versteckt am Ende alle leeren Positionen bis auf eine.
+ * 
+ * @since 2.5
+ * 
+ * @param {int} x		Die Position, die gelöscht werden soll
+ */
+function removePosition(x) {
+	for (let i = x; i < maxPos; i++) {
+		const fields1 = [document.getElementById("position"+i+"name"), document.getElementById("position"+i+"date"), document.getElementById("position"+i+"amount")];
+		const fields2 = [document.getElementById("position"+(i+1)+"name"), document.getElementById("position"+(i+1)+"date"), document.getElementById("position"+(i+1)+"amount")];
+		for (let j = 0; j < fields1.length; j++) {
+			fields1[j].value = fields2[j].value;
+		}
+	}
+	resetPosition(maxPos);
+	positionDisplayInitialize(lastFilledPosition()+1);
+}
+
+/**
+ * Tauscht die Inhalte der Eingabefelder von zwei Positionen.
+ * 
+ * @since 2.5
+ * 
+ * @param {int} x	Die erste zu tauschende Position
+ * @param {int} y	Die zweite zu tauschende Position
+ */
+function swapPositions(x,y) {
+	const fields1 = [document.getElementById("position"+x+"name"), document.getElementById("position"+x+"date"), document.getElementById("position"+x+"amount")];
+	const fields2 = [document.getElementById("position"+y+"name"), document.getElementById("position"+y+"date"), document.getElementById("position"+y+"amount")];
+	for (let i = 0; i < fields1.length; i++) {
+		const carry = fields1[i].value;
+		fields1[i].value = fields2[i].value;
+		fields2[i].value = carry;
+	}
+}
+
 // Funktionen, die anderen Funktionen Werte bereitstellen
 
 /**
@@ -474,6 +516,25 @@ function checkHours(threshold = 0) {
 	let starttime = parseInt(startnumbers[0])*60 + parseInt(startnumbers[1]);
 	let endtime = parseInt(endnumbers[0])*60 + parseInt(endnumbers[1]);
 	return (endtime - starttime >= threshold * 60);
+}
+
+/**
+ * Überprüft, welche Position die letzte in numerischer Reihenfolge ist,
+ * in welcher ein Name, ein Datum oder ein Preis eingetragen ist.
+ * 
+ * @since 2.5
+ * 
+ * @returns {int}	Die Nummer der letzten ausgefüllten Position oder 0, falls keine Position ausgefüllt ist
+ */
+function lastFilledPosition() {
+	for (let i = maxPos; i > 0; i--) {
+		const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"date").value, document.getElementById("position"+i+"amount").value];
+		if (!(values[0]=="" && values[1]=="" && values[2]==0)) {
+			// Ein Feld in Position i ist bereits ausgefüllt
+			return i;
+		}
+	}
+	return 0;
 }
 
 // Funktionen zur Validierung
@@ -780,15 +841,15 @@ function start() {
 		fields[i].addEventListener('input',calculateDayMoney);
 	}
 
+	// Ereignisse für Positionsfelder-input
 	for (let i = 0; i < maxPos; i++) {
-		// Ereignisse für Positionsfelder-input
 		const id = "position"+(i+1);
 		const displayFields = ["name","date","amount"];
 
 		document.getElementById(id+"amount").addEventListener('input',calculatePositions);
 
+		// Anzeige weiterer Positionen bei Eingabe
 		if (i < maxPos-1) {
-			// Anzeige weiterer Positionen bei Eingabe
 			for (let j = 0; j < displayFields.length; j++) {
 				document.getElementById(id+displayFields[j]).addEventListener('input',function(){ positionDisplay(i+2); });
 			}
@@ -801,7 +862,13 @@ function start() {
 
 	// Ereignisse für Schaltflächen
 	for (let i=1; i <= maxPos; i++) {
-		document.getElementById("position"+i+"reset").addEventListener('click',function(){ resetPosition(i); });
+		document.getElementById("position"+i+"reset").addEventListener('click',function(){ removePosition(i); });
+		if (i != 1) {
+			document.getElementById("position"+i+"up").addEventListener('click',function(){ swapPositions(i-1,i); });
+		}
+		if (i < maxPos) {
+			document.getElementById("position"+i+"down").addEventListener('click',function(){ swapPositions(i,i+1); });
+		}
 	}
 	document.getElementById("submit").addEventListener('click',validateForm);
 	document.getElementById("reset").addEventListener('click',restart);
@@ -848,16 +915,8 @@ function restart() {
  */
 function display() {
 	// Überprüfe, welche Felder noch leer sind, und verstecke Positionen entsprechend
-	for (let i = maxPos; i > 0; i--) {
-		const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"date").value, document.getElementById("position"+i+"amount").value];
-		if (!(values[0]=="" && values[1]=="" && values[2]==0)) {
-			// Ein Feld in Position i ist bereits ausgefüllt
-			positionDisplayInitialize(i+1);
-			break;
-		} else if (i==1) {
-			positionDisplayInitialize(1);
-		}
-	}
+	positionDisplayInitialize(lastFilledPosition()+1);
+
 	calculatePositions();
 	timeDisplayCheck();
 	ibanLock(document.getElementById("processuserknown").checked);

@@ -65,7 +65,9 @@
 					<label class="field money">Einzelpreis: <input type="number" name="p{{ i }}ppu" id="position{{ i }}price" min="0" step="0.01" class="money"></label>
 					<label class="field money">Gesamt: <input type="number" name="p{{ i }}" id="position{{ i }}amount" min="0" step="0.01" class="money"></label>
 				</div>
-				<input type="button" class="reset jsonly" id="position{{ i }}reset" value="&#9747;" title="Diese Position zurücksetzen" hidden>
+				<input type="button" class="reset jsonly" id="position{{ i }}reset" value="&#9747;" title="Diese Position löschen" hidden>{% if i != 1 %}
+				<input type="button" class="up jsonly" id="position{{ i }}up" value="&#8593;" title="Diese Position nach oben verschieben" hidden>{% endif %}{% if i < abrechnung.POSITIONCOUNT %}
+				<input type="button" class="down jsonly" id="position{{ i }}down" value="&#8595;" title="Diese Position nach unten verschieben" hidden>{% endif %}
 			</section>
 {% endfor %}
 			<!--Spenden-->

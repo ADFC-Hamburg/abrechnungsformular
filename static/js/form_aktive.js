@@ -72,7 +72,7 @@ function updatePosition(x) {
 		// Anzahl sollte nicht leer sein, um Teilung durch Null zu vermeiden
 		field[0].value = 1;
 	}
-	if (multiPosition[x-1]) {
+	if (getMultiSetting(x)) {
 		// Mehrfacheingabe für Position x aktiviert
 		field[2].value = Math.round( field[0].value * field[1].value * 100 ) / 100;
 	} else {
@@ -206,6 +206,9 @@ function positionDisplayInitialize(x) {
  */
 function positionDisplay(x,show=true) {
 	document.getElementById("position"+x+"section").hidden = !(show);
+	if (x > 1) {
+		document.getElementById("position"+(x-1)+"down").hidden = !(show);
+	}
 }
 
 // Funktionen zur Änderung von Werten im HTML-Formular
@@ -247,6 +250,28 @@ function calculate() {
 }
 
 /**
+ * Löscht eine einzelne Position;
+ * lässt alle Positionen dahinter nachrücken
+ * und versteckt am Ende alle leeren Positionen bis auf eine.
+ * 
+ * @since 2.5
+ * 
+ * @param {int} x		Die Position, die gelöscht werden soll
+ */
+function removePosition(x) {
+	for (let i = x; i < maxPos; i++) {
+		const fields1 = [document.getElementById("position"+i+"name"), document.getElementById("position"+i+"count"), document.getElementById("position"+i+"price"), document.getElementById("position"+i+"amount")];
+		const fields2 = [document.getElementById("position"+(i+1)+"name"), document.getElementById("position"+(i+1)+"count"), document.getElementById("position"+(i+1)+"price"), document.getElementById("position"+(i+1)+"amount")];
+		for (let j = 0; j < fields1.length; j++) {
+			fields1[j].value = fields2[j].value;
+		}
+		multiSetting(x,getMultiSetting(x+1));
+	}
+	resetPosition(maxPos);
+	positionDisplayInitialize(lastFilledPosition()+1);
+}
+
+/**
  * Leert sämtliche Eingabefelder einer einzelnen Position.
  * 
  * @since 2.4
@@ -261,6 +286,27 @@ function resetPosition(x) {
 	fields[3].value = "";
 	multiSetting(x,false);
 	calculate();
+}
+
+/**
+ * Tauscht die Inhalte der Eingabefelder von zwei Positionen.
+ * 
+ * @since 2.5
+ * 
+ * @param {int} x	Die erste zu tauschende Position
+ * @param {int} y	Die zweite zu tauschende Position
+ */
+function swapPositions(x,y) {
+	const fields1 = [document.getElementById("position"+x+"name"), document.getElementById("position"+x+"count"), document.getElementById("position"+x+"price"), document.getElementById("position"+x+"amount")];
+	const fields2 = [document.getElementById("position"+y+"name"), document.getElementById("position"+y+"count"), document.getElementById("position"+y+"price"), document.getElementById("position"+y+"amount")];
+	for (let i = 0; i < fields1.length; i++) {
+		const carry = fields1[i].value;
+		fields1[i].value = fields2[i].value;
+		fields2[i].value = carry;
+	}
+	const multiCarry = getMultiSetting(x);
+	multiSetting(x,getMultiSetting(y));
+	multiSetting(y,multiCarry);
 }
 
 // Funktionen, die anderen Funktionen Informationen bereitstellen
@@ -307,6 +353,37 @@ function paymentSelected() {
  */
 function allTextfields() {
 	return Array.from(document.querySelectorAll("input[type='text']"));
+}
+
+/**
+ * Überprüft, welche Position die letzte in numerischer Reihenfolge ist,
+ * in welcher ein Name, ein Stückpreis oder ein Gesamtpreis eingetragen ist.
+ * 
+ * @since 2.5
+ * 
+ * @returns {int}	Die Nummer der letzten ausgefüllten Position oder 0, falls keine Position ausgefüllt ist
+ */
+function lastFilledPosition() {
+	for (let i = maxPos; i > 0; i--) {
+		const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"count").value, document.getElementById("position"+i+"price").value, document.getElementById("position"+i+"amount").value];
+		if (!(values[0]=="" && values[2]==0 && values[3]==0)) {
+			// Ein Feld in Position i ist bereits ausgefüllt
+			return i;
+		}
+	}
+	return 0;
+}
+
+/**
+ * Gibt zurück, ob Position x eine Mehrfachposition ist.
+ * 
+ * @since 2.5
+ * 
+ * @param {int} x	Die Position, die überprüft wird
+ * @returns {boolean}	Ob Position x eine Mehrfachposition ist.
+ */
+function getMultiSetting(x) {
+	return multiPosition[x-1];
 }
 
 // Funktionen zur Validierung
@@ -550,8 +627,8 @@ function start() {
 		}
 	}
 
+	// Ereignisse für Positionsfelder-input
 	for (let i = 0; i < maxPos; i++) {
-		// Ereignisse für Positionsfelder-input
 		const id = "position"+(i+1);
 		const displayFields = ["name","count","price","amount"];
 
@@ -567,8 +644,8 @@ function start() {
 		document.getElementById(id+"price").addEventListener('change',function(){ validateNumber(this); });
 		document.getElementById(id+"amount").addEventListener('change',function(){ validateNumber(this); });
 
+		// Anzeige weiterer Positionen bei Eingabe
 		if (i < maxPos-1) {
-			// Anzeige weiterer Positionen bei Eingabe
 			for (let j = 0; j < displayFields.length; j++) {
 				document.getElementById(id+displayFields[j]).addEventListener('input',function(){ positionDisplay(i+2); });
 			}
@@ -588,7 +665,13 @@ function start() {
 
 	// Ereignisse für Schaltflächen
 	for (let i = 1; i <= maxPos; i++) {
-		document.getElementById("position"+i+"reset").addEventListener('click',function(){ resetPosition(i); });
+		document.getElementById("position"+i+"reset").addEventListener('click',function(){ removePosition(i); });
+		if (i != 1) {
+			document.getElementById("position"+i+"up").addEventListener('click',function(){ swapPositions(i-1,i); });
+		}
+		if (i < maxPos) {
+			document.getElementById("position"+i+"down").addEventListener('click',function(){ swapPositions(i,i+1); });
+		}
 	}
 	document.getElementById("submit").addEventListener('click',validateForm);
 	document.getElementById("reset").addEventListener('click',restart);
@@ -655,16 +738,7 @@ function display() {
 	}
 
 	// Überprüfe, welche Felder noch leer sind, und verstecke Positionen entsprechend
-	for (let i = maxPos; i > 0; i--) {
-		const values = [document.getElementById("position"+i+"name").value, document.getElementById("position"+i+"count").value, document.getElementById("position"+i+"price").value, document.getElementById("position"+i+"amount").value];
-		if (!(values[0]=="" && values[2]==0 && values[3]==0)) {
-			// Ein Feld in Position i ist bereits ausgefüllt
-			positionDisplayInitialize(i+1);
-			break;
-		} else if (i==1) {
-			positionDisplayInitialize(1);
-		}
-	}
+	positionDisplayInitialize(lastFilledPosition()+1);
 }
 
 // Beim Starten dieses Scripts

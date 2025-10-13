@@ -2,13 +2,18 @@
 
 ## Unreleased
 
+### Added
+
+- Added buttons to web form for swapping positions
+
 ### Changed
 
+- Reset position buttons in web form now remove the position and move lower positions up
 - Enlarged position reset button slightly
 
 ### Fixed
 
-- Position reset button now renders correctly regardless of available fonts
+- Position remove buttons now render correctly regardless of available fonts
 
 ## v2.4 - 2025-09-30
 
