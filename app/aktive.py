@@ -13,7 +13,7 @@ from drafthorse.models.accounting import ApplicableTradeTax as DH_ApplicableTrad
 from drafthorse.models.document import Document as DH_Document
 from drafthorse.models.note import IncludedNote as DH_IncludedNote
 from drafthorse.models.party import TaxRegistration as DH_TaxRegistration
-from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms
+from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms, PaymentMeans as DH_PaymentMeans
 from schwifty import IBAN, exceptions
 
 from . import tools, CONTACT, PATHS
@@ -483,7 +483,7 @@ class Abrechnung:
             note.content_code = 'PROJECT'
             datestring = format_date(self.getprojectdate(),
                                      format="long",locale="de_DE")
-            note.content.add(self.getprojectname()+" "+datestring)
+            note.content = self.getprojectname()+" "+datestring
             note.subject_code = "ACD" # Reason
             doc.header.notes.add(note)
 
@@ -557,45 +557,47 @@ class Abrechnung:
             doc.trade.items.add(li)
         
         # Payment information
+        payment_means = DH_PaymentMeans()
         if mode == 1:
-            doc.trade.settlement.payment_means.payee_account.account_name = CONTACT['AccName']
-            doc.trade.settlement.payment_means.payee_account.iban = CONTACT['IBAN']
-            doc.trade.settlement.payment_means.payee_institution.bic = CONTACT['BIC']
+            payment_means.payee_account.account_name = CONTACT['AccName']
+            payment_means.payee_account.iban = CONTACT['IBAN']
+            payment_means.payee_institution.bic = CONTACT['BIC']
         else:
-            doc.trade.settlement.payment_means.payer_account.iban = CONTACT['IBAN']
+            payment_means.payer_account.iban = CONTACT['IBAN']
         
         term = DH_PaymentTerms()
 
         if self.getibanmode() == 1 and self.gettotal() < 0:
             # Refund via bank transfer
-            doc.trade.settlement.payment_means.type_code = "42" # Payment to bank account
+            payment_means.type_code = "42" # Payment to bank account
             term.description = "Wir überweisen den Abrechnungsbetrag auf dein Konto."
             if self.getibanknown():
-                doc.trade.settlement.payment_means.information.add(f"Meine Bankverbindung ist dem {CONTACT['NameShort']} bekannt.")
+                payment_means.information.add(f"Meine Bankverbindung ist dem {CONTACT['NameShort']} bekannt.")
             else:
-                doc.trade.settlement.payment_means.payee_account.iban = self.getaccountiban()
+                payment_means.payee_account.iban = self.getaccountiban()
                 if self.getaccountname():
-                    doc.trade.settlement.payment_means.payee_account.account_name = self.getaccountname()
+                    payment_means.payee_account.account_name = self.getaccountname()
         elif self.getibanmode() == 2 and self.gettotal() > 0:
-            doc.trade.settlement.payment_means.type_code = "59" # SEPA direct debit
+            payment_means.type_code = "59" # SEPA direct debit
             term.description = "Wir ziehen den Abrechnungsbetrag per SEPA-Lastschrift ein."
             if self.getsepamode() in (2,3):
                 if self.getsepamode() == 2:
-                    doc.trade.settlement.payment_means.information.add("Ein SEPA-Mandat liegt noch nicht vor.")
+                    payment_means.information.add("Ein SEPA-Mandat liegt noch nicht vor.")
                 else:
-                    doc.trade.settlement.payment_means.information.add("Das vorliegende SEPA-Mandat ist veraltet.")
+                    payment_means.information.add("Das vorliegende SEPA-Mandat ist veraltet.")
                 note = DH_IncludedNote()
                 note.content_code = "SEPA"
-                note.content.add("Bitte senden Sie mir ein SEPA-Mandatsformular zu.")
+                note.content = "Bitte senden Sie mir ein SEPA-Mandatsformular zu."
                 note.subject_code = "AAI" # General information
                 doc.header.notes.add(note)
         elif self.getibanmode() == 3 and self.gettotal() > 0:
             term.description = "Du überweist den Abrechnungsbetrag selbst."
-            doc.trade.settlement.payment_means.type_code = "42" # Payment to bank account
+            payment_means.type_code = "42" # Payment to bank account
         else:
             # Fallback if none of the above applies
-            doc.trade.settlement.payment_means.type_code = "ZZZ" # Mutually defined
-        
+            payment_means.type_code = "ZZZ" # Mutually defined
+
+        doc.trade.settlement.payment_means.add(payment_means)
         doc.trade.settlement.terms.add(term)
 
         # Tax

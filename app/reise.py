@@ -12,7 +12,7 @@ from drafthorse.models.accounting import ApplicableTradeTax as DH_ApplicableTrad
 from drafthorse.models.document import Document as DH_Document
 from drafthorse.models.note import IncludedNote as DH_IncludedNote
 from drafthorse.models.party import TaxRegistration as DH_TaxRegistration
-from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms
+from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms, PaymentMeans as DH_PaymentMeans
 from drafthorse.models.product import ProductCharacteristic as DH_ProductCharacteristic
 from schwifty import IBAN, exceptions
 
@@ -590,7 +590,7 @@ class Abrechnung():
         if self.getcause():
             note = DH_IncludedNote()
             note.content_code = 'CAUSE'
-            note.content.add(self.getcause())
+            note.content = self.getcause()
             note.subject_code = "ACD" # Reason
             doc.header.notes.add(note)
 
@@ -652,9 +652,9 @@ class Abrechnung():
                 li.settlement.monetary_summation.total_amount = day.getbenefits()
                 note2 = DH_IncludedNote()
                 note2.content_code = 'TIME'
-                note2.content.add(format_time(self.getbegintime(),
+                note2.content = format_time(self.getbegintime(),
                     format='short',locale='de_DE')+' - '+format_time(
-                    self.getendtime(),format='short',locale='de_DE'))
+                    self.getendtime(),format='short',locale='de_DE')
                 note2.subject_code = "BLO" # Period of time
                 li.document.notes.add(note2)
             else:
@@ -700,19 +700,22 @@ class Abrechnung():
             doc.trade.items.add(li)
 
         # Payment information
-        doc.trade.settlement.payment_means.payee_account.account_name = CONTACT['AccName']
-        doc.trade.settlement.payment_means.payee_account.iban = CONTACT['IBAN']
-        doc.trade.settlement.payment_means.payee_institution.bic = CONTACT['BIC']
+        payment_means = DH_PaymentMeans()
+        payment_means.payee_account.account_name = CONTACT['AccName']
+        payment_means.payee_account.iban = CONTACT['IBAN']
+        payment_means.payee_institution.bic = CONTACT['BIC']
 
         term = DH_PaymentTerms()
-        doc.trade.settlement.payment_means.type_code = "42" # Payment to bank account
+        payment_means.type_code = "42" # Payment to bank account
         term.description = "Wir überweisen den Abrechnungsbetrag auf dein Konto."
         if self.getibanknown():
-            doc.trade.settlement.payment_means.information.add(f"Meine Bankverbindung ist dem {CONTACT['NameShort']} bekannt.")
+            payment_means.information.add(f"Meine Bankverbindung ist dem {CONTACT['NameShort']} bekannt.")
         else:
-            doc.trade.settlement.payment_means.payee_account.iban = self.getaccountiban()
+            payment_means.payee_account.iban = self.getaccountiban()
             if self.getaccountname():
-                doc.trade.settlement.payment_means.payee_account.account_name = self.getaccountname()
+                payment_means.payee_account.account_name = self.getaccountname()
+
+        doc.trade.settlement.payment_means.add(payment_means)
         doc.trade.settlement.terms.add(term)
 
         trade_tax = DH_ApplicableTradeTax()
