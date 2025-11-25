@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Remove brackets surrounding the date from the project name in Aktivenabrechnung e-invoices
+
 ## v2.5 - 2025-10-13
 
 ### Added

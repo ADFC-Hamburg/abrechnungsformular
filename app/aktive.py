@@ -483,7 +483,7 @@ class Abrechnung:
             note.content_code = 'PROJECT'
             datestring = format_date(self.getprojectdate(),
                                      format="long",locale="de_DE")
-            note.content.add(self.getprojectname()+" ("+datestring+")")
+            note.content.add(self.getprojectname()+" "+datestring)
             note.subject_code = "ACD" # Reason
             doc.header.notes.add(note)
 
