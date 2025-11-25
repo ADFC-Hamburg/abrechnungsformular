@@ -9,6 +9,8 @@
 
 ### Changed
 
+- Weasyprint (Python dependency) updated to version 66
+- Schwifty (Python dependency) updated to version 2025.9
 - Remove brackets surrounding the date from the project name in Aktivenabrechnung e-invoices
 
 ### Removed
