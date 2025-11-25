@@ -27,7 +27,7 @@ RUN chmod a+w /var/cache/fontconfig/
 COPY app/ /abrechnungsformular/app/
 COPY static/ /abrechnungsformular/static/
 COPY templates/ /abrechnungsformular/templates/
-COPY abrechnungsformular.py VERSION CONFIG.ini tool_*.py /abrechnungsformular/
+COPY abrechnungsformular.py CONFIG.ini tool_*.py /abrechnungsformular/
 
 # Generate files via Python scripts
 RUN mkdir /abrechnungsformular/static/blank; python /abrechnungsformular/tool_generate_empty_pdf.py -ar /abrechnungsformular/static/blank/; rm /abrechnungsformular/tool_generate_empty_pdf.py

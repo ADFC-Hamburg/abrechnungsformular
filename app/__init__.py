@@ -1,4 +1,5 @@
 import configparser
+from os import environ
 
 
 class PATHS():
@@ -10,10 +11,8 @@ class PATHS():
     CONFIG_FILE = 'CONFIG.ini'
 
 
-def _fetch_version(path:str) -> str:
-    with open(path) as f:
-        version = f.readline()
-    return version
+def _fetch_version() -> str:
+    return environ.get('DOCKER_IMAGE_VERSION', '')
 
 def _fetch_config(path:str) -> configparser.ConfigParser:
     config = configparser.ConfigParser()
@@ -52,7 +51,7 @@ def _read_reise_rate(config:configparser.ConfigParser) -> dict[str,str]:
 
 
 #: Die Versionsnummer dieser App.
-VERSION = _fetch_version('VERSION')
+VERSION = _fetch_version()
 
 config = _fetch_config(PATHS.CONFIG_FILE)
 #: Die Kontaktdaten des Vereins.

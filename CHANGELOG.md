@@ -4,11 +4,16 @@
 
 ### Added
 
+- Use environment variable to store version number (set during Docker build with `--build-arg VERSION=`)
 - Store git tag as version number when building via GitHub workflow run
 
 ### Changed
 
 - Remove brackets surrounding the date from the project name in Aktivenabrechnung e-invoices
+
+### Removed
+
+- VERSION file
 
 ## v2.5 - 2025-10-13
 

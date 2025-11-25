@@ -138,8 +138,8 @@
 	<footer>
 		<nav>
 			<a href="{{ address['WebLegal'] }}">Impressum</a><a href="{{ address['WebPrivacy'] }}">Datenschutz</a>
-		</nav>
-		<div class="version">Abrechnungsformular v{{version}}</div>
+		</nav>{% if version %}
+		<div class="version">Abrechnungsformular {{version}}</div>{% endif %}
 	</footer>
 	<script src="{{ url_for(static, filename='js/form_reise.js') }}"></script>
 </body>
