@@ -2,6 +2,10 @@
 
 ## UNRELEASED
 
+### Added
+
+- Store git tag as version number when building via GitHub workflow run
+
 ### Changed
 
 - Remove brackets surrounding the date from the project name in Aktivenabrechnung e-invoices
