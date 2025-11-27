@@ -701,9 +701,7 @@ class Abrechnung():
 
         # Payment information
         payment_means = DH_PaymentMeans()
-        payment_means.payee_account.account_name = CONTACT['AccName']
-        payment_means.payee_account.iban = CONTACT['IBAN']
-        payment_means.payee_institution.bic = CONTACT['BIC']
+        payment_means.payer_account.iban = CONTACT['IBAN']
 
         term = DH_PaymentTerms()
         payment_means.type_code = "42" # Payment to bank account

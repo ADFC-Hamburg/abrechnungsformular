@@ -14,6 +14,10 @@
 - Schwifty (Python dependency) updated to version 2025.9
 - Remove brackets surrounding the date from the project name in Aktivenabrechnung e-invoices
 
+### Fixed
+
+- ADFC bank account information is now written into payer field, not payee field, in Reisekostenabrechnung e-invoices
+
 ### Removed
 
 - VERSION file
