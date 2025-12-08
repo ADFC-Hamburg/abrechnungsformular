@@ -608,7 +608,7 @@ function validateForm() {
  */
 function start() {
 	// Setze spätestes erlaubtes Datum auf heute
-	document.getElementById("projectdate").max = new Date().toISOString().split("T")[0];
+	// document.getElementById("projectdate").max = new Date().toISOString().split("T")[0];
 
 	// Mache alle Elemente, die nur beim Einsatz von JavaScript sichbar sein sollen, sichtbar
 	const hiddenElements = document.getElementsByClassName("jsonly");

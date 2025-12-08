@@ -239,16 +239,13 @@ function updateMinDate() {
  * Gleiche das späteste erlaubte Datum der meisten Datumsfelder dem
  * Datum des Endes der Reise an.
  * 
- * Sollte dieses Datum noch nicht eingegeben worden sein, nutze
- * stattdessen das heutige Datum.
- * 
  * @since	2.0
  */
 function updateMaxDate() {
 	let value = document.getElementById("journeyenddate").value;
-	if (value == "") {
+	/*if (value == "") {
 		value = new Date().toISOString().split("T")[0];
-	}
+	}*/
 	updateDateRange(null,value);
 }
 
@@ -774,10 +771,10 @@ function validateCompletion(position) {
  */
 function start() {
 	// Setze spätestes und frühestes erlaubtes Datum
-	document.getElementById("journeyenddate").max = new Date().toISOString().split("T")[0];
+	//document.getElementById("journeyenddate").max = new Date().toISOString().split("T")[0];
 	document.getElementById("journeybegindate").min = earliestdate.toISOString().split("T")[0];
 	for (let i = 1; i <= maxPos; i++) {
-		document.getElementById("position"+(i)+"date").max = new Date().toISOString().split("T")[0];
+		//document.getElementById("position"+(i)+"date").max = new Date().toISOString().split("T")[0];
 		document.getElementById("position"+(i)+"date").min = earliestdate.toISOString().split("T")[0];
 	}
 
@@ -889,7 +886,7 @@ function restart() {
 	ibanLock(false);
 	positionDisplayInitialize(1);
 	timeDisplay(false);
-	updateDateRange(earliestdate.toISOString().split("T")[0],new Date().toISOString().split("T")[0]);
+	updateDateRange(earliestdate.toISOString().split("T")[0],"");
 
 	document.getElementById("journeybegintime").max = '23:59'
 	document.getElementById("journeyendtime").min = '0:00'

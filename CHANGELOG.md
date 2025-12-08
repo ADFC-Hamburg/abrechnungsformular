@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Date fields no longer restrict entering dates beyond the present day
+
 ## v2.6 - 2025-11-27
 
 ### Added
