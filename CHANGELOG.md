@@ -5,6 +5,7 @@
 ### Changed
 
 - Date fields no longer restrict entering dates beyond the present day
+- Changed instructions for sending in the finished document in form Reisekostenabrechnung to match form Aktivenabrechnung
 
 ## v2.6 - 2025-11-27
 

@@ -129,8 +129,9 @@
 				<input type="submit" id="submit" value="Abrechnung erstellen">
 				<a href="{{ url_for('pages.reise_pdf') }}" class="button" download="Reisekostenabrechnung.pdf">Leere Abrechnung herunterladen</a>
 				<input type="reset" id="reset" value="Formular zurücksetzen">
-				<aside>Hier kannst du das ausgefüllte Formular herunter&shy;laden und die Datei dann einfach <b>zusammen mit den digitalen Belegen</b> per E-Mail an <a href="mailto:{{ address['MailAccounting'] }}">{{ address['MailAccounting'] }}</a> schicken.<br />
-				<b>Papierbelege schickst du bitte im Original</b> und mit der dazugehörigen Positionsnummer versehen <b>zusammen mit dem ausgedruckten, ausgefüllten und unterschriebenen Formular</b> an die Geschäftsstelle <address>{{ address["NameShort"] }}, {{ address["LineOne"] }}, {% if address["LineTwo"] %}{{ address["LineTwo"] }}, {% endif %}{% if address["LineThree"] %}{{ address["LineThree"] }}, {% endif %}{{ address["PostCode"] }} {{ address["City"] }}</address> oder gibst es dort ab.</aside>
+				<aside>Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:{{ address['MailAccounting'] }}">{{ address['MailAccounting'] }}</a> schicken.<br />
+				Vergiss dabei nicht, <b>sämtliche Belege</b> an die E&#8209;Mail anzuhängen. Kassen&shy;bons oder andere Papier&shy;belege schickst du als Scan oder notfalls als Foto ein, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.<br />
+				Wenn eine Digitalisierung der Belege nicht möglich ist, sende die Abrechnung bitte dennoch per E&#8209;Mail ein. Sende die Belege <b>im Original</b> mit der jeweiligen Positions&shy;nummer versehen, zusammen mit einer Notiz zum Datum der Abrechnung, an unsere Geschäfts&shy;stelle <address>({{ address["NameShort"] }}, {{ address["LineOne"] }}, {% if address["LineTwo"] %}{{ address["LineTwo"] }}, {% endif %}{% if address["LineThree"] %}{{ address["LineThree"] }}, {% endif %}{{ address["PostCode"] }} {{ address["City"] }})</address> oder gib sie dort ab.</aside>
 			</section>
 		</fieldset>
 
