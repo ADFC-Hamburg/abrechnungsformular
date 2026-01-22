@@ -2,6 +2,8 @@
 
 ## UNRELEASED
 
+- Base image updated to Alpine 3.23
+- Python updated to version 3.14.2
 - Weasyprint (Python dependency) updated to version 68
 
 ## v2.7 - 2025-12-08

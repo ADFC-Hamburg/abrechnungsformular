@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Use the official Python Alpine image as base
-FROM python:3.13.7-alpine3.22 AS base
+FROM python:3.14.2-alpine3.23 AS base
 
 # Description of resulting image
 LABEL org.opencontainers.image.description="Ein Webserver, über welchen Aktive und Helfer des ADFC Abrechnungsformulare ausfüllen und herunterladen können."
