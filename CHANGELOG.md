@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASED
+
+- Weasyprint (Python dependency) updated to version 68
+
 ## v2.7 - 2025-12-08
 
 ### Changed
