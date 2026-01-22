@@ -2,6 +2,8 @@
 
 ## v2.8 - 2026-01-26
 
+### Changed
+
 - Base image updated to Alpine 3.23
 - Python updated to version 3.14.2
 - Weasyprint (Python dependency) updated to version 68
