@@ -1,8 +1,10 @@
 /* Allgemeine Einstellungen ——————————————————*/
 
 :root {
-	--adfc-blue:	#24477c;
-	--adfc-orange:	#f47216;
+	--adfc-blue:	#004b7c;
+	--adfc-orange:	#ee7f00;
+	--adfc-green:	#00793a;
+
 	--highlight:	#f47216;
 	--radio-color:	hsl(25, 91%, 50%);
 	--fldst-color:	hsl(25, 91%, 95%);
