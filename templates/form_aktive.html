@@ -117,7 +117,7 @@
 			<legend>Daten absenden</legend>
 			<section class="menu">
 				<input type="submit" id="submit" value="Abrechnung erstellen">
-				<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
+				<a href="{{ url_for('pages.aktive_pdf') }}" class="button" draggable=false download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
 				<input type="reset" id="reset" value="Formular zurücksetzen">
 				<aside>Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:{{ address['MailAccounting'] }}">{{ address['MailAccounting'] }}</a> schicken.<br />
 				Vergiss dabei nicht, <b>sämtliche Belege</b> an die E&#8209;Mail anzuhängen. Kassen&shy;bons oder andere Papier&shy;belege schickst du als Scan oder notfalls als Foto ein, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.<br />
