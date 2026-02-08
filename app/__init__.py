@@ -1,14 +1,15 @@
 import configparser
-from os import environ
+from os import environ, path
 
 
 class PATHS():
-    PDF_TEMPLATE_FOLDER = 'templates/documents/'
+    ROOT = path.normpath(path.join(path.dirname(__file__), '..'))
+    PDF_TEMPLATE_FOLDER = path.join(ROOT,'templates/documents/')
     AKTIVE_HTML = 'aktive_template.html.j2'
     AKTIVE_CSS = 'aktive_template.css'
     REISE_HTML = 'reise_template.html.j2'
     REISE_CSS = 'reise_template.css'
-    CONFIG_FILE = 'CONFIG.ini'
+    CONFIG_FILE = path.join(ROOT,'CONFIG.ini')
 
 
 def _fetch_version() -> str:
