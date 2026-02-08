@@ -7,6 +7,7 @@
 - Colors in logos and web forms replaced with official ADFC colors
 - Effect when hovering over web form buttons replaced with underline
 - Changed border and background color of fieldset elements in web form
+- Filename extension .j2 added to Jinja2 template files
 
 ### Fixed
 

@@ -4,9 +4,9 @@ from os import environ
 
 class PATHS():
     PDF_TEMPLATE_FOLDER = 'templates/documents/'
-    AKTIVE_HTML = 'aktive_template.html'
+    AKTIVE_HTML = 'aktive_template.html.j2'
     AKTIVE_CSS = 'aktive_template.css'
-    REISE_HTML = 'reise_template.html'
+    REISE_HTML = 'reise_template.html.j2'
     REISE_CSS = 'reise_template.css'
     CONFIG_FILE = 'CONFIG.ini'
 
