@@ -36,11 +36,10 @@ FROM build-1 AS assets
 COPY static/ /abrechnungsformular/static/
 COPY templates/ /abrechnungsformular/templates/
 COPY tools/ /abrechnungsformular/tools/
-COPY tool_*.py /abrechnungsformular/
 
 # Generate files via Python scripts
+RUN tools/generate_white_logos.sh static/img/
 RUN mkdir /abrechnungsformular/static/blank; cd .. && python -m abrechnungsformular.tools.generate_empty_pdf -ar /abrechnungsformular/static/blank/
-RUN python /abrechnungsformular/tool_generate_white_logos.py -nv /abrechnungsformular/static/img/logo.svg
 
 
 
