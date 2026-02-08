@@ -16,7 +16,7 @@ from drafthorse.models.party import TaxRegistration as DH_TaxRegistration
 from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms, PaymentMeans as DH_PaymentMeans
 from schwifty import IBAN, exceptions
 
-from . import tools, CONTACT, PATHS
+from . import tools, CONTACT, FILENAMES
 
 
 class Position:
@@ -456,7 +456,7 @@ class Abrechnung:
         fertig ausgefüllte Abrechnungsformulare im HTML-Format.
         """
 
-        template = tools.pdf_environment.get_template(PATHS.AKTIVE_HTML)
+        template = tools.pdf_environment.get_template(FILENAMES.AKTIVE_HTML)
         today = format_date(date.today(),format='long',locale='de_DE')
 
         return template.render(abrechnung=self,today=today)
