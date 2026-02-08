@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+# Run from parent folder of abrechnungsformular/ with
+# python3 -m abrechnungsformular.tools.generate_empty_pdf
 
 """
 Dieses Script erstellt leere Abrechnungsformulare.
@@ -20,7 +21,7 @@ gettext.gettext = Übersetzung
 
 import argparse, sys
 
-from app import PATHS
+from ..app import PATHS
 
 WRITEFOLDER = ""
 DESCRIPTION = "Dieses Script erstellt leere Versionen der Abrechnungsformulare" \
@@ -39,7 +40,7 @@ args=parser.parse_args()
 
 from weasyprint import HTML
 
-from app import aktive, reise
+from ..app import aktive, reise
 
 def print_pdf(object,name:str) -> None:
     abrechnung = HTML(string=object.html_compose(),
