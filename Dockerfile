@@ -38,7 +38,7 @@ COPY templates/ /abrechnungsformular/templates/
 COPY tools/ /abrechnungsformular/tools/
 
 # Generate files via Python scripts
-RUN tools/generate_white_logos.sh static/img/
+RUN tools/generate_white_logos.sh static/img/; tools/apply_logos_to_css.sh static/img/ templates/documents/*.css static/css/form.css
 RUN mkdir /abrechnungsformular/static/blank; cd .. && python -m abrechnungsformular.tools.generate_empty_pdf -ar /abrechnungsformular/static/blank/
 
 
