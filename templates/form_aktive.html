@@ -8,7 +8,7 @@
 	<meta name="description" content="Abrechnungsformular des {{ address['NameShort'] }}" />
 	<meta name="author" content="Patrick Lübcke" />
 	<meta name="application-name" content="Abrechnungsformular" />
-	<meta name="theme-color" content="#24477c" />
+	<meta name="theme-color" content="#004b7c" />
 	<link rel="stylesheet" href="{{ url_for(static, filename='css/form.css') }}">
 	<link rel="icon" href="{{ url_for(static, filename='img/favicon.ico') }}" sizes="32x32">
 	<link rel="icon" href="{{ url_for(static, filename='img/icon.svg') }}" type="image/svg+xml">
@@ -117,7 +117,7 @@
 			<legend>Daten absenden</legend>
 			<section class="menu">
 				<input type="submit" id="submit" value="Abrechnung erstellen">
-				<a href="{{ url_for('pages.aktive_pdf') }}" class="button" download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
+				<a href="{{ url_for('pages.aktive_pdf') }}" class="button" draggable=false download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
 				<input type="reset" id="reset" value="Formular zurücksetzen">
 				<aside>Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:{{ address['MailAccounting'] }}">{{ address['MailAccounting'] }}</a> schicken.<br />
 				Vergiss dabei nicht, <b>sämtliche Belege</b> an die E&#8209;Mail anzuhängen. Kassen&shy;bons oder andere Papier&shy;belege schickst du als Scan oder notfalls als Foto ein, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.<br />

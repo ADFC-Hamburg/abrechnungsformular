@@ -1,11 +1,12 @@
 /* Allgemeine Einstellungen ——————————————————*/
 
 :root {
-	--adfc-blue:	#24477c;
-	--adfc-orange:	#f47216;
-	--highlight:	#f47216;
+	--adfc-blue:	#004b7c;
+	--adfc-orange:	#ee7f00;
+	--adfc-green:	#00793a;
+
+	--highlight:	var(--adfc-orange);
 	--radio-color:	hsl(25, 91%, 50%);
-	--fldst-color:	hsl(25, 91%, 95%);
 	--invalid-color:hsl(348, 100%, 50%);
 
 	--font-sans:	"Arimo","Liberation Sans","Open Sans",Arial,Helvetica,sans-serif;
@@ -149,9 +150,8 @@ form {
 	padding:	0.5em;
 }
 form > header {
-	--highlight:	#24477c;
+	--highlight:	var(--adfc-blue);
 	--radio-color:	var(--adfc-blue);
-	--fldst-color:	hsl(216, 55%, 95%);
 
 	padding-bottom:	1.5em;
 	border-style:	none none dotted;
@@ -164,9 +164,9 @@ form > header {
 fieldset {
 	max-width:	62em;
 	margin:		1em auto 0;
-	background-color:var(--fldst-color);
+	background-color:rgb(from var(--highlight) r g b / 8%);
 
-	border: 2px groove var(--highlight);
+	border: 2px solid var(--highlight);
 }
 fieldset legend {
 	font-weight:	bold;
@@ -288,7 +288,7 @@ label.option > input[type="radio"] {
 		color:		white;
 
 		padding:	0.25em;
-		border:		0.2em outset hsl(25, 91%, 76%);
+		border:		0.2em outset hsl(32, 91%, 76%);
 		border-radius:	0.25em;
 
 		text-decoration:none;
@@ -306,15 +306,10 @@ label.option > input[type="radio"] {
 		border-color:	hsl(10, 91%, 76%);
 	}
 	input[type="submit"]:hover,
+	input[type="reset"]:hover,
 	input[type="button"]:hover,
 	.button:hover {
-
-		background-color:hsl(25, 91%, 41%);
-		border-color:	hsl(25, 91%, 60%);
-	}
-	input[type="reset"]:hover {
-		background-color:hsl(10, 91%, 41%);
-		border-color:	hsl(10, 91%, 60%);
+		text-decoration:underline;
 	}
 	input[type="submit"]:active,
 	input[type="reset"]:active,

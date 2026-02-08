@@ -1,5 +1,17 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Colors in logos and web forms replaced with official ADFC colors
+- Effect when hovering over web form buttons replaced with underline
+- Changed border and background color of fieldset elements in web form
+
+### Fixed
+
+- Download button for blank PDF form no longer draggable
+
 ## v2.8 - 2026-01-26
 
 ### Changed
