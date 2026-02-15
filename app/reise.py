@@ -684,7 +684,7 @@ class Abrechnung():
             li.product.name = "Wegstreckenentschädigung"
             li.agreement.net.amount = self.CAR_RATE_PER_KM
             li.agreement.net.basis_quantity = (self.getcardistance(),"KMT") # Kilometre
-            li.delivery.billed_quantity = (min(self.getcardistance(),self.CAR_MAXRATE/self.CAR_RATE_PER_KM),"KMT") # Kilometre
+            li.delivery.billed_quantity = (min(self.getcardistance(),(self.CAR_MAXRATE/self.CAR_RATE_PER_KM).quantize(3)),"KMT") # Kilometre
             li.settlement.monetary_summation.total_amount = self.getmileage()
             doc.trade.items.add(li)
 
