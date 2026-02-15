@@ -8,10 +8,13 @@
 - Effect when hovering over web form buttons replaced with underline
 - Changed border and background color of fieldset elements in web form
 - Filename extension .j2 added to Jinja2 template files
+- Removed garbage data from Docker image
+- Improved color detection of semi-white logo generation
 
 ### Fixed
 
 - Download button for blank PDF form no longer draggable
+- Web forms will no longer (attempt to) load SVG and PNG version of logo at the same time
 
 ## v2.8 - 2026-01-26
 
