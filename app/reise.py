@@ -16,7 +16,7 @@ from drafthorse.models.payment import PaymentTerms as DH_PaymentTerms, PaymentMe
 from drafthorse.models.product import ProductCharacteristic as DH_ProductCharacteristic
 from schwifty import IBAN, exceptions
 
-from . import tools, CONTACT, PATHS, REISE_RATE
+from . import tools, CONTACT, FILENAMES, REISE_RATE
 
 
 class Position:
@@ -743,7 +743,7 @@ class Abrechnung():
         fertig ausgefüllte Abrechnungsformulare im HTML-Format.
         """
 
-        template = tools.pdf_environment.get_template(PATHS.REISE_HTML)
+        template = tools.pdf_environment.get_template(FILENAMES.REISE_HTML)
         today = format_date(date.today(),format='long',locale='de_DE')
 
         return template.render(abrechnung=self,today=today,

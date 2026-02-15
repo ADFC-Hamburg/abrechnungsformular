@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Use the official Python Alpine image as base
-FROM python:3.14.2-alpine3.23 AS base
+FROM python:3.14.2-alpine3.23 AS build-1
 
 # Description of resulting image
 LABEL org.opencontainers.image.description="Ein Webserver, über welchen Aktive und Helfer des ADFC Abrechnungsformulare ausfüllen und herunterladen können."
@@ -23,15 +23,32 @@ RUN pip3 install --upgrade pip && pip3 install --no-cache-dir --upgrade -r /abre
 # Enable writing font cache files (stops fontconfig from throwing errors)
 RUN chmod a+w /var/cache/fontconfig/
 
-# Copy the necessary files and directories into the container
+# Copy the Python app into the container
 COPY app/ /abrechnungsformular/app/
+COPY abrechnungsformular.py CONFIG.ini /abrechnungsformular/
+
+
+
+# Intermediate stage for asset generation
+FROM build-1 AS assets
+
+# Copy assets and asset generation tools
 COPY static/ /abrechnungsformular/static/
 COPY templates/ /abrechnungsformular/templates/
-COPY abrechnungsformular.py CONFIG.ini tool_*.py /abrechnungsformular/
+COPY tools/ /abrechnungsformular/tools/
 
 # Generate files via Python scripts
-RUN mkdir /abrechnungsformular/static/blank; python /abrechnungsformular/tool_generate_empty_pdf.py -ar /abrechnungsformular/static/blank/; rm /abrechnungsformular/tool_generate_empty_pdf.py
-RUN python /abrechnungsformular/tool_generate_white_logos.py -nv /abrechnungsformular/static/img/logo.svg; rm /abrechnungsformular/tool_generate_white_logos.py
+RUN tools/generate_white_logos.sh static/img/; tools/apply_logos_to_css.sh static/img/ templates/documents/*.css static/css/form.css
+RUN mkdir /abrechnungsformular/static/blank; cd .. && python -m abrechnungsformular.tools.generate_empty_pdf -ar /abrechnungsformular/static/blank/
+
+
+
+# Continue building final image
+FROM build-1 AS build-2
+
+# Copy assets from intermediate stage
+COPY --from=assets /abrechnungsformular/static/ /abrechnungsformular/static/
+COPY --from=assets /abrechnungsformular/templates/ /abrechnungsformular/templates/
 
 # Setup non-root user to run the app (security best practice)
 ARG UID=10001

@@ -25,19 +25,19 @@ Ein angepasstes Docker-Image lässt sich aus den Quelldateien erstellen. [Lade d
 
 #### Logo anpassen
 
-Als Logo können entweder SVG- oder PNG-Dateien verwendet werden. Du benötigst folgende Datei:
+Als Logo können entweder SVG- oder PNG-Dateien verwendet werden. Du benötigst:
 
 * Eine Datei namens **logo.png** oder **logo.svg** - diese sollte eine farbige Version des Logos beinhalten.
 
-Bei Verwendung von PNG außerdem benötigt, bei SVG optional:
+Folgende Dateien solltest du ebenfalls hinzufügen, falls vorhanden:
 
-  * Eine Datei namens **logo-semiwhite.png** oder **logo-semiwhite.svg** - bei dieser sollten zumindest die blauen Teile des Logos weiß gefärbt sein.
-  * Eine Datei namens **logo-white.png**oder **logo-white.svg** - diese sollte eine weiße Version des Logos beinhalten.
+* Eine Datei namens **logo-semiwhite.png** oder **logo-semiwhite.svg** - bei dieser sollten zumindest die blauen Teile des Logos weiß gefärbt sein.
+* Eine Datei namens **logo-white.png** oder **logo-white.svg** - diese sollte eine weiße Version des Logos beinhalten.
 
 Ersetze im Unterordner **static/img/** die Datei **logo.svg** durch die obigen Dateien.
 
-> [!WARNING]
-> Achte darauf, dass du nach dem Einfügen *entweder* PNG-Logos *oder* SVG-Logos im Ordner hast.
+> [!TIP]
+> Bei vorhandener **logo.svg** werden fehlende **logo-semiwhite.svg** und **logo-white.svg** automatisch generiert.
 
 #### Das Image fertigstellen
 
