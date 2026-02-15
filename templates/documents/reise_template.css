@@ -98,6 +98,7 @@ td.mini, th.mini {
 .field.km {
 	width:		12mm;
 	text-align:	center;
+	direction:	rtl;
 }
 .field.text {
 	width:		60mm;
