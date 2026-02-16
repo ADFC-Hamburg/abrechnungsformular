@@ -277,6 +277,7 @@ class Abrechnung():
     MAXDATES = 5
     CAR_RATE_PER_KM = Decimal(REISE_RATE['PKWproKM'])
     CAR_MAXRATE = Decimal(REISE_RATE['PKWMaximum'])
+    CAR_MAX_DISTANCE = CAR_MAXRATE / CAR_RATE_PER_KM
     OVERNIGHT_MIN = Decimal(REISE_RATE['UebernachtMin'])
 
     _NAME = "Reisekostenabrechnung"
@@ -684,7 +685,10 @@ class Abrechnung():
             li.product.name = "Wegstreckenentschädigung"
             li.agreement.net.amount = self.CAR_RATE_PER_KM
             li.agreement.net.basis_quantity = (self.getcardistance(),"KMT") # Kilometre
-            li.delivery.billed_quantity = (min(self.getcardistance(),(self.CAR_MAXRATE/self.CAR_RATE_PER_KM).quantize(3)),"KMT") # Kilometre
+            if self.getcardistance() <= self.CAR_MAX_DISTANCE:
+                li.delivery.billed_quantity = (self.getcardistance(),"KMT") # Kilometre
+            else:
+                li.delivery.billed_quantity = (format(self.CAR_MAX_DISTANCE,'f'),"KMT") # Kilometre
             li.settlement.monetary_summation.total_amount = self.getmileage()
             doc.trade.items.add(li)
 
