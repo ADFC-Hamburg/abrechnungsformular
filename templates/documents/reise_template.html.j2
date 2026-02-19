@@ -111,7 +111,7 @@
 		<caption>Fahrtkosten</caption>
 		<tr>
 			<td>Im Privat-PKW<br>zurückgelegt:</td>
-			<td class="field"><div class="field km">{% if abrechnung.cardistance %}{{ format_decimal(abrechnung.cardistance,locale="de_DE") }}{% endif %}</div>km</td>
+			<td class="field"><div class="field km">{% if abrechnung.cardistance %}{{ format_decimal(abrechnung.cardistance,shorten=True) }}{% endif %}</div>km</td>
 		</tr>
 	</table>
 

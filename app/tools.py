@@ -5,7 +5,6 @@ der Aktivenabrechnung zum Einsatz kommen.
 
 from decimal import Decimal
 
-from babel.numbers import format_currency, format_decimal
 from babel.dates import format_date, format_time
 from drafthorse.models.tradelines import LineItem
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -50,9 +49,37 @@ def euro(value = 0, empty = False, shorten = False) -> str:
     """
     if empty and not value:
         return ""
-    out = format_currency(value,"EUR",locale="de_DE")
+    out = format_decimal(value,2,False) + u'\N{no-break space}\N{euro sign}'
     if shorten:
-        out = out.replace(',00','')
+        out = out.removesuffix(',00')
+    return out
+
+def format_decimal(number, decimals:int = 3, shorten = False) -> str:
+    """
+    Gibt eine Zahl als String mit Tausendtrennerpunkten und
+    Dezimalkomma zurück.
+
+    decimals legt die Anzahl der Nachkommastellen fest; ist shorten
+    True, werden Nullen am Ende des Bruchteils entfernt.
+    """
+    DECIMAL_SEPARATOR = ','
+    out = format(Decimal(number),f'.{str(decimals)}f').split('.')
+    out[0] = format_digits(out[0])
+    if shorten and len(out) > 1:
+        out[1] = out[1].rstrip('0')
+        if out[1] == '': out.pop(1)
+    return DECIMAL_SEPARATOR.join(out)
+
+def format_digits(number) -> str:
+    """
+    Gibt eine Ganzzahl als String mit Tausendtrennerpunkten zurück.
+    """
+    DIGIT_GROUP_SEPARATOR = '.'
+    DIGIT_GROUP_LENGTH = 3
+    out = format(Decimal(number),'.0f')
+    if len(out) > DIGIT_GROUP_LENGTH:
+        for i in range(len(out)-DIGIT_GROUP_LENGTH,0,-DIGIT_GROUP_LENGTH):
+            out = out[:i] + DIGIT_GROUP_SEPARATOR + out[i:]
     return out
 
 def uppercase_first(text:str) -> str:
