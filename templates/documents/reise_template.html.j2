@@ -63,8 +63,8 @@
 		<tr>
 			<td class="check"></td>
 			<td></td>
-			<td>Beginn der Reise um:<div class="field time">{% if daycount == 1 and abrechnung.begintime %}{{ format_time(abrechnung.begintime,format='short',locale='de_DE') }}{% endif %}</div></td>
-			<td>Ende der Reise um:<div class="field time">{% if daycount == 1 and abrechnung.endtime %}{{ format_time(abrechnung.endtime,format='short',locale='de_DE') }}{% endif %}</div></td>
+			<td>Beginn der Reise um:<div class="field time">{% if daycount == 1 and abrechnung.begintime %}{{ abrechnung.begintime.strftime('%H:%M') }}{% endif %}</div></td>
+			<td>Ende der Reise um:<div class="field time">{% if daycount == 1 and abrechnung.endtime %}{{ abrechnung.endtime.strftime('%H:%M') }}{% endif %}</div></td>
 		</tr>
 	</table>
 

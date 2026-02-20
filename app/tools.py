@@ -5,7 +5,7 @@ der Aktivenabrechnung zum Einsatz kommen.
 
 from decimal import Decimal
 
-from babel.dates import format_date, format_time
+from babel.dates import format_date
 from drafthorse.models.tradelines import LineItem
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -106,4 +106,4 @@ pdf_environment = Environment(loader=FileSystemLoader(PATHS.PDF_TEMPLATE_FOLDER)
                               autoescape=True)
 pdf_environment.globals.update(address=CONTACT,checkbox=checkbox,euro=euro,
                                format_date=format_date,format_decimal=format_decimal,
-                               format_time=format_time,version=VERSION)
+                               version=VERSION)

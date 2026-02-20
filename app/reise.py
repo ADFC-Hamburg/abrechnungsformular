@@ -7,7 +7,7 @@ from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from re import sub
 
-from babel.dates import format_date, format_time
+from babel.dates import format_date
 from drafthorse.models.accounting import ApplicableTradeTax as DH_ApplicableTradeTax
 from drafthorse.models.document import Document as DH_Document
 from drafthorse.models.note import IncludedNote as DH_IncludedNote
@@ -653,9 +653,9 @@ class Abrechnung():
                 li.settlement.monetary_summation.total_amount = day.getbenefits()
                 note2 = DH_IncludedNote()
                 note2.content_code = 'TIME'
-                note2.content = format_time(self.getbegintime(),
-                    format='short',locale='de_DE')+' - '+format_time(
-                    self.getendtime(),format='short',locale='de_DE')
+                note2.content = ' - '.join((
+                    self.getbegintime().strftime('%H:%M'),
+                    self.getendtime().strftime('%H:%M')))
                 note2.subject_code = "BLO" # Period of time
                 li.document.notes.add(note2)
             else:
