@@ -8,7 +8,6 @@ from decimal import Decimal
 from html import escape
 from re import sub
 
-from babel.dates import format_date
 from drafthorse.models.accounting import ApplicableTradeTax as DH_ApplicableTradeTax
 from drafthorse.models.document import Document as DH_Document
 from drafthorse.models.note import IncludedNote as DH_IncludedNote
@@ -457,7 +456,7 @@ class Abrechnung:
         """
 
         template = tools.pdf_environment.get_template(FILENAMES.AKTIVE_HTML)
-        today = format_date(date.today(),format='long',locale='de_DE')
+        today = tools.format_date(date.today())
 
         return template.render(abrechnung=self,today=today)
 
@@ -481,9 +480,8 @@ class Abrechnung:
         if self.getprojectname():
             note = DH_IncludedNote()
             note.content_code = 'PROJECT'
-            datestring = format_date(self.getprojectdate(),
-                                     format="long",locale="de_DE")
-            note.content = self.getprojectname()+" "+datestring
+            note.content = ' '.join((self.getprojectname(),
+                                    tools.format_date(self.getprojectdate())))
             note.subject_code = "ACD" # Reason
             doc.header.notes.add(note)
 

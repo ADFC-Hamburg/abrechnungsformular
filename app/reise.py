@@ -7,7 +7,6 @@ from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from re import sub
 
-from babel.dates import format_date
 from drafthorse.models.accounting import ApplicableTradeTax as DH_ApplicableTradeTax
 from drafthorse.models.document import Document as DH_Document
 from drafthorse.models.note import IncludedNote as DH_IncludedNote
@@ -637,10 +636,9 @@ class Abrechnung():
         for index, day in enumerate(self.days):
             li = tools.TaxExemptLineItem()
             li.document.line_id = 'T'+str(index+1)
-            li.product.name = 'Tagesgeld ' + format_date(
+            li.product.name = 'Tagesgeld ' + tools.format_date(
                 self.getbegindate()+timedelta(days=index),
-                format="EEEE, d. MMMM",locale="de_DE"
-            )
+                with_weekday=True,with_year=False)
             li.agreement.net.basis_quantity = (1,"DAY")
             li.delivery.billed_quantity = (1,"DAY")
             for i, meal in enumerate(day.MEALNAMES):
@@ -748,7 +746,7 @@ class Abrechnung():
         """
 
         template = tools.pdf_environment.get_template(FILENAMES.REISE_HTML)
-        today = format_date(date.today(),format='long',locale='de_DE')
+        today = tools.format_date(date.today())
 
         return template.render(abrechnung=self,today=today,
                                daycount=len(self.days),rates=REISE_RATE,

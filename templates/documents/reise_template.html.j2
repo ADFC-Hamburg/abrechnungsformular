@@ -51,13 +51,13 @@
 		<tr>
 			<td class="check">{{ checkbox(daycount > 1) | safe }}</td>
 			<td class="label">Mehrtägige Reise</td>
-			<td>Beginn der Reise am:<div class="field date">{% if daycount > 1 %}{{ format_date(abrechnung.begindate,locale='de_DE') }}{% endif %}</div></td>
-			<td>Ende der Reise am:<div class="field date">{% if daycount > 1 %}{{ format_date(abrechnung.enddate,locale='de_DE') }}{% endif %}</div></td>
+			<td>Beginn der Reise am:<div class="field date">{% if daycount > 1 %}{{ abrechnung.begindate.strftime('%d.%m.%Y') }}{% endif %}</div></td>
+			<td>Ende der Reise am:<div class="field date">{% if daycount > 1 %}{{ abrechnung.enddate.strftime('%d.%m.%Y') }}{% endif %}</div></td>
 		</tr>
 		<tr>
 			<td class="check">{{ checkbox(daycount == 1) | safe }}</td>
 			<td class="label">Eintägige Reise</td>
-			<td>Datum der Reise:<div class="field date">{% if daycount == 1 %}{{ format_date(abrechnung.begindate,locale='de_DE') }}{% endif %}</div></td>
+			<td>Datum der Reise:<div class="field date">{% if daycount == 1 %}{{ abrechnung.begindate.strftime('%d.%m.%Y') }}{% endif %}</div></td>
 			<td></td>
 		</tr>
 		<tr>
@@ -144,7 +144,7 @@
 			<tr>
 				<td class="nr">{{ i+1 }}</td>
 				<td class="text{% if abrechnung.positions[i].reason|length > 30 %} shrink-text{% endif %}">{{ abrechnung.positions[i].reason|e }}</td>
-				<td class="date">{% if abrechnung.positions[i].date %}{{ format_date(abrechnung.positions[i].date,locale='de_DE') }}{% endif %}</td>
+				<td class="date">{% if abrechnung.positions[i].date %}{{ abrechnung.positions[i].date.strftime('%d.%m.%Y') }}{% endif %}</td>
 				<td class="money">{{ euro(abrechnung.positions[i].value,empty=True) }}</td>
 				<td></td>
 				<td></td>

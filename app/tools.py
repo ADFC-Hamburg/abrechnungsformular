@@ -5,7 +5,6 @@ der Aktivenabrechnung zum Einsatz kommen.
 
 from decimal import Decimal
 
-from babel.dates import format_date
 from drafthorse.models.tradelines import LineItem
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -53,6 +52,26 @@ def euro(value = 0, empty = False, shorten = False) -> str:
     if shorten:
         out = out.removesuffix(',00')
     return out
+
+def format_date(date,with_weekday:bool=False,with_year:bool=True) -> str:
+    """
+    Gibt ein Datum als String zurück, mit Tag als Zahl (ohne
+    zusätzliche Null) und Monat ausgeschrieben.
+
+    Ist with_weekday True, steht am Anfang der Wochentag ausgeschrieben.
+
+    Ist with_year True, steht am Ende das Jahr mit vier Ziffern.
+    """
+    WEEKDAY_NAMES = ('Montag','Dienstag','Mittwoch','Donnerstag',
+                     'Freitag','Samstag','Sonntag')
+    MONTH_NAMES = ('Januar','Februar','März','April','Mai','Juni','Juli',
+                   'August','September','Oktober','November','Dezember')
+    out = [str(date.day)+'.', MONTH_NAMES[date.month-1]]
+    if with_weekday:
+        out.insert(0,WEEKDAY_NAMES[date.weekday()]+',')
+    if with_year:
+        out.append(str(date.year))
+    return ' '.join(out)
 
 def format_decimal(number, decimals:int = 3, shorten = False) -> str:
     """
