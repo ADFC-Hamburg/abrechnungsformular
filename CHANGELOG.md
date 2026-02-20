@@ -17,6 +17,10 @@
 - Download button for blank PDF form no longer draggable
 - Web forms will no longer (attempt to) load SVG and PNG version of logo at the same time
 
+### Removed
+
+- Python library babel
+
 ## v2.8 - 2026-01-26
 
 ### Changed
