@@ -44,7 +44,7 @@
 			</tr>
 			<tr>
 				<td>Datum:</td>
-				<td>{{ format_date(abrechnung.getprojectdate(),format='long',locale='de_DE') if abrechnung else '' }}</td>
+				<td>{{ format_date(abrechnung.getprojectdate()) if abrechnung else '' }}</td>
 			</tr>
 		</table>
 	</div>
