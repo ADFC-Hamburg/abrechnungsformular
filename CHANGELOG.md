@@ -10,6 +10,8 @@
 - Filename extension .j2 added to Jinja2 template files
 - Removed garbage data from Docker image
 - Improved color detection of semi-white logo generation
+- Gunicorn (Python dependency) updated to version 25.1
+- Schwifty (Python dependency) updated to version 2026.1
 
 ### Fixed
 
