@@ -1,5 +1,12 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Gunicorn (Python dependency) updated to version 26.0
+- Schwifty (Python dependency) updated to version 2026.3
+
 ## v2.9 - 2026-02-23
 
 ### Changed
