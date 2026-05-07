@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Python updated to version 3.14.4
 - Gunicorn (Python dependency) updated to version 26.0
 - Schwifty (Python dependency) updated to version 2026.3
 
