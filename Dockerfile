@@ -52,7 +52,7 @@ COPY --from=assets /abrechnungsformular/templates/ /abrechnungsformular/template
 
 # Setup non-root user to run the app (security best practice)
 ARG UID=10001
-RUN adduser --disabled-password --gecos "" --home "/nonexistent" --shell "/usr/sbin/nologin" --no-create-home --uid "${UID}" appuser
+RUN adduser --disabled-password --gecos "" --home "/nonexistent" --shell "/sbin/nologin" --no-create-home --uid "${UID}" appuser
 USER appuser
 
 # Expose port 8000 for the Flask application
