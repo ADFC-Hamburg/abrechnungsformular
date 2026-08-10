@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- The date in ACD notes within Aktivenabrechnung e-invoices are now formatted as "dd.mm.yy"
+
 ## v2.10 - 2026-05-07
 
 ### Changed

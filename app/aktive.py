@@ -481,7 +481,7 @@ class Abrechnung:
             note = DH_IncludedNote()
             note.content_code = 'PROJECT'
             note.content = ' '.join((self.getprojectname(),
-                                    tools.format_date(self.getprojectdate())))
+                                    self.getprojectdate().strftime('%d.%m.%y')))
             note.subject_code = "ACD" # Reason
             doc.header.notes.add(note)
 
