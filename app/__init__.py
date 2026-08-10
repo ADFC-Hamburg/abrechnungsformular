@@ -31,7 +31,10 @@ def _read_contacts(config:configparser.ConfigParser) -> dict[str,str]:
             'Phone':'Telefonnummer','Mail':'EMailAdresse','IBAN':'KontoIBAN',
             'AccName':'KontoName','BIC':'KontoBIC','VAT':'KontoVAT',
             'WebLegal':'WebImpressum','WebPrivacy':'WebDatenschutz',
-            'MailAccounting': 'EMailBuchhaltung'}
+            'MailAccounting': 'EMailBuchhaltung',
+            'LogoPDF':'DateinameLogoPDF','LogoWeb':'DateinameLogoWebseite',
+            'LogoSW':'DateinameLogoWeiss',
+            }
     out = {}
     for key in KEYS.keys():
         out[key] = config['Kontaktdaten'][KEYS[key]]\

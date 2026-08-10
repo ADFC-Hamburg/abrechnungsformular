@@ -7,6 +7,9 @@
 	<meta name="author" content="Patrick Lübcke" />
 	<meta name="description" content="Kosten- und Gewinnabrechnung für Aktive des {{ address['NameShort'] }}."/>
 	<link rel="stylesheet" href="aktive_template.css">
+	<style>
+		header::before { background-image:url('../../static/img/{{ address['LogoPDF'] }}'); }
+	</style>
 </head>
 
 <body>
@@ -40,7 +43,7 @@
 		<table>
 			<tr>
 				<td>Aktion&nbsp;/&nbsp;Projekt:</td>
-				<td class="abbreviate">{{ abrechnung.getprojectname() }}</td>
+				<td class="abbreviate">{{ logofile }}</td>
 			</tr>
 			<tr>
 				<td>Datum:</td>

@@ -2,6 +2,10 @@
 
 ## UNRELEASED
 
+### Added
+
+- Select company logo via config file
+
 ### Changed
 
 - The date in ACD notes within Aktivenabrechnung e-invoices are now formatted as "dd.mm.yy"
