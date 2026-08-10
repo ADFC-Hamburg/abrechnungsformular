@@ -93,13 +93,7 @@ def format_digits(number) -> str:
     """
     Gibt eine Ganzzahl als String mit Tausendtrennerpunkten zurück.
     """
-    DIGIT_GROUP_SEPARATOR = '.'
-    DIGIT_GROUP_LENGTH = 3
-    out = format(Decimal(number),'.0f')
-    if len(out) > DIGIT_GROUP_LENGTH:
-        for i in range(len(out)-DIGIT_GROUP_LENGTH,0,-DIGIT_GROUP_LENGTH):
-            out = out[:i] + DIGIT_GROUP_SEPARATOR + out[i:]
-    return out
+    return '{:_}'.format(int(number)).replace('_','.')
 
 def uppercase_first(text:str) -> str:
     """

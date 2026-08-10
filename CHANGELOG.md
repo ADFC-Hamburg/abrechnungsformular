@@ -6,6 +6,10 @@
 
 - The date in ACD notes within Aktivenabrechnung e-invoices are now formatted as "dd.mm.yy"
 
+## Fixed
+
+- Negative numbers with integer digit count multiple of three in PDF files no longer have a thousand seperator right after the minus sign
+
 ## v2.10 - 2026-05-07
 
 ### Changed
