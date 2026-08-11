@@ -16,6 +16,7 @@
 ## Fixed
 
 - Negative numbers with integer digit count multiple of three in PDF files no longer have a thousand seperator right after the minus sign
+- Logo on webforms is now visible in high contrast mode
 
 ## v2.10 - 2026-05-07
 

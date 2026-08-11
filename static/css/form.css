@@ -464,7 +464,7 @@ label.km::after {
 		--radio-color:	black !important;
 	}
 	body > header {
-		background-color:black;
+		background-color:white;
 	}
 	body > header > nav a {
 		color:		black !important;

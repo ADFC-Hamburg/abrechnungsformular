@@ -33,7 +33,7 @@ def _read_contacts(config:configparser.ConfigParser) -> dict[str,str]:
             'WebLegal':'WebImpressum','WebPrivacy':'WebDatenschutz',
             'MailAccounting': 'EMailBuchhaltung',
             'LogoPDF':'DateinameLogoPDF','LogoWeb':'DateinameLogoWebseite',
-            'LogoSW':'DateinameLogoWeiss',
+            'LogoSW':'DateinameLogoSchwarz',
             }
     out = {}
     for key in KEYS.keys():
