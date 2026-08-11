@@ -5,74 +5,60 @@ Dieser Code erstellt ein Docker-Image zum Starten eines einfachen Web&shy;server
 ## Installation
 
 > [!IMPORTANT]
-> Docker muss auf dem System installiert sein.
+> Docker (und optional Docker Compose) müssen auf dem System installiert sein.
 > Für Einweisungen zu Docker [siehe hier](https://docs.docker.com/get-started/ "Get started with Docker").
 
-### Vorgefertigte Version für den ADFC Hamburg
-
-Für den ADFC Hamburg stehen für Computer mit AMD64-Prozessor (wie den meisten modernen PCs) auf GitHub fertige Images als Pakete bereit. Das Aktuellste kann mit folgendem Befehl installiert werden:
+Auf GitHub stehen fertige Images als Pakete bereit. Diese verwenden standardmäßig die Kontaktdaten und Logos des _ADFC_&nbsp;_Hamburg_, können jedoch nach Belieben angepasst werden. Das aktuellste Image kann mit folgendem Befehl heruntergeladen werden:
 ```bash
 docker pull ghcr.io/adfc-hamburg/abrechnungsformular:latest
 ```
 
-### Ein angepasstes Image erstellen
-
-Ein angepasstes Docker-Image lässt sich aus den Quelldateien erstellen. [Lade dieses Repository runter](https://github.com/ADFC-Hamburg/abrechnungsformular/archive/refs/heads/main.zip "Quellcode als zip-Datei") und entpacke es in einen eigenen Ordner.
-
-#### Namen und Kontaktdaten anpassen
-
-Öffne im heruntergeladenen Repository die Datei **CONFIG.ini** und passe die Kontaktdaten an deinen Landesverband an.
-
-#### Logo anpassen
-
-Als Logo können entweder SVG- oder PNG-Dateien verwendet werden. Du benötigst:
-
-* Eine Datei namens **logo.png** oder **logo.svg** - diese sollte eine farbige Version des Logos beinhalten.
-
-Folgende Dateien solltest du ebenfalls hinzufügen, falls vorhanden:
-
-* Eine Datei namens **logo-semiwhite.png** oder **logo-semiwhite.svg** - bei dieser sollten zumindest die blauen Teile des Logos weiß gefärbt sein.
-* Eine Datei namens **logo-white.png** oder **logo-white.svg** - diese sollte eine weiße Version des Logos beinhalten.
-
-Ersetze im Unterordner **static/img/** die Datei **logo.svg** durch die obigen Dateien.
-
-> [!TIP]
-> Bei vorhandener **logo.svg** werden fehlende **logo-semiwhite.svg** und **logo-white.svg** automatisch generiert.
-
-#### Das Image fertigstellen
-
-Nach der Anpassung führe im entpackten Ordner (mit der Datei **Dockerfile**) folgenden Befehl aus:
-
-```bash
-docker build -t abrechnungsformular .
-```
-
-#### Das Image auf ein anderes Gerät übertragen
-
-Bei Bedarf kann das erstellte Docker-Image auf ein anderes Gerät übertragen werden. Exportiere das Image mit folgendem Befehl:
-
-```bash
-docker save abrechnungsformular > abrechnungsformular.tar
-```
-
-Übertrage die so entstandene TAR-Datei auf das Zielgerät und führe dort im gleichen Ordner folgenden Befehl aus:
-
-```bash
-docker load < abrechnungsformular.tar
-```
-
 ## Ausführung
 
-Das Image aus dem GitHub-Paket wird mit folgendem Befehl gestartet:
+Der einfachste Weg, das Docker-Image auszuführen, ist mit Docker Compose. Hierzu wird eine Compose-Datei benötigt; eine vorgefertigte Compose-Datei [findet sich hier](samples/docker-compose.yml).
+
+Mit folgendem Befehl kann der Webserver im Hintergrund gestartet werden:
 
 ```bash
-docker run --rm -p 8000:8000 ghcr.io/adfc-hamburg/abrechnungsformular
+docker compose -f pfad/zur/docker-compose.yml up --detach
 ```
 
-Das aus den Quelldateien erstellte Image wird mit folgendem Befehl gestartet:
+Mit folgendem Befehl wird der Webserver wieder beendet:
 
 ```bash
-docker run --rm -p 8000:8000 abrechnungsformular
+docker compose -f pfad/zur/docker-compose.yml down
 ```
 
-In beiden Fällen kann der Port des Servers gewählt werden, indem die erste Zahl in `-p 8000:8000` durch die gewünschte Portnummer ersetzt wird.
+Die bereitgestellte Compose-Datei ist so eingestellt, dass der Server bei Systemneustart ebenfalls gestartet wird, bis er manuell beendet wird. Ist dieses Verhalten unerwünscht, kann aus der Compose-Datei die Zeile `restart: unless-stopped` entfernt werden.
+
+## Anpasssung
+
+### Portnummer
+
+Die Portnummer, unter der der Webserver erreichbar ist, kann gewählt werden, indem die erste Zahl in der Zeile `- 8000:8000` durch die gewünschte Portnummer ersetzt wird.
+
+### Kontaktdaten und Pauschalen
+
+Zum Abändern der Kontaktdaten sowie der Reisekosten&shy;pauschalen wird eine Kopie der [Config-Datei](CONFIG.ini) benötigt. Nachdem die Werte und Angaben in dieser Kopie angepasst wurden, kann sie in das Docker-Image eingebunden werden. Hierzu wird in der Compose-Datei das **#**-Symbol in folgenden Zeilen entfernt:
+
+```docker-compose.yml
+    volumes:
+      - /pfad/zur/CONFIG.ini:/abrechnungsformular/CONFIG.ini
+```
+
+Der `/pfad/zur/CONFIG.ini` muss dabei natürlich angepasst werden. Sollte der Webserver bereits laufen, muss er neu gestartet werden, damit die Änderungen wirksam werden.
+
+### Logos
+
+Das Logo des Verbandes sollte idealerweise in drei Versionen vorhanden sein: eine reguläre Version, eine Version ohne die Farbe Blau für die Webseite, sowie eine vollständig schwarze Version. Alle gängigen Bildformate werden unterstützt.
+
+Die zu verwendenden Logos müssen auf dem Docker-Image eingebunden werden. Hierzu wird in der Compose-Datei das #-Symbol in folgenden Zeilen entfernt:
+
+```docker-compose.yml
+    volumes:
+      - /pfad/zum/logo.png:/abrechnungsformular/static/img/logo.png
+```
+
+Der `/pfad/zum/logo.png` und der Dateiname `logo.png` müssen dabei angepasst werden. Um mehrere Dateien einzubinden, kann die Zeile mit den Pfaden dupliziert werden. Alternativ kann auch ein Ordner mit den Logos eingebunden werden (z.B. `/pfad/zum/ordner:/abrechnungsformular/static/img/ordner`).
+
+Zuletzt müssen in der Config-Datei ([siehe oben](#kontaktdaten-und-pauschalen)) die korrekten Dateinamen eingefügt werden. Bei Einbinden eines Odners muss auf diesen verwiesen werden (z.B. `unterordner/logo.png`). Sollte eine der oben genannten Versionen des Logos fehlen, kann eine andere Version als Ersatz mehrfach verwendet werden.

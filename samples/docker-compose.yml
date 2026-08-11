@@ -1,0 +1,11 @@
+services:
+  webapp:
+    image: ghcr.io/adfc-hamburg/abrechnungsformular:latest
+    container_name: abrechnung
+    restart: unless-stopped
+    #volumes:
+      #- /pfad/zur/CONFIG.ini:/abrechnungsformular/CONFIG.ini
+      #- /pfad/zum/logo.png:/abrechnungsformular/static/img/logo.png
+    ports:
+      # Die erste der beiden Zahlen ersetzen, um die Portnummer zu ändern
+      - 8000:8000
