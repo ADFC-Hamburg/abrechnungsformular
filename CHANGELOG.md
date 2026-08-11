@@ -9,6 +9,7 @@
 ### Changed
 
 - The date in ACD notes within Aktivenabrechnung e-invoices are now formatted as "dd.mm.yy"
+- Schwifty (Python dependency) updated to version 2026.7
 
 ## Fixed
 
