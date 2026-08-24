@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Fixed
+
+- Project name field in Aktivenabrechnung PDF will be filled in again
+
 ## v2.11 - 2026-08-11
 
 ### Added
