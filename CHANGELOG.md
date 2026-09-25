@@ -1,5 +1,12 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Gunicorn (Python dependency) updated to version 26.2
+- Weasyprint (Python dependency) updated to version 70
+
 ## v2.12 - 2026-08-24
 
 ### Fixed
