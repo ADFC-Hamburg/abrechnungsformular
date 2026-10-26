@@ -229,11 +229,9 @@ class Abrechnung:
         Gibt außerdem eine Aufzählung aller Fehler als String zurück.
 
         Erkennt die folgenden Schlüssel:
-        uname, dept, pname, pdate, p1name, p1type, p1cnt, p1ppu, p1,
-        p2name, p2type, p2cnt, p2ppu, p2, p3name, p3type, p3cnt, p3ppu,
-        p3, p4name, p4type, p4cnt, p4ppu, p4, p5name, p5type, p5cnt,
-        p5ppu, p5, p6name, p6type, p6cnt, p6ppu, p6, p7name, p7type,
-        p7cnt, p7ppu, p7, dono, prtype, known, iban, owner, prsepa
+        uname, dept, pname, pdate,
+        p{1..7}name, p{1..7}type, p{1..7}cnt, p{1..7}ppu, p{1..7},
+        dono, prtype, known, iban, owner, prsepa
         """
         if query:
             keys = tuple(query.keys())

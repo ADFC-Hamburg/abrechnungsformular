@@ -1001,11 +1001,11 @@ class Abrechnung():
     cause = property(getcause,setcause,None,
                      "Der Grund für die Reise.")
     begindate = property(getbegindate,setbegindate,None,
-                         "Das Datum, an dem die Reis begann.")
+                         "Das Datum, an dem die Reise begann.")
     enddate = property(getenddate,setenddate,None,
                        "Das Datum, an dem die Reise endete.")
     begintime = property(getbegintime,setbegintime,None,
-                         "Die Uhrzeit, zu der die Reis begann.")
+                         "Die Uhrzeit, zu der die Reise begann.")
     endtime = property(getendtime,setendtime,None,
                        "Die Uhrzeit, zu der die Reise endete.")
     cardistance = property(getcardistance,setcardistance,None,
