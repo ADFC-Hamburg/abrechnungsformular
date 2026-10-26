@@ -178,7 +178,7 @@ class Day:
             if self[i]:
                 cost += self.MEAL_DEDUCTION[i]
         return min(cost,self.getallowance(reduced))
-    
+
     def getallowance(self,reduced:bool = False) -> Decimal:
         """
         Gibt den Tagessatz ohne Kürzungen durch Verpflegung zurück.
@@ -214,7 +214,7 @@ class SingleDay(Day):
         """Initialisiert ein Objekt der Klasse SingleDay."""
         self._timedelta = timedelta()
         super().__init__()
-    
+
     # Variable getters and setters
     def settimedelta(self,begin:time,end:time):
         """
@@ -253,7 +253,7 @@ class SingleDay(Day):
             return Decimal('0')
         else:
             return self.ALLOWANCE_REDUCED
-        
+
     def getbenefits(self) -> Decimal:
         """
         Gibt den Tagessatz mit Kürzungen durch Verpflegung zurück.
@@ -336,7 +336,7 @@ class Abrechnung():
     def _apply_time(self):
         """
         Gibt Anfangs- und Endzeit an das SingleDay-Objekt weiter.
-        
+
         Macht nichts, falls eine der Zeiten fehlt oder die Reise nicht
         genau einen Tag lang ist.
         """
@@ -386,9 +386,9 @@ class Abrechnung():
         Erkennt die folgenden Schlüssel:
         uname, ugroup, reason, known, iban, owner, begin, end, begintime,
         endtime, car, night
-        
+
         px, pxname, pxdate (x zwischen 1 und MAXPOSITIONS),
-        
+
         dxmy (x zwischen 1 und MAXDATES, y zwischen 1 und 3)
         """
         if query:
@@ -504,7 +504,6 @@ class Abrechnung():
                         continue
                 if position.check_filled() and not position.check_complete():
                     incomplete_positions.append(f'{i}.')
-                
 
             # Car mileage and overnight flat rate
             try:
@@ -661,7 +660,7 @@ class Abrechnung():
                 li.agreement.net.amount = day.getbenefits(reduced)
                 li.settlement.monetary_summation.total_amount = day.getbenefits(reduced)
             doc.trade.items.add(li)
-        
+
         # Positions
         for index, position in enumerate(self.positions):
             if not position:
@@ -809,7 +808,7 @@ class Abrechnung():
 
     def setibanknown(self,mode=False):
         self._payment_iban_known = bool(mode)
-    
+
     def getibanknown(self) -> bool:
         return self._payment_iban_known
 
@@ -908,7 +907,7 @@ class Abrechnung():
         mit einem privaten PKW zurückgelegt wurde.
         """
         return self._car_distance
-    
+
     def getmileage(self) -> Decimal:
         """
         Gibt die Höhe der Wegstreckenentschädigung für Fahrten
@@ -928,7 +927,7 @@ class Abrechnung():
         Gibt zurück, ob der Pauschalbetrag für Übernachtungen ausgezahlt wird.
         """
         return self._overnight_flat
-    
+
     def getovernightpay(self) -> Decimal:
         """
         Gibt den Geldbetrag zurück,
@@ -979,7 +978,7 @@ class Abrechnung():
             return self.days[0].getbenefits()
         return sum (self.days[i].getbenefits(i==0 or i==number_days-1)
                     for i in range(number_days))
-    
+
     def gettotal(self) -> Decimal:
         """
         Gibt den gesamten Geldbetrag der Reisekostenabrechnung zurück.

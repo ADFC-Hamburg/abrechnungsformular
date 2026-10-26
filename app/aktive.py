@@ -22,13 +22,13 @@ class Position:
     """
     Beschreibt eine Position in einer Aktivenabrechnung.
     """
-    
+
     # Dunder methods
     def __init__(self,name:str = "",unitcount:int = 1,
                  unitprice=0.0,value=0.0):
         """
         Initialisiert ein Objekt der Klasse Position.
-        
+
         Argumente:
         name: Name der Position
         count: Anzahl der Einheiten
@@ -39,21 +39,21 @@ class Position:
         self.setunitcount(unitcount)
         self.setunitprice(unitprice)
         self.setvalue(value)
-    
+
     def __str__(self):
         return tools.euro(self.getvalue())
-    
+
     def __repr__(self):
         return (f"{self.__class__.__name__}(name={repr(self.getname())},"
                +f"unitcount={repr(self.getunitcount())},"
                +f"unitprice={repr(self.getunitprice())},"
                +f"value={repr(self.getvalue())})")
-    
+
     def __bool__(self):
         return bool(self._name != ""
                     or self._unitprice != 0.0
                     or self._value != 0.0)
-    
+
     # Methods for output
     def check_complete(self) -> bool:
         """Gibt zurück, ob Name und Wert vorhanden sind."""
@@ -63,11 +63,11 @@ class Position:
     def setname(self,value:str = ""):
         """Legt den Namen der Position fest."""
         self._name = str(value).strip()
-    
+
     def getname(self) -> str:
         """Gibt den Namen der Position zurück."""
         return self._name
-    
+
     def setunitcount(self,value:int = 1):
         """
         Legt die Mengenzahl der Position fest.
@@ -76,21 +76,21 @@ class Position:
         if value < 1:
             raise tools.BelowMinimumException
         self._unitcount = int(value)
-    
+
     def getunitcount(self) -> int:
         """Gibt die Mengenzahl der Position zurück."""
         return self._unitcount
-    
+
     def setunitprice(self,value=0.0):
         """Legt den Preis pro Einheit der Position fest."""
         if not Decimal(value) % Decimal('0.01') == 0:
             raise tools.DecimalsException
         self._unitprice = Decimal(value)
-    
+
     def getunitprice(self) -> Decimal:
         """Gibt den Preis pro Einheit der Position zurück."""
         return self._unitprice
-    
+
     def setvalue(self,value=0.0):
         """
         Legt den Gesamtpreis der Position fest.
@@ -99,7 +99,7 @@ class Position:
         if not Decimal(value) % Decimal('0.01') == 0:
             raise tools.DecimalsException
         self._value = Decimal(value)
-    
+
     def getvalue(self) -> Decimal:
         """
         Gibt den Gesamtpreis der Position zurück.
@@ -109,7 +109,7 @@ class Position:
         if self._unitprice != 0:
             return Decimal(self._unitprice * self._unitcount)
         return self._value
-    
+
     def setminusvalue(self,value=0.0):
         """
         Legt den Gesamtpreis der Position fest.
@@ -118,21 +118,21 @@ class Position:
         if not Decimal(value) % Decimal('0.01') == 0:
             raise tools.DecimalsException
         self._value = Decimal(value*-1)
-    
+
     def getincome(self) -> Decimal:
         """
         Gibt die Gesamteinnahmen der Position zurück.
         Bei Ausgaben wird Null zurückgegeben.
         """
         return max(Decimal(0.0), self.getvalue())
-    
+
     def getcost(self) -> Decimal:
         """
         Gibt die Gesamtausgaben der Position zurück.
         Bei Einnahmen wird Null zurückgegeben.
         """
         return max(Decimal(0.0), self.getvalue()*-1)
-    
+
     # Properties
     name = property(getname,setname,None,
         "Der Name der Position.")
@@ -155,7 +155,7 @@ class Abrechnung:
     Beschreibt eine Aktivenabrechnung für den ADFC.
     Beinhaltet 7 Objekte der Klasse Position im Tupel positions.
     """
-    
+
     # Class constants
     POSITIONCOUNT = 7
 
@@ -184,16 +184,16 @@ class Abrechnung:
         """
         Initialisiert ein Objekt der Klasse Abrechnung.
         """
-        
+
         self.positions = self._create_positions(self.POSITIONCOUNT)
-        
+
         self._user = {"name": "", "group": ""}
         self._project = {"name": "", "date": None}
         self._donations = Decimal(0.0)
         self._payment = {"ibanmode": None, "sepamode": None,
                          "ibanknown": False, "iban": IBAN("",allow_invalid=True),
                          "name": ""}
-    
+
     def __str__(self) -> str:
         """
         Gibt den Abrechnungsbetrag zurück.
@@ -249,7 +249,7 @@ class Abrechnung:
                 to the list of missing values."""
                 if not value:
                     missing.append(name)
-            
+
             # User name and -group, project name and date
             if 'uname' in keys:
                 self.setusername(query['uname'])
@@ -262,12 +262,12 @@ class Abrechnung:
                     self.setprojectdate(query['pdate'])
                 except:
                     erronous.append(self._FIELD_NAMES['pdate'])
-            
+
             check_missing(self.getusername(),self._FIELD_NAMES['uname'])
             check_missing(self.getusergroup(),self._FIELD_NAMES['group'])
             check_missing(self.getprojectname(),self._FIELD_NAMES['pname'])
             check_missing(self.getprojectdate(),self._FIELD_NAMES['pdate'])
-            
+
             # Position values
             for i in range(self.POSITIONCOUNT):
                 pos = 'p'+str(i+1)
@@ -307,7 +307,7 @@ class Abrechnung:
                         self.positions[i].setname(query[pos+'name'])
                     if self.positions[i] and not self.positions[i].complete:
                         incomplete_positions.append(self._POSITION_NAMES[i])
-            
+
             # Donation value
             if 'dono' in keys and query['dono']:
                 try:
@@ -318,13 +318,13 @@ class Abrechnung:
                     dono_error = tools.DecimalsException
                 except:
                     erronous.append(self._FIELD_NAMES['dono'])
-            
+
             # Error if no position filled in
             if not self and not erronous_positions and not incomplete_positions\
             and not below_minimum and not not_currency\
             and not self._FIELD_NAMES['dono'] in erronous:
                 errormessage.append(self._FIELD_ERRORS['pos'])
-            
+
             # Payment information
             if 'prtype' in keys and query['prtype']:
                 try:
@@ -365,7 +365,7 @@ class Abrechnung:
                     erronous.append(self._FIELD_NAMES['prtype'])
             elif self.gettotal() != 0:
                 missing.append(self._FIELD_NAMES['prtype'])
-            
+
             # Finalize error message
             missing = [item for item in missing if item not in erronous]
             errorstart = []
@@ -551,7 +551,7 @@ class Abrechnung:
             li.delivery.billed_quantity = (Decimal(mode), "H87")  # H87 == Item
             li.settlement.monetary_summation.total_amount = Decimal(self.getdonations() * mode)
             doc.trade.items.add(li)
-        
+
         # Payment information
         payment_means = DH_PaymentMeans()
         if mode == 1:
@@ -560,7 +560,7 @@ class Abrechnung:
             payment_means.payee_institution.bic = CONTACT['BIC']
         else:
             payment_means.payer_account.iban = CONTACT['IBAN']
-        
+
         term = DH_PaymentTerms()
 
         if self.getibanmode() == 1 and self.gettotal() < 0:
@@ -624,27 +624,27 @@ class Abrechnung:
     def setusername(self,value:str = ""):
         """Legt den Namen des/der Aktiven fest."""
         self._user["name"] = str(value).strip()
-    
+
     def getusername(self) -> str:
         """Gibt den Namen des/der Aktiven zurück."""
         return self._user["name"]
-    
+
     def setusergroup(self,value:str = ""):
         """Legt die Gruppe des/der Aktiven fest."""
         self._user["group"] = str(value).strip()
-    
+
     def getusergroup(self) -> str:
         """Gibt die Gruppe des/der Aktiven zurück."""
         return self._user["group"]
-    
+
     def setprojectname(self,value:str = ""):
         """Legt den Namen des Projekts fest."""
         self._project["name"] = str(value).strip()
-    
+
     def getprojectname(self) -> str:
         """Gibt den Namen des Projekts zurück."""
         return self._project["name"]
-    
+
     def setprojectdate(self,value:str|date|None = None):
         """
         Legt das Datum der Abrechnung fest.
@@ -660,11 +660,11 @@ class Abrechnung:
                 int(temp[0]), int(temp[1]), int(temp[2]))
         else:
             self._project["date"] = None
-    
+
     def getprojectdate(self) -> date|None:
         """Gibt das Datum der Abrechnung zurück."""
         return self._project["date"]
-    
+
     def setdonations(self,value=0.0):
         """Legt den Betrag eingenommener Spenden fest."""
         if Decimal(value) < 0:
@@ -672,11 +672,11 @@ class Abrechnung:
         if not Decimal(value) % Decimal('0.01') == 0:
             raise tools.DecimalsException
         self._donations = Decimal(value)
-    
+
     def getdonations(self) -> Decimal:
         """Gibt den Betrag eingenommener Spenden zurück."""
         return self._donations
-    
+
     def getincome(self) -> Decimal:
         """Gibt den Gesamtbetrag der Einnahmen zurück."""
         out = Decimal(0.0)
@@ -691,7 +691,7 @@ class Abrechnung:
         for i in range(self.POSITIONCOUNT):
             out += self.positions[i].cost
         return out
-    
+
     def gettotal(self) -> Decimal:
         """Gibt den Betrag der Einnahmen minus Ausgaben zurück."""
         out = Decimal(0.0)
@@ -699,15 +699,15 @@ class Abrechnung:
             out += self.positions[i].value
         out += self.getdonations()
         return out
-    
+
     def setaccountname(self,name:str = ""):
         """Legt den Namen des Kontoinhabers fest."""
         self._payment["name"] = str(name).strip()
-    
+
     def getaccountname(self) -> str:
         """Gibt den Namen des Kontoinhabers zurück."""
         return self._payment["name"]
-    
+
     def setaccountiban(self,value):
         """
         Verifiziert die angegebene IBAN
@@ -717,7 +717,7 @@ class Abrechnung:
             self._payment["iban"] = IBAN(str(value))
         else:
             self._payment["iban"] = IBAN('', allow_invalid = True)
-    
+
     def getaccountiban(self,spaces:bool = True) -> str:
         """Gibt die IBAN des Bankkontos zurück."""
         return self._payment["iban"].formatted if spaces else str(self._payment["iban"])
@@ -727,10 +727,10 @@ class Abrechnung:
             self._payment["ibanmode"] = int(mode)
         else:
             raise tools.IllegalValueException
-    
+
     def getibanmode(self) -> int|None:
         return self._payment["ibanmode"]
-    
+
     def setsepamode(self,mode):
         if mode and int(mode) in self._MODES_SEPA:
             self._payment["sepamode"] = int(mode)
@@ -742,7 +742,7 @@ class Abrechnung:
 
     def setibanknown(self,mode=False):
         self._payment["ibanknown"] = bool(mode)
-    
+
     def getibanknown(self) -> bool:
         return self._payment["ibanknown"]
 
