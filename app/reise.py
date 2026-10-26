@@ -283,6 +283,7 @@ class Abrechnung():
     _FIELD_NAMES = {'uname':'dein Name','group':'deine Arbeitsgruppe',
                     'reason':'der Anlass der Reise','iban':'deine IBAN',
                     'owner':'der Name des Kontoinhabers/der Kontoinhaberin',
+                    'issuedate':'das Ausstellungsdatum',
                     'begin':'Anfangsdatum der Reise',
                     'end':'Enddatum der Reise',
                     'begintime':'Anfangszeit der Reise',
@@ -308,7 +309,7 @@ class Abrechnung():
         self._user_name = self._user_group\
             = self._payment_name = self._cause = ""
         self._payment_iban = IBAN("",allow_invalid=True)
-        self._date_begin = self._date_end\
+        self._date_begin = self._date_end = self._date_issue\
             = self._time_begin = self._time_end = None
         self._car_distance = Decimal('0')
         self._overnight_flat = self._payment_iban_known = False
@@ -409,6 +410,13 @@ class Abrechnung():
                 self.setusergroup(query['ugroup'])
             if 'reason' in keys:
                 self.setcause(query['reason'])
+
+            # Date of issue
+            try:
+                if 'issuedate' in keys and query['issuedate']:
+                    self.setissuedate(query['issuedate'])
+            except Exception:
+                erronous.append(self._FIELD_NAMES['issuedate'])
 
             # Date of travel
             try:
@@ -583,7 +591,7 @@ class Abrechnung():
         doc.context.guideline_parameter.id = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
         doc.header.id = "REISE"+datetime.now().strftime("%Y%m%d%H%M%S")
         doc.header.name = self._NAME.upper()
-        doc.header.issue_date_time = date.today()
+        doc.header.issue_date_time = self.getissuedate()
         doc.header.languages.add("de")
         doc.header.type_code = "380" # Commercial invoice
 
@@ -746,7 +754,7 @@ class Abrechnung():
         """
 
         template = tools.pdf_environment.get_template(FILENAMES.REISE_HTML)
-        today = tools.format_date(date.today())
+        today = tools.format_date(self.getissuedate())
 
         return template.render(abrechnung=self,today=today,
                                daycount=len(self.days),rates=REISE_RATE,
@@ -812,6 +820,31 @@ class Abrechnung():
     
     def getibanknown(self) -> bool:
         return self._payment_iban_known
+    
+    def setissuedate(self,value:str|date|None = None):
+        """
+        Legt das Datum fest, an dem diese Abrechnung ausgestellt wurde.
+
+        Akzepiert Datums-Objekte oder
+        Strings im Format (year-month-day)
+        """
+        if type(value) == date:
+            self._date_issue = value
+        elif value:
+            temp = str(value).split("-")
+            self._date_issue = date(
+                int(temp[0]), int(temp[1]), int(temp[2]))
+        else:
+            self._date_issue = None
+    
+    def getissuedate(self) -> date:
+        """
+        Gibt das Datum zurück,
+        an dem diese Abrechnung ausgestellt wurde.
+        Ist kein Ausstellungsdatum festgelegt,
+        wird als Standardwert das heutige Datum zurückgegeben.
+        """
+        return self._date_issue or date.today()
 
     def setcause(self,value:str = ""):
         """Legt den Grund für die Reise fest."""
@@ -1000,6 +1033,8 @@ class Abrechnung():
                          "Ob die IBAN dem ADFC schon vorliegt.")
     cause = property(getcause,setcause,None,
                      "Der Grund für die Reise.")
+    issuedate = property(getissuedate,setissuedate,None,
+                         "Das Datum der Ausstellung dieser Abrechnung.")
     begindate = property(getbegindate,setbegindate,None,
                          "Das Datum, an dem die Reise begann.")
     enddate = property(getenddate,setenddate,None,

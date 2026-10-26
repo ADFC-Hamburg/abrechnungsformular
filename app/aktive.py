@@ -167,6 +167,7 @@ class Abrechnung:
     _FIELD_NAMES = {'uname':'dein Name','group':'deine Arbeitsgruppe',
                     'pname':'der Name des Projekts oder der Aktion',
                     'pdate':'das Datum des Projekts oder der Aktion',
+                    'issuedate':'das Ausstellungsdatum',
                     'dono':'die Summe der eingenommenen Spenden',
                     'iban':'deine IBAN',
                     'owner':'der Name des Kontoinhabers/der Kontoinhaberin',
@@ -193,6 +194,7 @@ class Abrechnung:
         self._payment = {"ibanmode": None, "sepamode": None,
                          "ibanknown": False, "iban": IBAN("",allow_invalid=True),
                          "name": ""}
+        self._date_issue = None
     
     def __str__(self) -> str:
         """
@@ -229,7 +231,7 @@ class Abrechnung:
         Gibt außerdem eine Aufzählung aller Fehler als String zurück.
 
         Erkennt die folgenden Schlüssel:
-        uname, dept, pname, pdate,
+        uname, dept, pname, pdate, issuedate,
         p{1..7}name, p{1..7}type, p{1..7}cnt, p{1..7}ppu, p{1..7},
         dono, prtype, known, iban, owner, prsepa
         """
@@ -267,6 +269,13 @@ class Abrechnung:
             check_missing(self.getusergroup(),self._FIELD_NAMES['group'])
             check_missing(self.getprojectname(),self._FIELD_NAMES['pname'])
             check_missing(self.getprojectdate(),self._FIELD_NAMES['pdate'])
+
+            # Date of issue
+            if 'issuedate' in keys and query['issuedate']:
+                try:
+                    self.setissuedate(query['issuedate'])
+                except:
+                    erronous.append(self._FIELD_NAMES['issuedate'])
             
             # Position values
             for i in range(self.POSITIONCOUNT):
@@ -454,7 +463,7 @@ class Abrechnung:
         """
 
         template = tools.pdf_environment.get_template(FILENAMES.AKTIVE_HTML)
-        today = tools.format_date(date.today())
+        today = tools.format_date(self.getissuedate())
 
         return template.render(abrechnung=self,today=today)
 
@@ -471,7 +480,7 @@ class Abrechnung:
         doc.context.guideline_parameter.id = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
         doc.header.id = "AKTIVE"+datetime.now().strftime("%Y%m%d%H%M%S")
         doc.header.name = self._NAME.upper()
-        doc.header.issue_date_time = date.today()
+        doc.header.issue_date_time = self.getissuedate()
         doc.header.languages.add("de")
         doc.header.type_code = "380" # Commercial invoice
 
@@ -664,6 +673,31 @@ class Abrechnung:
     def getprojectdate(self) -> date|None:
         """Gibt das Datum der Abrechnung zurück."""
         return self._project["date"]
+
+    def setissuedate(self,value:str|date|None = None):
+        """
+        Legt das Datum fest, an dem diese Abrechnung ausgestellt wurde.
+
+        Akzepiert Datums-Objekte oder
+        Strings im Format (year-month-day)
+        """
+        if type(value) == date:
+            self._date_issue = value
+        elif value:
+            temp = str(value).split("-")
+            self._date_issue = date(
+                int(temp[0]), int(temp[1]), int(temp[2]))
+        else:
+            self._date_issue = None
+    
+    def getissuedate(self) -> date:
+        """
+        Gibt das Datum zurück,
+        an dem diese Abrechnung ausgestellt wurde.
+        Ist kein Ausstellungsdatum festgelegt,
+        wird als Standardwert das heutige Datum zurückgegeben.
+        """
+        return self._date_issue or date.today()
     
     def setdonations(self,value=0.0):
         """Legt den Betrag eingenommener Spenden fest."""
@@ -755,6 +789,8 @@ class Abrechnung:
                            "Der Name der Aktion oder des Projekts.")
     projectdate = property(getprojectdate,setprojectdate,None,
                            "Das Datum der Aktion oder des Projekts.")
+    issuedate = property(getissuedate,setissuedate,None,
+                         "Das Datum der Ausstellung dieser Abrechnung.")
     donations = property(getdonations,setdonations,None,
                          "Eingenommene Spenden in Euro.")
     income = property(getincome,None,None,
