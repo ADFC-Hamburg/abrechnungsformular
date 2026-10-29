@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Schwifty (Python dependency) updated to version 2026.10
+
 ## v2.13 - 2026-09-26
 
 ### Changed
