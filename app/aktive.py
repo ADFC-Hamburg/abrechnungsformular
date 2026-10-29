@@ -629,6 +629,54 @@ class Abrechnung:
 
         return doc.serialize(schema="FACTUR-X_EXTENDED")
 
+    def build_query(self) -> str:
+        """
+        Erstellt einen Query-String für eine URL,
+        mit dem sich diese Abrechnung replizieren lässt.
+        """
+
+        # Prepare dict with parameters
+        values = dict()
+        # Personal data
+        values['uname'] = self.getusername()
+        values['dept'] = self.getusergroup()
+        values['pname'] = self.getprojectname()
+        if self.getprojectdate():
+            values['pdate'] = self.getprojectdate().strftime('%Y-%m-%d')
+        # Positions and donations
+        for i, position in enumerate(self.positions):
+            if not position:
+                continue
+            prefix = ''.join(('p', str(i+1)))
+            values[''.join((prefix, 'name'))] = position.name
+            values[''.join((prefix, 'type'))] = '1' if position.income else '-1' 
+            values[''.join((prefix, 'cnt'))] = str(position.unitcount)
+            values[''.join((prefix, 'ppu'))] = str(abs(position.unitprice)) if position.unitcount > 1 else None
+            values[prefix] = str(abs(position.value))
+        values['dono'] = str(self.getdonations() or '')
+        # Payment
+        values['prtype'] = str(self.getibanmode() or '')
+        if self.getibanmode() == 1 and self.gettotal() < 0:
+            if self.getibanknown():
+                values['known'] = '1'
+            else:
+                values['iban'] = self.getaccountiban().replace(' ','')
+                values['owner'] = self.getaccountname()
+        elif self.getibanmode() == 2 and self.gettotal() > 0:
+            values['prsepa'] = str(self.getsepamode() or '')
+        # Metadata
+        if self.getissuedate():
+            values['issuedate'] = self.getissuedate().strftime('%Y-%m-%d')
+
+        # Remove empty parameters & replace special characters
+        import urllib.parse
+        values = {key: urllib.parse.quote_plus(value) for key, value in values.items() if value}
+
+        # Form query string
+        parameters = ['='.join((key, value)) for key, value in values.items()]
+        parameters = '&'.join(parameters)
+        return ''.join(('?', parameters))
+
     # Variable getters and setters
     def setusername(self,value:str = ""):
         """Legt den Namen des/der Aktiven fest."""
