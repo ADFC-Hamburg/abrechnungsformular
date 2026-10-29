@@ -616,6 +616,18 @@ function start() {
 		hiddenElements[i].removeAttribute("hidden");
 	}
 
+	// Übernehme Felder aus URL-Parametern
+	for (const [key, value] of (new URL(window.location.href)).searchParams) {
+		for (const field of document.getElementsByName(key)) {
+			if (field.type == 'radio' || field.type == 'checkbox') {
+				if (field.value == value) { field.checked = true; }
+			}
+			else {
+				field.value = value;
+			}
+		}
+	}
+
 	// Gib HTML-Elementen auslösbare Ereignisse
 
 	// Ereignisse für Texteingabefelder
