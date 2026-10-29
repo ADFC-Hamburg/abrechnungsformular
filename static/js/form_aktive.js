@@ -628,6 +628,12 @@ function start() {
 		}
 	}
 
+	// Ersetze Anweisungen durch Erstelldatum, falls letzteres festgelegt ist
+	if (document.getElementById('issuedate').value) {
+		document.getElementById('instructions').hidden = true;
+		document.getElementById('sectionIssuedate').removeAttribute("hidden");
+	}
+
 	// Gib HTML-Elementen auslösbare Ereignisse
 
 	// Ereignisse für Texteingabefelder

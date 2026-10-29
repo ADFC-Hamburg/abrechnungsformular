@@ -790,6 +790,12 @@ function start() {
 		}
 	}
 
+	// Ersetze Anweisungen durch Erstelldatum, falls letzteres festgelegt ist
+	if (document.getElementById('issuedate').value) {
+		document.getElementById('instructions').hidden = true;
+		document.getElementById('sectionIssuedate').removeAttribute("hidden");
+	}
+
 	// Mache alle Elemente, die nur beim Einsatz von JavaScript sichbar sein sollen, sichtbar
 	const hiddenElements = document.getElementsByClassName("jsonly");
 	for (let i = 0; i < hiddenElements.length; i++) {
