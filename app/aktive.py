@@ -644,10 +644,10 @@ class Abrechnung:
         if self.getprojectdate():
             values['pdate'] = self.getprojectdate().strftime('%Y-%m-%d')
         # Positions and donations
-        for i, position in enumerate(self.positions):
+        for i, position in enumerate(self.positions, start=1):
             if not position:
                 continue
-            prefix = ''.join(('p', str(i+1)))
+            prefix = ''.join(('p', str(i)))
             values[''.join((prefix, 'name'))] = position.name
             values[''.join((prefix, 'type'))] = '1' if position.income else '-1' 
             values[''.join((prefix, 'cnt'))] = str(position.unitcount)
@@ -660,7 +660,7 @@ class Abrechnung:
             if self.getibanknown():
                 values['known'] = '1'
             else:
-                values['iban'] = self.getaccountiban().replace(' ','')
+                values['iban'] = self.getaccountiban(spaces=False)
                 values['owner'] = self.getaccountname()
         elif self.getibanmode() == 2 and self.gettotal() > 0:
             values['prsepa'] = str(self.getsepamode() or '')
