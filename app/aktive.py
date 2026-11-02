@@ -467,7 +467,7 @@ class Abrechnung:
 
         return template.render(abrechnung=self,today=today)
 
-    def factur_x(self) -> bytes:
+    def factur_x(self, form_url:str = '') -> bytes:
         """
         Erstellt aus der Abrechnung eine E-Rechnung,
         die dem Standard Factur-X Extended (auch bekannt als
@@ -490,6 +490,13 @@ class Abrechnung:
             note.content = ' '.join((self.getprojectname(),
                                     self.getprojectdate().strftime('%d.%m.%y')))
             note.subject_code = "ACD" # Reason
+            doc.header.notes.add(note)
+
+        if form_url:
+            note = DH_IncludedNote()
+            note.content_code = 'URL'
+            note.content = ''.join((form_url, self.build_query()))
+            note.subject_code = 'ADT' # Source of document
             doc.header.notes.add(note)
 
         if self.getprojectname() == 'Testrechnung':
