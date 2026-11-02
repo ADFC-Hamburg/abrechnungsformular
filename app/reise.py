@@ -776,6 +776,61 @@ class Abrechnung():
             out += " "+str(self.getbegindate())
         return out
 
+    def build_query(self) -> str:
+        """
+        Erstellt einen Query-String für eine URL,
+        mit dem sich diese Abrechnung replizieren lässt.
+        """
+
+        # Prepare dict with parameters
+        values = dict()
+        # User name and group, cause of travel
+        values['uname'] = self.getusername()
+        values['ugroup'] = self.getusergroup()
+        values['reason'] = self.getcause()
+        # Date of issue
+        if self.getissuedate():
+            values['issuedate'] = self.getissuedate().strftime('%Y-%m-%d')
+        # Date/time of travel
+        if self.getbegindate():
+            values['begin'] = self.getbegindate().strftime('%Y-%m-%d')
+        if self.getenddate():
+            values['end'] = self.getenddate().strftime('%Y-%m-%d')
+        if self.getbegintime():
+            values['begintime'] = self.getbegintime().strftime('%H:%M')
+        if self.getendtime():
+            values['endtime'] = self.getendtime().strftime('%H:%M')
+        # Catering
+        for day in range(len(self.days)):
+            for meal in range(3):
+                if self.days[day][meal]:
+                    values[f'd{day+1}m{meal+1}'] = '1'
+        # Positions
+        for i, position in enumerate(self.positions,start=1):
+            prefix = ''.join(('p',str(i)))
+            values[''.join((prefix, 'name'))] = position.reason
+            values[''.join((prefix, 'date'))] = position.date.strftime('%Y-%m-%d') if position.date else None
+            values[prefix] = str(position.value or '')
+        # Car mileage and overnight flat rate
+        values['car'] = str(self.cardistance or '')
+        if self.getovernightflat():
+            values['night'] = '1'
+        # Payment
+        if self.getibanknown():
+            values['known'] = '1'
+        else:
+            values['iban'] = self.getaccountiban(spaces=False)
+            values['owner'] = self.getaccountname()
+
+        # Remove empty parameters & replace special characters
+        import urllib.parse
+        values = {key: urllib.parse.quote_plus(value) for key, value in values.items() if value}
+
+        # Form query string
+        parameters = ['='.join((key, value)) for key, value in values.items()]
+        parameters = '&'.join(parameters)
+        return ''.join(('?', parameters))
+
     # Variable getters and setters
     def setusername(self,value:str = ""):
         """Legt den Namen des/der Aktiven fest."""
