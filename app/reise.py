@@ -385,12 +385,12 @@ class Abrechnung():
         Gibt außerdem eine Aufzählung aller Fehler als String zurück.
 
         Erkennt die folgenden Schlüssel:
-        uname, ugroup, reason, known, iban, owner, begin, end, begintime,
-        endtime, car, night
-        
-        px, pxname, pxdate (x zwischen 1 und MAXPOSITIONS),
-        
-        dxmy (x zwischen 1 und MAXDATES, y zwischen 1 und 3)
+        uname, ugroup, reason, issuedate,
+        known, iban, owner,
+        begin, end, begintime, endtime,
+        car, night,
+        p{1..MAXPOSITIONS}, p{1..MAXPOSITIONS}name, p{1..MAXPOSITIONS}date,
+        d{1..MAXDATES}m{1..3}
         """
         if query:
             keys = tuple(query.keys())
