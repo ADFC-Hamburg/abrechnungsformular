@@ -2,6 +2,11 @@
 
 ## UNRELEASED
 
+### Added
+
+- Web forms can read URL parameters to prefill input fields
+- E-invoices store the URL of the web form with the invoice's values as parameters
+
 ### Changed
 
 - Schwifty (Python dependency) updated to version 2026.10
