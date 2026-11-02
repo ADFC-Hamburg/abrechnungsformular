@@ -125,9 +125,12 @@
 				<input type="submit" id="submit" value="Abrechnung erstellen">
 				<a href="{{ url_for('pages.aktive_pdf') }}" class="button" draggable=false download="Aktivenabrechnung.pdf">Leere Abrechnung herunterladen</a>
 				<input type="reset" id="reset" value="Formular zurücksetzen">
-				<aside>Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:{{ address['MailAccounting'] }}">{{ address['MailAccounting'] }}</a> schicken.<br />
+				<aside id="instructions">Hier kannst du das ausgefüllte Formular als PDF&#8209;Datei herunter&shy;laden und diese dann einfach per E&#8209;Mail an <a href="mailto:{{ address['MailAccounting'] }}">{{ address['MailAccounting'] }}</a> schicken.<br />
 				Vergiss dabei nicht, <b>sämtliche Belege</b> an die E&#8209;Mail anzuhängen. Kassen&shy;bons oder andere Papier&shy;belege schickst du als Scan oder notfalls als Foto ein, auf dem <b>der ganze Beleg gut lesbar</b> zu sehen ist.<br />
 				Wenn eine Digitalisierung der Belege nicht möglich ist, sende die Abrechnung bitte dennoch per E&#8209;Mail ein. Sende die Belege <b>im Original</b> mit der jeweiligen Positions&shy;nummer versehen, zusammen mit einer Notiz zum Datum der Abrechnung, an unsere Geschäfts&shy;stelle <address>({{ address["NameShort"] }}, {{ address["LineOne"] }}, {% if address["LineTwo"] %}{{ address["LineTwo"] }}, {% endif %}{% if address["LineThree"] %}{{ address["LineThree"] }}, {% endif %}{{ address["PostCode"] }} {{ address["City"] }})</address> oder gib sie dort ab.</aside>
+			</section>
+			<section id="sectionIssuedate" hidden>
+				<label class="field">Diese Rechnung wurde ursprünglich am <input type="date" name="issuedate" id="issuedate" readonly> erstellt.</label>
 			</section>
 		</fieldset>
 	</form>

@@ -778,6 +778,24 @@ function start() {
 		document.getElementById("position"+(i)+"date").min = earliestdate.toISOString().split("T")[0];
 	}
 
+	// Übernehme Felder aus URL-Parametern
+	for (const [key, value] of (new URL(window.location.href)).searchParams) {
+		for (const field of document.getElementsByName(key)) {
+			if (field.type == 'radio' || field.type == 'checkbox') {
+				if (field.value == value) { field.checked = true; }
+			}
+			else {
+				field.value = value;
+			}
+		}
+	}
+
+	// Ersetze Anweisungen durch Erstelldatum, falls letzteres festgelegt ist
+	if (document.getElementById('issuedate').value) {
+		document.getElementById('instructions').hidden = true;
+		document.getElementById('sectionIssuedate').removeAttribute("hidden");
+	}
+
 	// Mache alle Elemente, die nur beim Einsatz von JavaScript sichbar sein sollen, sichtbar
 	const hiddenElements = document.getElementsByClassName("jsonly");
 	for (let i = 0; i < hiddenElements.length; i++) {

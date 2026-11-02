@@ -167,6 +167,7 @@ class Abrechnung:
     _FIELD_NAMES = {'uname':'dein Name','group':'deine Arbeitsgruppe',
                     'pname':'der Name des Projekts oder der Aktion',
                     'pdate':'das Datum des Projekts oder der Aktion',
+                    'issuedate':'das Ausstellungsdatum',
                     'dono':'die Summe der eingenommenen Spenden',
                     'iban':'deine IBAN',
                     'owner':'der Name des Kontoinhabers/der Kontoinhaberin',
@@ -193,6 +194,7 @@ class Abrechnung:
         self._payment = {"ibanmode": None, "sepamode": None,
                          "ibanknown": False, "iban": IBAN("",allow_invalid=True),
                          "name": ""}
+        self._date_issue = None
 
     def __str__(self) -> str:
         """
@@ -229,7 +231,7 @@ class Abrechnung:
         Gibt außerdem eine Aufzählung aller Fehler als String zurück.
 
         Erkennt die folgenden Schlüssel:
-        uname, dept, pname, pdate,
+        uname, dept, pname, pdate, issuedate,
         p{1..7}name, p{1..7}type, p{1..7}cnt, p{1..7}ppu, p{1..7},
         dono, prtype, known, iban, owner, prsepa
         """
@@ -267,6 +269,13 @@ class Abrechnung:
             check_missing(self.getusergroup(),self._FIELD_NAMES['group'])
             check_missing(self.getprojectname(),self._FIELD_NAMES['pname'])
             check_missing(self.getprojectdate(),self._FIELD_NAMES['pdate'])
+
+            # Date of issue
+            if 'issuedate' in keys and query['issuedate']:
+                try:
+                    self.setissuedate(query['issuedate'])
+                except:
+                    erronous.append(self._FIELD_NAMES['issuedate'])
 
             # Position values
             for i in range(self.POSITIONCOUNT):
@@ -454,11 +463,11 @@ class Abrechnung:
         """
 
         template = tools.pdf_environment.get_template(FILENAMES.AKTIVE_HTML)
-        today = tools.format_date(date.today())
+        today = tools.format_date(self.getissuedate())
 
         return template.render(abrechnung=self,today=today)
 
-    def factur_x(self) -> bytes:
+    def factur_x(self, form_url:str = '') -> bytes:
         """
         Erstellt aus der Abrechnung eine E-Rechnung,
         die dem Standard Factur-X Extended (auch bekannt als
@@ -471,7 +480,7 @@ class Abrechnung:
         doc.context.guideline_parameter.id = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
         doc.header.id = "AKTIVE"+datetime.now().strftime("%Y%m%d%H%M%S")
         doc.header.name = self._NAME.upper()
-        doc.header.issue_date_time = date.today()
+        doc.header.issue_date_time = self.getissuedate()
         doc.header.languages.add("de")
         doc.header.type_code = "380" # Commercial invoice
 
@@ -481,6 +490,13 @@ class Abrechnung:
             note.content = ' '.join((self.getprojectname(),
                                     self.getprojectdate().strftime('%d.%m.%y')))
             note.subject_code = "ACD" # Reason
+            doc.header.notes.add(note)
+
+        if form_url:
+            note = DH_IncludedNote()
+            note.content_code = 'URL'
+            note.content = ''.join((form_url, self.build_query()))
+            note.subject_code = 'ADT' # Source of document
             doc.header.notes.add(note)
 
         if self.getprojectname() == 'Testrechnung':
@@ -620,6 +636,54 @@ class Abrechnung:
 
         return doc.serialize(schema="FACTUR-X_EXTENDED")
 
+    def build_query(self) -> str:
+        """
+        Erstellt einen Query-String für eine URL,
+        mit dem sich diese Abrechnung replizieren lässt.
+        """
+
+        # Prepare dict with parameters
+        values = dict()
+        # Personal data
+        values['uname'] = self.getusername()
+        values['dept'] = self.getusergroup()
+        values['pname'] = self.getprojectname()
+        if self.getprojectdate():
+            values['pdate'] = self.getprojectdate().strftime('%Y-%m-%d')
+        # Positions and donations
+        for i, position in enumerate(self.positions, start=1):
+            if not position:
+                continue
+            prefix = ''.join(('p', str(i)))
+            values[''.join((prefix, 'name'))] = position.name
+            values[''.join((prefix, 'type'))] = '1' if position.income else '-1' 
+            values[''.join((prefix, 'cnt'))] = str(position.unitcount)
+            values[''.join((prefix, 'ppu'))] = str(abs(position.unitprice)) if position.unitcount > 1 else None
+            values[prefix] = str(abs(position.value))
+        values['dono'] = str(self.getdonations() or '')
+        # Payment
+        values['prtype'] = str(self.getibanmode() or '')
+        if self.getibanmode() == 1 and self.gettotal() < 0:
+            if self.getibanknown():
+                values['known'] = '1'
+            else:
+                values['iban'] = self.getaccountiban(spaces=False)
+                values['owner'] = self.getaccountname()
+        elif self.getibanmode() == 2 and self.gettotal() > 0:
+            values['prsepa'] = str(self.getsepamode() or '')
+        # Metadata
+        if self.getissuedate():
+            values['issuedate'] = self.getissuedate().strftime('%Y-%m-%d')
+
+        # Remove empty parameters & replace special characters
+        import urllib.parse
+        values = {key: urllib.parse.quote_plus(value) for key, value in values.items() if value}
+
+        # Form query string
+        parameters = ['='.join((key, value)) for key, value in values.items()]
+        parameters = '&'.join(parameters)
+        return ''.join(('?', parameters))
+
     # Variable getters and setters
     def setusername(self,value:str = ""):
         """Legt den Namen des/der Aktiven fest."""
@@ -664,6 +728,31 @@ class Abrechnung:
     def getprojectdate(self) -> date|None:
         """Gibt das Datum der Abrechnung zurück."""
         return self._project["date"]
+
+    def setissuedate(self,value:str|date|None = None):
+        """
+        Legt das Datum fest, an dem diese Abrechnung ausgestellt wurde.
+
+        Akzepiert Datums-Objekte oder
+        Strings im Format (year-month-day)
+        """
+        if type(value) == date:
+            self._date_issue = value
+        elif value:
+            temp = str(value).split("-")
+            self._date_issue = date(
+                int(temp[0]), int(temp[1]), int(temp[2]))
+        else:
+            self._date_issue = None
+
+    def getissuedate(self) -> date:
+        """
+        Gibt das Datum zurück,
+        an dem diese Abrechnung ausgestellt wurde.
+        Ist kein Ausstellungsdatum festgelegt,
+        wird als Standardwert das heutige Datum zurückgegeben.
+        """
+        return self._date_issue or date.today()
 
     def setdonations(self,value=0.0):
         """Legt den Betrag eingenommener Spenden fest."""
@@ -755,6 +844,8 @@ class Abrechnung:
                            "Der Name der Aktion oder des Projekts.")
     projectdate = property(getprojectdate,setprojectdate,None,
                            "Das Datum der Aktion oder des Projekts.")
+    issuedate = property(getissuedate,setissuedate,None,
+                         "Das Datum der Ausstellung dieser Abrechnung.")
     donations = property(getdonations,setdonations,None,
                          "Eingenommene Spenden in Euro.")
     income = property(getincome,None,None,

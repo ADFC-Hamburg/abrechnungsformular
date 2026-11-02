@@ -54,8 +54,10 @@ def aktive_pdf():
         errormessage = abrechnung.evaluate_query(request.args.to_dict())
         if errormessage:
             abort(400, errormessage)
+        # Get URL for webform (by removing last '/abrechnung' in URL)
+        form_url = ''.join(request.base_url.rsplit('/abrechnung', 1))
         # Prepare electronic invoice as XML
-        xml = abrechnung.factur_x()
+        xml = abrechnung.factur_x(form_url=form_url)
         # Prepare document as HTML
         document = abrechnung.html_compose()
         # Select a filename for the resulting file
@@ -86,8 +88,10 @@ def reise_pdf():
         errormessage = abrechnung.evaluate_query(request.args.to_dict())
         if errormessage:
             abort(400, errormessage)
+        # Get URL for webform (by removing last '/abrechnung')
+        form_url = ''.join(request.base_url.rsplit('/abrechnung', 1))
         # Create PDF from invoice
-        xml = abrechnung.factur_x()
+        xml = abrechnung.factur_x(form_url=form_url)
         document = abrechnung.html_compose()
         filename = abrechnung.suggest_filename()+'.pdf'
         html = HTML(string=document,base_url=PATHS.PDF_TEMPLATE_FOLDER)

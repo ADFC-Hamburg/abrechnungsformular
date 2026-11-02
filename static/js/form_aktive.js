@@ -616,6 +616,24 @@ function start() {
 		hiddenElements[i].removeAttribute("hidden");
 	}
 
+	// Übernehme Felder aus URL-Parametern
+	for (const [key, value] of (new URL(window.location.href)).searchParams) {
+		for (const field of document.getElementsByName(key)) {
+			if (field.type == 'radio' || field.type == 'checkbox') {
+				if (field.value == value) { field.checked = true; }
+			}
+			else {
+				field.value = value;
+			}
+		}
+	}
+
+	// Ersetze Anweisungen durch Erstelldatum, falls letzteres festgelegt ist
+	if (document.getElementById('issuedate').value) {
+		document.getElementById('instructions').hidden = true;
+		document.getElementById('sectionIssuedate').removeAttribute("hidden");
+	}
+
 	// Gib HTML-Elementen auslösbare Ereignisse
 
 	// Ereignisse für Texteingabefelder

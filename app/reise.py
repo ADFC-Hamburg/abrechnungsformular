@@ -283,6 +283,7 @@ class Abrechnung():
     _FIELD_NAMES = {'uname':'dein Name','group':'deine Arbeitsgruppe',
                     'reason':'der Anlass der Reise','iban':'deine IBAN',
                     'owner':'der Name des Kontoinhabers/der Kontoinhaberin',
+                    'issuedate':'das Ausstellungsdatum',
                     'begin':'Anfangsdatum der Reise',
                     'end':'Enddatum der Reise',
                     'begintime':'Anfangszeit der Reise',
@@ -308,7 +309,7 @@ class Abrechnung():
         self._user_name = self._user_group\
             = self._payment_name = self._cause = ""
         self._payment_iban = IBAN("",allow_invalid=True)
-        self._date_begin = self._date_end\
+        self._date_begin = self._date_end = self._date_issue\
             = self._time_begin = self._time_end = None
         self._car_distance = Decimal('0')
         self._overnight_flat = self._payment_iban_known = False
@@ -384,12 +385,12 @@ class Abrechnung():
         Gibt außerdem eine Aufzählung aller Fehler als String zurück.
 
         Erkennt die folgenden Schlüssel:
-        uname, ugroup, reason, known, iban, owner, begin, end, begintime,
-        endtime, car, night
-
-        px, pxname, pxdate (x zwischen 1 und MAXPOSITIONS),
-
-        dxmy (x zwischen 1 und MAXDATES, y zwischen 1 und 3)
+        uname, ugroup, reason, issuedate,
+        known, iban, owner,
+        begin, end, begintime, endtime,
+        car, night,
+        p{1..MAXPOSITIONS}, p{1..MAXPOSITIONS}name, p{1..MAXPOSITIONS}date,
+        d{1..MAXDATES}m{1..3}
         """
         if query:
             keys = tuple(query.keys())
@@ -409,6 +410,13 @@ class Abrechnung():
                 self.setusergroup(query['ugroup'])
             if 'reason' in keys:
                 self.setcause(query['reason'])
+
+            # Date of issue
+            try:
+                if 'issuedate' in keys and query['issuedate']:
+                    self.setissuedate(query['issuedate'])
+            except Exception:
+                erronous.append(self._FIELD_NAMES['issuedate'])
 
             # Date of travel
             try:
@@ -569,7 +577,7 @@ class Abrechnung():
             return '\n'.join(errormessage)
 
     # Methods for output
-    def factur_x(self) -> bytes:
+    def factur_x(self, form_url:str = '') -> bytes:
         """
         Erstellt aus der Abrechnung eine E-Rechnung,
         die dem Standard Factur-X Extended (auch bekannt als
@@ -582,7 +590,7 @@ class Abrechnung():
         doc.context.guideline_parameter.id = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
         doc.header.id = "REISE"+datetime.now().strftime("%Y%m%d%H%M%S")
         doc.header.name = self._NAME.upper()
-        doc.header.issue_date_time = date.today()
+        doc.header.issue_date_time = self.getissuedate()
         doc.header.languages.add("de")
         doc.header.type_code = "380" # Commercial invoice
 
@@ -591,6 +599,13 @@ class Abrechnung():
             note.content_code = 'CAUSE'
             note.content = self.getcause()
             note.subject_code = "ACD" # Reason
+            doc.header.notes.add(note)
+
+        if form_url:
+            note = DH_IncludedNote()
+            note.content_code = 'URL'
+            note.content = ''.join((form_url, self.build_query()))
+            note.subject_code = 'ADT' # Source of document
             doc.header.notes.add(note)
 
         if self.getcause() == 'Testrechnung':
@@ -745,7 +760,7 @@ class Abrechnung():
         """
 
         template = tools.pdf_environment.get_template(FILENAMES.REISE_HTML)
-        today = tools.format_date(date.today())
+        today = tools.format_date(self.getissuedate())
 
         return template.render(abrechnung=self,today=today,
                                daycount=len(self.days),rates=REISE_RATE,
@@ -766,6 +781,61 @@ class Abrechnung():
             # Add project date
             out += " "+str(self.getbegindate())
         return out
+
+    def build_query(self) -> str:
+        """
+        Erstellt einen Query-String für eine URL,
+        mit dem sich diese Abrechnung replizieren lässt.
+        """
+
+        # Prepare dict with parameters
+        values = dict()
+        # User name and group, cause of travel
+        values['uname'] = self.getusername()
+        values['ugroup'] = self.getusergroup()
+        values['reason'] = self.getcause()
+        # Date of issue
+        if self.getissuedate():
+            values['issuedate'] = self.getissuedate().strftime('%Y-%m-%d')
+        # Date/time of travel
+        if self.getbegindate():
+            values['begin'] = self.getbegindate().strftime('%Y-%m-%d')
+        if self.getenddate():
+            values['end'] = self.getenddate().strftime('%Y-%m-%d')
+        if self.getbegintime():
+            values['begintime'] = self.getbegintime().strftime('%H:%M')
+        if self.getendtime():
+            values['endtime'] = self.getendtime().strftime('%H:%M')
+        # Catering
+        for day in range(len(self.days)):
+            for meal in range(3):
+                if self.days[day][meal]:
+                    values[f'd{day+1}m{meal+1}'] = '1'
+        # Positions
+        for i, position in enumerate(self.positions,start=1):
+            prefix = ''.join(('p',str(i)))
+            values[''.join((prefix, 'name'))] = position.reason
+            values[''.join((prefix, 'date'))] = position.date.strftime('%Y-%m-%d') if position.date else None
+            values[prefix] = str(position.value or '')
+        # Car mileage and overnight flat rate
+        values['car'] = str(self.cardistance or '')
+        if self.getovernightflat():
+            values['night'] = '1'
+        # Payment
+        if self.getibanknown():
+            values['known'] = '1'
+        else:
+            values['iban'] = self.getaccountiban(spaces=False)
+            values['owner'] = self.getaccountname()
+
+        # Remove empty parameters & replace special characters
+        import urllib.parse
+        values = {key: urllib.parse.quote_plus(value) for key, value in values.items() if value}
+
+        # Form query string
+        parameters = ['='.join((key, value)) for key, value in values.items()]
+        parameters = '&'.join(parameters)
+        return ''.join(('?', parameters))
 
     # Variable getters and setters
     def setusername(self,value:str = ""):
@@ -811,6 +881,31 @@ class Abrechnung():
 
     def getibanknown(self) -> bool:
         return self._payment_iban_known
+    
+    def setissuedate(self,value:str|date|None = None):
+        """
+        Legt das Datum fest, an dem diese Abrechnung ausgestellt wurde.
+
+        Akzepiert Datums-Objekte oder
+        Strings im Format (year-month-day)
+        """
+        if type(value) == date:
+            self._date_issue = value
+        elif value:
+            temp = str(value).split("-")
+            self._date_issue = date(
+                int(temp[0]), int(temp[1]), int(temp[2]))
+        else:
+            self._date_issue = None
+    
+    def getissuedate(self) -> date:
+        """
+        Gibt das Datum zurück,
+        an dem diese Abrechnung ausgestellt wurde.
+        Ist kein Ausstellungsdatum festgelegt,
+        wird als Standardwert das heutige Datum zurückgegeben.
+        """
+        return self._date_issue or date.today()
 
     def setcause(self,value:str = ""):
         """Legt den Grund für die Reise fest."""
@@ -999,6 +1094,8 @@ class Abrechnung():
                          "Ob die IBAN dem ADFC schon vorliegt.")
     cause = property(getcause,setcause,None,
                      "Der Grund für die Reise.")
+    issuedate = property(getissuedate,setissuedate,None,
+                         "Das Datum der Ausstellung dieser Abrechnung.")
     begindate = property(getbegindate,setbegindate,None,
                          "Das Datum, an dem die Reise begann.")
     enddate = property(getenddate,setenddate,None,
