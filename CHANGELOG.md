@@ -5,6 +5,7 @@
 ### Changed
 
 - Web form field for showing issue date read from URL parameters redesigned and made editable
+- Web form field for issue date is now visible if `issuedate` is in URL parameters even if its value is invalid
 
 ## v2.14 - 2026-11-02
 

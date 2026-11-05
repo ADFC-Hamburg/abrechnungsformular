@@ -607,6 +607,8 @@ function validateForm() {
  * @since	1.3
  */
 function start() {
+	let show_issuedate = false;
+
 	// Setze spätestes erlaubtes Datum auf heute
 	// document.getElementById("projectdate").max = new Date().toISOString().split("T")[0];
 
@@ -626,10 +628,13 @@ function start() {
 				field.value = value;
 			}
 		}
+		if (key == 'issuedate') {
+			show_issuedate = true;
+		}
 	}
 
-	// Zeige Einstellung für Datierung, falls bereits festgelegt
-	if (document.getElementById('issuedate').value) {
+	// Zeige Einstellung für Datierung, falls in URL-Parametern enthalten oder bereits festgelegt
+	if (show_issuedate || document.getElementById('issuedate').value) {
 		document.getElementById('fieldsetIssuedate').hidden = false;
 	}
 
