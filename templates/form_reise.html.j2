@@ -23,6 +23,7 @@
 </head>
 
 <body>
+
 	<header>
 		<div>
 			<h1>Reise&shy;kosten&shy;abrechnung</h1>
@@ -32,7 +33,9 @@
 			<!--<a href="#" style="--highlight:red;">Linktext</a>--><a href="{{ url_for('pages.index') }}">Aktivenabrechnung</a>
 		</nav>
 	</header>
+
 	<form action="{{ url_for('pages.reise_pdf') }}" method="get" data-maxpositions="{{ abrechnung.POSITIONCOUNT }}" data-maxdates="{{ abrechnung.MAXDATES }}">
+
 		<header>
 			<fieldset>
 				<legend>Persönliche Angaben</legend>
@@ -63,6 +66,7 @@
 				</section>
 			</fieldset>
 		</header>
+
 		<fieldset>
 			<legend>Verpflegung</legend>
 			<section>
@@ -71,7 +75,8 @@
 			</section>
 			<section id="mealdays">
 				<div style="column-count:2; column-gap:3rem;">
-{% for i in range(1,abrechnung.MAXDATES +1) %}
+				{%- for i in range(1,abrechnung.MAXDATES +1) %}
+
 					<div class="block">
 						<div class="select" id="day{{ i }}">Tag {{ i }}:</div>
 						<div class="subselect">
@@ -80,16 +85,19 @@
 							<label class="option"><input type="checkbox" name="d{{ i }}m3" id="day{{ i }}dinner" value="1">Abendessen</label>
 						</div>
 					</div>
-{% endfor %}
+				{%- endfor %}
+
 				</div>
 			</section>
 			<section id="mealsummary" data-dailyrate="{{ rates['Tagessatz']['GanzerTag'] }}" data-dailyratereduced="{{ rates['Tagessatz']['AnAbreise'] }}" data-dailyratesingle="{{ rates['Tagessatz']['Einzeltag'] }}" hidden>
 				<div class="subinput">Dir werden <b id="dayamount"></b> an Tagesgeld<span id="dayplural">ern</span> ausgezahlt.</div>
 			</section>
 		</fieldset>
+
 		<fieldset>
 			<legend>Ausgaben</legend>
-{% for i in range(1,abrechnung.POSITIONCOUNT +1) %}
+			{%- for i in range(1,abrechnung.POSITIONCOUNT +1) %}
+
 			<section id="position{{ i }}section" class="sidebuttons">
 				<div class="select">
 					<label class="field">Kostengrund: <input type="text" class="field" name="p{{ i }}name" id="position{{ i }}name" placeholder="Position {{ i }}" size=24></label>
@@ -102,11 +110,13 @@
 				<input type="button" class="up jsonly" id="position{{ i }}up" value="&#8593;" title="Diese Position nach oben verschieben" hidden>{% endif %}{% if i < abrechnung.POSITIONCOUNT %}
 				<input type="button" class="down jsonly" id="position{{ i }}down" value="&#8595;" title="Diese Position nach unten verschieben" hidden>{% endif %}
 			</section>
-{% endfor %}
+			{%- endfor %}
+
 			<section id="positionnotes" hidden>
 				<div class="subinput">Insgesamt wurden <b id="positiontotal"></b> ausgegeben.</div>
 			</section>
 		</fieldset>
+
 		<fieldset>
 			<legend>Erstattungen</legend>
 			<section>
@@ -119,6 +129,7 @@
 				<div class="subinput">Dir werden <span id="extraamount"></span> erstattet.</div>
 			</section>
 		</fieldset>
+
 		<fieldset>
 			<legend>Bankverbindung</legend>
 			<section id="totalamount">Wir überweisen den Erstattungsbetrag auf dein Bankkonto.</section>
@@ -129,6 +140,7 @@
 				<label class="option indent"> <input type="checkbox" name="known" id="processuserknown" value="1">Deine Bankverbindung ist dem {{ address['NameShort'] | replace(' ','\xa0') }} bekannt.</label>
 			</section>
 		</fieldset>
+
 		<fieldset>
 			<legend>Daten absenden</legend>
 			<section class="menu">
@@ -145,12 +157,14 @@
 		</fieldset>
 
 	</form>
+
 	<footer>
 		<nav>
 			<a href="{{ address['WebLegal'] }}">Impressum</a><a href="{{ address['WebPrivacy'] }}">Datenschutz</a>
 		</nav>{% if version %}
 		<div class="version">Abrechnungsformular {{version}}</div>{% endif %}
 	</footer>
+
 	<script src="{{ url_for(static, filename='js/form_reise.js') }}"></script>
 </body>
 
