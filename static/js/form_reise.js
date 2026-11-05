@@ -790,10 +790,9 @@ function start() {
 		}
 	}
 
-	// Ersetze Anweisungen durch Erstelldatum, falls letzteres festgelegt ist
+	// Zeige Einstellung für Datierung, falls bereits festgelegt
 	if (document.getElementById('issuedate').value) {
-		document.getElementById('instructions').hidden = true;
-		document.getElementById('sectionIssuedate').removeAttribute("hidden");
+		document.getElementById('fieldsetIssuedate').hidden = false;
 	}
 
 	// Mache alle Elemente, die nur beim Einsatz von JavaScript sichbar sein sollen, sichtbar

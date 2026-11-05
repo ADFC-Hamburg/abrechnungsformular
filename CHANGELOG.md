@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Web form field for showing issue date read from URL parameters redesigned and made editable
+
 ## v2.14 - 2026-11-02
 
 ### Added
